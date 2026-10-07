@@ -125,6 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
           gInstaText.textContent = `@${g.instagram.replace('@', '')}`;
           if (gInstaLink) gInstaLink.href = `https://instagram.com/${g.instagram.replace('@', '')}`;
         }
+        const savedGPhoto = localStorage.getItem('wedding_groom_photo');
+        if (savedGPhoto && savedGPhoto.trim()) g.photo = savedGPhoto.trim();
         const gPhoto = document.getElementById('groomPhotoImg');
         if (gPhoto && g.photo) gPhoto.src = g.photo;
       }
@@ -144,6 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
           bInstaText.textContent = `@${b.instagram.replace('@', '')}`;
           if (bInstaLink) bInstaLink.href = `https://instagram.com/${b.instagram.replace('@', '')}`;
         }
+        const savedBPhoto = localStorage.getItem('wedding_bride_photo');
+        if (savedBPhoto && savedBPhoto.trim()) b.photo = savedBPhoto.trim();
         const bPhoto = document.getElementById('bridePhotoImg');
         if (bPhoto && b.photo) bPhoto.src = b.photo;
       }
@@ -387,16 +391,24 @@ document.addEventListener('DOMContentLoaded', () => {
   loadWeddingConfig();
 
   if (btnBuka) {
-    btnBuka.addEventListener('click', () => {
-      // 1. Unlock page
+    btnBuka.addEventListener('click', (e) => {
+      if (e) e.preventDefault();
+      // 1. Unlock page scrolling
       document.body.classList.remove('overflow-hidden');
+      document.body.style.overflow = 'auto';
       
       // 2. Play audio
       playAudio();
 
       // 3. Show floating controls
-      if (floatingMusicBtn) floatingMusicBtn.classList.remove('hidden');
-      if (bottomNav) bottomNav.classList.remove('translate-y-full');
+      if (floatingMusicBtn) {
+        floatingMusicBtn.style.display = 'flex';
+        floatingMusicBtn.classList.remove('hidden', 'pointer-events-none');
+      }
+      if (bottomNav) {
+        bottomNav.style.display = 'flex';
+        bottomNav.classList.remove('hidden', 'pointer-events-none', 'translate-y-full');
+      }
 
       // 4. Smooth scroll to opening quote / couple section
       const firstSection = document.getElementById('salamPembuka');

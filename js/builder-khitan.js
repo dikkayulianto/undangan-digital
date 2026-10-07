@@ -133,13 +133,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const childPhotoFile = document.getElementById('childPhotoFile');
   const btnUploadChildPhoto = document.getElementById('btnUploadChildPhoto');
 
+  // Check direct photo key
+  const savedDirectChildPhoto = localStorage.getItem('khitan_child_photo');
+  if (savedDirectChildPhoto && childPhotoInput && childPhotoPreview) {
+    childPhotoInput.value = savedDirectChildPhoto;
+    childPhotoPreview.src = savedDirectChildPhoto;
+  } else if (childPhotoInput && childPhotoPreview && config.photo) {
+    childPhotoInput.value = config.photo;
+    childPhotoPreview.src = config.photo;
+  }
+
   if (childPhotoInput && childPhotoPreview) {
-    if (config.photo) {
-      childPhotoInput.value = config.photo;
-      childPhotoPreview.src = config.photo;
-    }
     childPhotoInput.addEventListener('input', () => {
-      if (childPhotoInput.value.trim()) childPhotoPreview.src = childPhotoInput.value.trim();
+      const val = childPhotoInput.value.trim();
+      if (val) {
+        childPhotoPreview.src = val;
+        try {
+          localStorage.setItem('khitan_child_photo', val);
+          const cur = getKhitanConfig();
+          cur.photo = val;
+          saveKhitanConfig(cur);
+        } catch(e) {}
+      }
     });
   }
 
@@ -150,10 +165,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (file) {
         try {
           showToast('Mengompresi foto ananda...');
-          const dataUrl = await compressImage(file, 800, 800, 0.75);
+          const dataUrl = await compressImage(file, 600, 600, 0.72);
           childPhotoInput.value = dataUrl;
           childPhotoPreview.src = dataUrl;
-          showToast('Foto ananda berhasil diunggah!');
+          
+          // Instant Auto-Save!
+          localStorage.setItem('khitan_child_photo', dataUrl);
+          const cur = getKhitanConfig();
+          cur.photo = dataUrl;
+          saveKhitanConfig(cur);
+
+          showToast('Foto ananda berhasil diunggah dan disimpan!');
         } catch (err) {
           alert(err.message || 'Gagal memproses foto.');
         }

@@ -284,13 +284,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const groomPhotoFile = document.getElementById('groomPhotoFile');
   const btnUploadGroomPhoto = document.getElementById('btnUploadGroomPhoto');
 
+  const savedDirectGPhoto = localStorage.getItem('wedding_groom_photo');
+  if (savedDirectGPhoto && groomPhotoInput && groomPhotoPreview) {
+    groomPhotoInput.value = savedDirectGPhoto;
+    groomPhotoPreview.src = savedDirectGPhoto;
+  } else if (groomPhotoInput && groomPhotoPreview && config.groom?.photo) {
+    groomPhotoInput.value = config.groom.photo;
+    groomPhotoPreview.src = config.groom.photo;
+  }
+
   if (groomPhotoInput && groomPhotoPreview) {
-    if (config.groom?.photo) {
-      groomPhotoInput.value = config.groom.photo;
-      groomPhotoPreview.src = config.groom.photo;
-    }
     groomPhotoInput.addEventListener('input', () => {
-      if (groomPhotoInput.value.trim()) groomPhotoPreview.src = groomPhotoInput.value.trim();
+      const val = groomPhotoInput.value.trim();
+      if (val) {
+        groomPhotoPreview.src = val;
+        try {
+          localStorage.setItem('wedding_groom_photo', val);
+          const cur = getConfig();
+          if (!cur.groom) cur.groom = {};
+          cur.groom.photo = val;
+          saveConfig(cur);
+        } catch(e) {}
+      }
     });
   }
 
@@ -301,10 +316,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (file) {
         try {
           showToast('Mengompresi foto mempelai pria...');
-          const dataUrl = await compressImage(file, 800, 800, 0.75);
+          const dataUrl = await compressImage(file, 600, 600, 0.72);
           groomPhotoInput.value = dataUrl;
           groomPhotoPreview.src = dataUrl;
-          showToast('Foto mempelai pria berhasil diunggah!');
+          
+          // Instant Auto-Save!
+          localStorage.setItem('wedding_groom_photo', dataUrl);
+          const cur = getConfig();
+          if (!cur.groom) cur.groom = {};
+          cur.groom.photo = dataUrl;
+          saveConfig(cur);
+
+          showToast('Foto mempelai pria berhasil diunggah & disimpan!');
         } catch (err) {
           alert(err.message || 'Gagal memproses foto.');
         }
@@ -318,13 +341,54 @@ document.addEventListener('DOMContentLoaded', () => {
   const bridePhotoFile = document.getElementById('bridePhotoFile');
   const btnUploadBridePhoto = document.getElementById('btnUploadBridePhoto');
 
+  const savedDirectBPhoto = localStorage.getItem('wedding_bride_photo');
+  if (savedDirectBPhoto && bridePhotoInput && bridePhotoPreview) {
+    bridePhotoInput.value = savedDirectBPhoto;
+    bridePhotoPreview.src = savedDirectBPhoto;
+  } else if (bridePhotoInput && bridePhotoPreview && config.bride?.photo) {
+    bridePhotoInput.value = config.bride.photo;
+    bridePhotoPreview.src = config.bride.photo;
+  }
+
   if (bridePhotoInput && bridePhotoPreview) {
-    if (config.bride?.photo) {
-      bridePhotoInput.value = config.bride.photo;
-      bridePhotoPreview.src = config.bride.photo;
-    }
     bridePhotoInput.addEventListener('input', () => {
-      if (bridePhotoInput.value.trim()) bridePhotoPreview.src = bridePhotoInput.value.trim();
+      const val = bridePhotoInput.value.trim();
+      if (val) {
+        bridePhotoPreview.src = val;
+        try {
+          localStorage.setItem('wedding_bride_photo', val);
+          const cur = getConfig();
+          if (!cur.bride) cur.bride = {};
+          cur.bride.photo = val;
+          saveConfig(cur);
+        } catch(e) {}
+      }
+    });
+  }
+
+  if (btnUploadBridePhoto && bridePhotoFile) {
+    btnUploadBridePhoto.addEventListener('click', () => bridePhotoFile.click());
+    bridePhotoFile.addEventListener('change', async () => {
+      const file = bridePhotoFile.files[0];
+      if (file) {
+        try {
+          showToast('Mengompresi foto mempelai wanita...');
+          const dataUrl = await compressImage(file, 600, 600, 0.72);
+          bridePhotoInput.value = dataUrl;
+          bridePhotoPreview.src = dataUrl;
+
+          // Instant Auto-Save!
+          localStorage.setItem('wedding_bride_photo', dataUrl);
+          const cur = getConfig();
+          if (!cur.bride) cur.bride = {};
+          cur.bride.photo = dataUrl;
+          saveConfig(cur);
+
+          showToast('Foto mempelai wanita berhasil diunggah & disimpan!');
+        } catch (err) {
+          alert(err.message || 'Gagal memproses foto.');
+        }
+      }
     });
   }
 
