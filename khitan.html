@@ -510,7 +510,7 @@
         childOrder: 'Putra pertama dari pasangan:',
         father: 'Bpk. Ahmad Fauzi',
         mother: 'Ibu Nurul Hidayah',
-        photo: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=500&q=80',
+        photo: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=600&q=80',
         eventDateDisplay: 'Ahad, 15 November 2026',
         eventDateIso: '2026-11-15T09:00:00+07:00',
         eventTime: 'Pukul 09.00 - 13.00 WIB',
@@ -523,6 +523,38 @@
         physicalAddress: 'Jl. Cempaka Putih Timur No. 28, RT 02/RW 04, Cempaka Putih, Jakarta Pusat'
       };
 
+      function decodeKhitanConfigFromUrl(encoded) {
+        try {
+          let b64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+          while (b64.length % 4) b64 += '=';
+          const jsonStr = decodeURIComponent(escape(atob(b64)));
+          const compact = JSON.parse(jsonStr);
+          const res = {};
+          if (compact.nn) res.childNickname = compact.nn;
+          if (compact.fn) res.childFullname = compact.fn;
+          if (compact.o) res.childOrder = compact.o;
+          if (compact.f) res.father = compact.f;
+          if (compact.m) res.mother = compact.m;
+          if (compact.p) res.photo = compact.p;
+          if (compact.d) res.eventDateDisplay = compact.d;
+          if (compact.di) res.eventDateIso = compact.di;
+          if (compact.t) res.eventTime = compact.t;
+          if (compact.pl) res.eventPlace = compact.pl;
+          if (compact.a) res.eventAddress = compact.a;
+          if (compact.mu) res.mapsUrl = compact.mu;
+          if (compact.b1n) res.bank1Name = compact.b1n;
+          if (compact.b1no) res.bank1Number = compact.b1no;
+          if (compact.b1h) res.bank1Holder = compact.b1h;
+          if (compact.pa) res.physicalAddress = compact.pa;
+          if (compact.au) res.audioUrl = compact.au;
+          if (compact.bg) res.customBg = compact.bg;
+          return res;
+        } catch(e) {
+          console.error('Error decoding khitan config from URL:', e);
+          return null;
+        }
+      }
+
       let config = defaultKhitanConfig;
       const saved = localStorage.getItem('khitan_config');
       if (saved) {
@@ -533,6 +565,19 @@
       const directChildPhoto = localStorage.getItem('khitan_child_photo');
       if (directChildPhoto && directChildPhoto.trim()) {
         config.photo = directChildPhoto.trim();
+      }
+
+      // Priority Override: Read URL Encoded Data (?d=...)
+      const dParam = urlParams.get('d');
+      if (dParam) {
+        const urlConfig = decodeKhitanConfigFromUrl(dParam);
+        if (urlConfig) {
+          config = Object.assign({}, config, urlConfig);
+          try {
+            localStorage.setItem('khitan_config', JSON.stringify(config));
+            if (urlConfig.photo) localStorage.setItem('khitan_child_photo', urlConfig.photo);
+          } catch(e) {}
+        }
       }
 
       // Populate Elements

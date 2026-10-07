@@ -88,15 +88,88 @@ document.addEventListener('DOMContentLoaded', () => {
     coverSectionEl.style.backgroundImage = `${currentThemeBg.covGrad}, url('${currentThemeBg.url}')`;
   }
 
-  // 2. Load Configuration from LocalStorage (from builder.html if customized)
+  function decodeWeddingConfigFromUrl(encoded) {
+    try {
+      let b64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+      const jsonStr = decodeURIComponent(escape(atob(b64)));
+      const c = JSON.parse(jsonStr);
+      return {
+        theme: c.th || 'champagne',
+        groom: {
+          nickname: c.gn || '',
+          fullname: c.gf || '',
+          father: c.gfa || '',
+          mother: c.gm || '',
+          order: c.go || '',
+          instagram: c.gi || '',
+          photo: c.gp || ''
+        },
+        bride: {
+          nickname: c.bn || '',
+          fullname: c.bf || '',
+          father: c.bfa || '',
+          mother: c.bm || '',
+          order: c.bo || '',
+          instagram: c.bi || '',
+          photo: c.bp || ''
+        },
+        event: {
+          dateDisplay: c.ed || '',
+          dateIso: c.ei || '',
+          akadTime: c.at || '',
+          akadPlace: c.ap || '',
+          akadAddress: c.aa || '',
+          resepsiTime: c.rt || '',
+          resepsiPlace: c.rp || '',
+          resepsiAddress: c.ra || '',
+          mapsUrl: c.mu || ''
+        },
+        gift: {
+          bank1Name: c.b1n || '',
+          bank1Number: c.b1no || '',
+          bank1Holder: c.b1h || '',
+          bank2Name: c.b2n || '',
+          bank2Number: c.b2no || '',
+          bank2Holder: c.b2h || '',
+          physicalAddress: c.pa || ''
+        },
+        audioUrl: c.au || '',
+        customBg: c.bg || '',
+        gallery: Array.isArray(c.g) && c.g.length > 0 ? c.g : undefined
+      };
+    } catch(e) {
+      console.error('Error decoding wedding config:', e);
+      return null;
+    }
+  }
+
+  // 2. Load Configuration from LocalStorage or URL Parameter (?d=...)
   function loadWeddingConfig() {
+    let config = null;
     const saved = localStorage.getItem('wedding_config');
-    if (!saved) {
+    if (saved) {
+      try { config = JSON.parse(saved); } catch(e) {}
+    }
+
+    const dParam = urlParams.get('d');
+    if (dParam) {
+      const urlConfig = decodeWeddingConfigFromUrl(dParam);
+      if (urlConfig) {
+        config = Object.assign({}, config || {}, urlConfig);
+        try {
+          localStorage.setItem('wedding_config', JSON.stringify(config));
+          if (urlConfig.groom?.photo) localStorage.setItem('wedding_groom_photo', urlConfig.groom.photo);
+          if (urlConfig.bride?.photo) localStorage.setItem('wedding_bride_photo', urlConfig.bride.photo);
+        } catch(e) {}
+      }
+    }
+
+    if (!config) {
       initAudioEngine('https://assets.mixkit.co/music/preview/mixkit-wedding-waltz-piano-music-681.mp3');
       return;
     }
     try {
-      const config = JSON.parse(saved);
 
       const groomNick = config.groom?.nickname || 'Dimas';
       const brideNick = config.bride?.nickname || 'Sarah';

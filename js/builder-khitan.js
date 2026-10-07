@@ -8,7 +8,7 @@ const defaultKhitanConfig = {
   childOrder: 'Putra pertama dari pasangan:',
   father: 'Bpk. Ahmad Fauzi',
   mother: 'Ibu Nurul Hidayah',
-  photo: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=500&q=80',
+  photo: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=600&q=80',
   eventDateDisplay: 'Ahad, 15 November 2026',
   eventDateIso: '2026-11-15T09:00',
   eventTime: 'Pukul 09.00 - 13.00 WIB',
@@ -69,6 +69,60 @@ function compressImage(file, maxWidth = 1000, maxHeight = 1000, quality = 0.75) 
     reader.onerror = () => reject(new Error('Gagal membaca file dari perangkat.'));
     reader.readAsDataURL(file);
   });
+}
+
+// Upload helper to Vercel Serverless Function / Cloud CDN
+async function uploadImageToServer(dataUrl, filename) {
+  try {
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: dataUrl, filename: filename || `khitan-${Date.now()}.jpg` })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.url) {
+        return data.url;
+      }
+    }
+  } catch (err) {
+    console.warn('API upload tidak tersedia, menggunakan data lokal:', err);
+  }
+  return dataUrl;
+}
+
+// Encode config into compact URL parameter so guests can view on any device
+function encodeKhitanConfigForUrl(cfg) {
+  const compact = {
+    nn: cfg.childNickname || '',
+    fn: cfg.childFullname || '',
+    o: cfg.childOrder || '',
+    f: cfg.father || '',
+    m: cfg.mother || '',
+    p: (cfg.photo && cfg.photo.startsWith('http')) ? cfg.photo : '',
+    d: cfg.eventDateDisplay || '',
+    di: cfg.eventDateIso || '',
+    t: cfg.eventTime || '',
+    pl: cfg.eventPlace || '',
+    a: cfg.eventAddress || '',
+    mu: cfg.mapsUrl || '',
+    b1n: cfg.bank1Name || '',
+    b1no: cfg.bank1Number || '',
+    b1h: cfg.bank1Holder || '',
+    pa: cfg.physicalAddress || '',
+    au: cfg.audioUrl || '',
+    bg: (cfg.customBg && cfg.customBg.startsWith('http')) ? cfg.customBg : ''
+  };
+  try {
+    const jsonStr = JSON.stringify(compact);
+    return btoa(unescape(encodeURIComponent(jsonStr)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+  } catch(e) {
+    console.error('Error encoding khitan config:', e);
+    return '';
+  }
 }
 
 function getKhitanConfig() {
@@ -164,18 +218,28 @@ document.addEventListener('DOMContentLoaded', () => {
       const file = childPhotoFile.files[0];
       if (file) {
         try {
-          showToast('Mengompresi foto ananda...');
+          showToast('Mengompresi & menyiapkan foto ananda...');
           const dataUrl = await compressImage(file, 600, 600, 0.72);
-          childPhotoInput.value = dataUrl;
           childPhotoPreview.src = dataUrl;
+          childPhotoInput.value = dataUrl;
           
-          // Instant Auto-Save!
-          localStorage.setItem('khitan_child_photo', dataUrl);
-          const cur = getKhitanConfig();
-          cur.photo = dataUrl;
-          saveKhitanConfig(cur);
-
-          showToast('Foto ananda berhasil diunggah dan disimpan!');
+          showToast('Mengunggah foto ke Cloud CDN...');
+          const cloudUrl = await uploadImageToServer(dataUrl, file.name);
+          if (cloudUrl && cloudUrl.startsWith('http')) {
+            childPhotoInput.value = cloudUrl;
+            childPhotoPreview.src = cloudUrl;
+            localStorage.setItem('khitan_child_photo', cloudUrl);
+            const cur = getKhitanConfig();
+            cur.photo = cloudUrl;
+            saveKhitanConfig(cur);
+            showToast('Foto berhasil diunggah ke CDN & disimpan!');
+          } else {
+            localStorage.setItem('khitan_child_photo', dataUrl);
+            const cur = getKhitanConfig();
+            cur.photo = dataUrl;
+            saveKhitanConfig(cur);
+            showToast('Foto berhasil disimpan secara lokal!');
+          }
         } catch (err) {
           alert(err.message || 'Gagal memproses foto.');
         }
@@ -231,9 +295,15 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
           showToast('Mengompresi background kustom...');
           const dataUrl = await compressImage(file, 1600, 1600, 0.80);
-          if (customBgInput) customBgInput.value = dataUrl;
-          updateActiveKhitanBgCard(dataUrl);
-          showToast('Background kustom khitan berhasil diunggah!');
+          showToast('Mengunggah background ke Cloud CDN...');
+          const cloudUrl = await uploadImageToServer(dataUrl, file.name);
+          const finalBg = (cloudUrl && cloudUrl.startsWith('http')) ? cloudUrl : dataUrl;
+          if (customBgInput) customBgInput.value = finalBg;
+          updateActiveKhitanBgCard(finalBg);
+          const cur = getKhitanConfig();
+          cur.customBg = finalBg;
+          saveKhitanConfig(cur);
+          showToast('Background kustom khitan berhasil disimpan!');
         } catch (err) {
           alert(err.message || 'Gagal memproses gambar.');
         }
@@ -599,7 +669,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let base = window.location.href.split('builder-khitan.html')[0];
     if (!base.endsWith('/')) base += '/';
-    const fullInvitationUrl = `${base}khitan.html?to=${encodeURIComponent(guestName)}`;
+    let fullInvitationUrl = `${base}khitan.html?to=${encodeURIComponent(guestName)}`;
+    const urlPayload = encodeKhitanConfigForUrl(currentCfg);
+    if (urlPayload) {
+      fullInvitationUrl += `&d=${urlPayload}`;
+    }
 
     const waMessage = 
 `Kepada Yth.
@@ -647,6 +721,23 @@ Salam hormat,
     btnCopyWaText.addEventListener('click', () => {
       navigator.clipboard.writeText(generatedWaPreview.value).then(() => {
         showToast('Teks WhatsApp Walimatul Khitan berhasil disalin!');
+      });
+    });
+  }
+
+  const btnCopyGeneralUrl = document.getElementById('btnCopyGeneralUrl');
+  if (btnCopyGeneralUrl) {
+    btnCopyGeneralUrl.addEventListener('click', () => {
+      const currentCfg = getKhitanConfig();
+      let base = window.location.href.split('builder-khitan.html')[0];
+      if (!base.endsWith('/')) base += '/';
+      let generalUrl = `${base}khitan.html`;
+      const urlPayload = encodeKhitanConfigForUrl(currentCfg);
+      if (urlPayload) {
+        generalUrl += `?d=${urlPayload}`;
+      }
+      navigator.clipboard.writeText(generalUrl).then(() => {
+        showToast('Link undangan umum (siap share grup WA) berhasil disalin!');
       });
     });
   }

@@ -96,6 +96,75 @@ function compressImage(file, maxWidth = 1000, maxHeight = 1000, quality = 0.75) 
   });
 }
 
+// Upload helper to Vercel Serverless Function / Cloud CDN
+async function uploadImageToServer(dataUrl, filename) {
+  try {
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: dataUrl, filename: filename || `wedding-${Date.now()}.jpg` })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.url) {
+        return data.url;
+      }
+    }
+  } catch (err) {
+    console.warn('API upload tidak tersedia, menggunakan data lokal:', err);
+  }
+  return dataUrl;
+}
+
+// Encode config into compact URL parameter so guests can view on any device
+function encodeWeddingConfigForUrl(cfg) {
+  const compact = {
+    th: cfg.theme || 'champagne',
+    gn: cfg.groom?.nickname || '',
+    gf: cfg.groom?.fullname || '',
+    gfa: cfg.groom?.father || '',
+    gm: cfg.groom?.mother || '',
+    go: cfg.groom?.order || '',
+    gi: cfg.groom?.instagram || '',
+    gp: (cfg.groom?.photo && cfg.groom.photo.startsWith('http')) ? cfg.groom.photo : '',
+    bn: cfg.bride?.nickname || '',
+    bf: cfg.bride?.fullname || '',
+    bfa: cfg.bride?.father || '',
+    bm: cfg.bride?.mother || '',
+    bo: cfg.bride?.order || '',
+    bi: cfg.bride?.instagram || '',
+    bp: (cfg.bride?.photo && cfg.bride.photo.startsWith('http')) ? cfg.bride.photo : '',
+    ed: cfg.event?.dateDisplay || '',
+    ei: cfg.event?.dateIso || '',
+    at: cfg.event?.akadTime || '',
+    ap: cfg.event?.akadPlace || '',
+    aa: cfg.event?.akadAddress || '',
+    rt: cfg.event?.resepsiTime || '',
+    rp: cfg.event?.resepsiPlace || '',
+    ra: cfg.event?.resepsiAddress || '',
+    mu: cfg.event?.mapsUrl || '',
+    b1n: cfg.gift?.bank1Name || '',
+    b1no: cfg.gift?.bank1Number || '',
+    b1h: cfg.gift?.bank1Holder || '',
+    b2n: cfg.gift?.bank2Name || '',
+    b2no: cfg.gift?.bank2Number || '',
+    b2h: cfg.gift?.bank2Holder || '',
+    pa: cfg.gift?.physicalAddress || '',
+    au: cfg.audioUrl || '',
+    bg: (cfg.customBg && cfg.customBg.startsWith('http')) ? cfg.customBg : ''
+  };
+  try {
+    const jsonStr = JSON.stringify(compact);
+    return btoa(unescape(encodeURIComponent(jsonStr)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+  } catch(e) {
+    console.error('Error encoding wedding config:', e);
+    return '';
+  }
+}
+
 function getConfig() {
   const saved = localStorage.getItem('wedding_config');
   if (saved) {
@@ -315,19 +384,30 @@ document.addEventListener('DOMContentLoaded', () => {
       const file = groomPhotoFile.files[0];
       if (file) {
         try {
-          showToast('Mengompresi foto mempelai pria...');
+          showToast('Mengompresi & menyiapkan foto mempelai pria...');
           const dataUrl = await compressImage(file, 600, 600, 0.72);
           groomPhotoInput.value = dataUrl;
           groomPhotoPreview.src = dataUrl;
           
-          // Instant Auto-Save!
-          localStorage.setItem('wedding_groom_photo', dataUrl);
-          const cur = getConfig();
-          if (!cur.groom) cur.groom = {};
-          cur.groom.photo = dataUrl;
-          saveConfig(cur);
-
-          showToast('Foto mempelai pria berhasil diunggah & disimpan!');
+          showToast('Mengunggah foto pria ke Cloud CDN...');
+          const cloudUrl = await uploadImageToServer(dataUrl, file.name);
+          if (cloudUrl && cloudUrl.startsWith('http')) {
+            groomPhotoInput.value = cloudUrl;
+            groomPhotoPreview.src = cloudUrl;
+            localStorage.setItem('wedding_groom_photo', cloudUrl);
+            const cur = getConfig();
+            if (!cur.groom) cur.groom = {};
+            cur.groom.photo = cloudUrl;
+            saveConfig(cur);
+            showToast('Foto mempelai pria berhasil diunggah ke CDN & disimpan!');
+          } else {
+            localStorage.setItem('wedding_groom_photo', dataUrl);
+            const cur = getConfig();
+            if (!cur.groom) cur.groom = {};
+            cur.groom.photo = dataUrl;
+            saveConfig(cur);
+            showToast('Foto mempelai pria berhasil disimpan secara lokal!');
+          }
         } catch (err) {
           alert(err.message || 'Gagal memproses foto.');
         }
@@ -372,37 +452,30 @@ document.addEventListener('DOMContentLoaded', () => {
       const file = bridePhotoFile.files[0];
       if (file) {
         try {
-          showToast('Mengompresi foto mempelai wanita...');
+          showToast('Mengompresi & menyiapkan foto mempelai wanita...');
           const dataUrl = await compressImage(file, 600, 600, 0.72);
           bridePhotoInput.value = dataUrl;
           bridePhotoPreview.src = dataUrl;
 
-          // Instant Auto-Save!
-          localStorage.setItem('wedding_bride_photo', dataUrl);
-          const cur = getConfig();
-          if (!cur.bride) cur.bride = {};
-          cur.bride.photo = dataUrl;
-          saveConfig(cur);
-
-          showToast('Foto mempelai wanita berhasil diunggah & disimpan!');
-        } catch (err) {
-          alert(err.message || 'Gagal memproses foto.');
-        }
-      }
-    });
-  }
-
-  if (btnUploadBridePhoto && bridePhotoFile) {
-    btnUploadBridePhoto.addEventListener('click', () => bridePhotoFile.click());
-    bridePhotoFile.addEventListener('change', async () => {
-      const file = bridePhotoFile.files[0];
-      if (file) {
-        try {
-          showToast('Mengompresi foto mempelai wanita...');
-          const dataUrl = await compressImage(file, 800, 800, 0.75);
-          bridePhotoInput.value = dataUrl;
-          bridePhotoPreview.src = dataUrl;
-          showToast('Foto mempelai wanita berhasil diunggah!');
+          showToast('Mengunggah foto wanita ke Cloud CDN...');
+          const cloudUrl = await uploadImageToServer(dataUrl, file.name);
+          if (cloudUrl && cloudUrl.startsWith('http')) {
+            bridePhotoInput.value = cloudUrl;
+            bridePhotoPreview.src = cloudUrl;
+            localStorage.setItem('wedding_bride_photo', cloudUrl);
+            const cur = getConfig();
+            if (!cur.bride) cur.bride = {};
+            cur.bride.photo = cloudUrl;
+            saveConfig(cur);
+            showToast('Foto mempelai wanita berhasil diunggah ke CDN & disimpan!');
+          } else {
+            localStorage.setItem('wedding_bride_photo', dataUrl);
+            const cur = getConfig();
+            if (!cur.bride) cur.bride = {};
+            cur.bride.photo = dataUrl;
+            saveConfig(cur);
+            showToast('Foto mempelai wanita berhasil disimpan secara lokal!');
+          }
         } catch (err) {
           alert(err.message || 'Gagal memproses foto.');
         }
@@ -804,6 +877,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeTheme !== 'champagne') {
       fullInvitationUrl += `&theme=${encodeURIComponent(activeTheme)}`;
     }
+    const urlPayload = encodeWeddingConfigForUrl(currentCfg);
+    if (urlPayload) {
+      fullInvitationUrl += `&d=${urlPayload}`;
+    }
 
     // WhatsApp Message Template
     const waMessage = 
@@ -849,6 +926,26 @@ Salam hangat,
     btnCopyWaText.addEventListener('click', () => {
       navigator.clipboard.writeText(generatedWaPreview.value).then(() => {
         showToast('Teks pesan WhatsApp berhasil disalin!');
+      });
+    });
+  }
+
+  const btnCopyGeneralUrl = document.getElementById('btnCopyGeneralUrl');
+  if (btnCopyGeneralUrl) {
+    btnCopyGeneralUrl.addEventListener('click', () => {
+      const currentCfg = getConfig();
+      let base = window.location.href.split('builder.html')[0];
+      if (!base.endsWith('/')) base += '/';
+      let generalUrl = `${base}invitation.html`;
+      const activeTheme = currentCfg.theme || 'champagne';
+      const params = [];
+      if (activeTheme !== 'champagne') params.push(`theme=${encodeURIComponent(activeTheme)}`);
+      const urlPayload = encodeWeddingConfigForUrl(currentCfg);
+      if (urlPayload) params.push(`d=${urlPayload}`);
+      if (params.length > 0) generalUrl += `?${params.join('&')}`;
+
+      navigator.clipboard.writeText(generalUrl).then(() => {
+        showToast('Link undangan umum (siap share grup WA) berhasil disalin!');
       });
     });
   }
