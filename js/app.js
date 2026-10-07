@@ -408,23 +408,32 @@ document.addEventListener('DOMContentLoaded', () => {
   function playAudio() {
     playRequested = true;
     if (isSoundCloud) {
-      if (scWidget) {
+      if (scWidget && scReady) {
         try {
           scWidget.play();
           isPlaying = true;
           if (musicDisc) musicDisc.classList.remove('paused');
           updateMusicIcon(true);
         } catch (err) {
-          console.log('SoundCloud play error:', err);
+          console.log('SoundCloud play error, fallback to HTML5:', err);
+          playHtml5Audio();
         }
+      } else {
+        playHtml5Audio();
       }
-    } else if (audio) {
+    } else {
+      playHtml5Audio();
+    }
+  }
+
+  function playHtml5Audio() {
+    if (audio) {
       audio.play().then(() => {
         isPlaying = true;
         if (musicDisc) musicDisc.classList.remove('paused');
         updateMusicIcon(true);
       }).catch(err => {
-        console.log('Audio autoplay prevented or error:', err);
+        console.log('Audio autoplay prevented by browser:', err);
       });
     }
   }
@@ -434,18 +443,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isSoundCloud && scWidget) {
       try {
         scWidget.pause();
-        isPlaying = false;
-        if (musicDisc) musicDisc.classList.add('paused');
-        updateMusicIcon(false);
-      } catch (err) {
-        console.log('SoundCloud pause error:', err);
-      }
-    } else if (audio) {
-      audio.pause();
-      isPlaying = false;
-      if (musicDisc) musicDisc.classList.add('paused');
-      updateMusicIcon(false);
+      } catch (err) {}
     }
+    if (audio) {
+      try { audio.pause(); } catch(e) {}
+    }
+    isPlaying = false;
+    if (musicDisc) musicDisc.classList.add('paused');
+    updateMusicIcon(false);
   }
 
   function updateMusicIcon(playing) {
@@ -463,40 +468,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
   loadWeddingConfig();
 
+  let isWeddingUnlocked = false;
+  function unlockWeddingInvitation() {
+    if (isWeddingUnlocked) return;
+    isWeddingUnlocked = true;
+    playAudio();
+
+    if (floatingMusicBtn) {
+      floatingMusicBtn.style.display = 'flex';
+      floatingMusicBtn.classList.remove('hidden', 'pointer-events-none');
+    }
+    if (bottomNav) {
+      bottomNav.style.display = 'flex';
+      bottomNav.classList.remove('hidden', 'pointer-events-none', 'translate-y-full');
+    }
+    if (window.AOS) setTimeout(() => AOS.refresh(), 300);
+  }
+
   if (btnBuka) {
     btnBuka.addEventListener('click', (e) => {
       if (e) e.preventDefault();
-      // 1. Unlock page scrolling
-      document.body.classList.remove('overflow-hidden');
-      document.body.style.overflow = 'auto';
-      
-      // 2. Play audio
-      playAudio();
-
-      // 3. Show floating controls
-      if (floatingMusicBtn) {
-        floatingMusicBtn.style.display = 'flex';
-        floatingMusicBtn.classList.remove('hidden', 'pointer-events-none');
-      }
-      if (bottomNav) {
-        bottomNav.style.display = 'flex';
-        bottomNav.classList.remove('hidden', 'pointer-events-none', 'translate-y-full');
-      }
-
-      // 4. Smooth scroll to opening quote / couple section
+      unlockWeddingInvitation();
       const firstSection = document.getElementById('salamPembuka');
       if (firstSection) {
         firstSection.scrollIntoView({ behavior: 'smooth' });
       }
-
-      // Initialize AOS after opening
-      if (window.AOS) {
-        setTimeout(() => {
-          AOS.refresh();
-        }, 400);
-      }
     });
   }
+
+  // Auto-unlock when user scrolls down past cover
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      unlockWeddingInvitation();
+    }
+  }, { passive: true });
 
   if (floatingMusicBtn) {
     floatingMusicBtn.addEventListener('click', () => {

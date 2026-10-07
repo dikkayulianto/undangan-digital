@@ -1,0 +1,42 @@
+{
+  "theme": "champagne",
+  "groom": {
+    "nickname": "Dimas",
+    "fullname": "Dimas Prasetyo, S.Kom.",
+    "father": "Bpk. Bambang Sudarsono",
+    "mother": "Ibu Sri Wahyuni",
+    "order": "Putra pertama dari:",
+    "instagram": "dimasprasetyo",
+    "photo": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80"
+  },
+  "bride": {
+    "nickname": "Sarah",
+    "fullname": "Sarah Amelia, S.E.",
+    "father": "Bpk. H. Hendra Wijaya",
+    "mother": "Ibu Hj. Ratna Sari",
+    "order": "Putri kedua dari:",
+    "instagram": "sarahamelia",
+    "photo": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80"
+  },
+  "event": {
+    "dateDisplay": "Senin, 28 Desember 2026",
+    "dateIso": "2026-12-28T08:00:00+07:00",
+    "akadTime": "08.00 - 10.00 WIB",
+    "akadPlace": "Masjid Agung Sunda Kelapa",
+    "akadAddress": "Jl. Taman Sunda Kelapa No. 16, Menteng, Jakarta Pusat",
+    "resepsiTime": "11.00 - 14.00 WIB",
+    "resepsiPlace": "Grand Ballroom Hotel Indonesia Kempinski",
+    "resepsiAddress": "Jl. M.H. Thamrin No. 1, Menteng, Jakarta Pusat",
+    "mapsUrl": "https://maps.google.com/?q=Hotel+Indonesia+Kempinski+Jakarta"
+  },
+  "gift": {
+    "bank1Name": "BCA",
+    "bank1Number": "1234567890",
+    "bank1Holder": "Dimas Prasetyo",
+    "bank2Name": "Mandiri",
+    "bank2Number": "0987654321",
+    "bank2Holder": "Sarah Amelia",
+    "physicalAddress": "Jl. Menteng Raya No. 45, RT 01/RW 03, Menteng, Jakarta Pusat"
+  },
+  "audioUrl": "https://soundcloud.com/shb-bahri/maher-zain-x-harris-j-qalbi"
+}

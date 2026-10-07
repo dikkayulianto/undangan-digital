@@ -80,16 +80,16 @@
   <!-- SoundCloud Widget API -->
   <script src="https://w.soundcloud.com/player/api.js"></script>
 </head>
-<body class="overflow-hidden bg-[#0c1e14] text-stone-800 antialiased selection:bg-emerald-200">
+<body class="bg-[#0c1e14] text-stone-800 antialiased selection:bg-emerald-200">
 
   <!-- AUDIO ELEMENT (Background Instrumental Nasheed / Ambient HTML5) -->
   <audio id="khitanAudio" loop preload="auto">
     <source src="https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3" type="audio/mp3">
   </audio>
 
-  <!-- SOUNDCLOUD PLAYER CONTAINER (Off-Screen) -->
-  <div class="fixed -bottom-[9999px] -left-[9999px] w-1 h-1 overflow-hidden opacity-0 pointer-events-none" aria-hidden="true">
-    <iframe id="scKhitanPlayer" allow="autoplay; encrypted-media" src="" width="300" height="166"></iframe>
+  <!-- SOUNDCLOUD PLAYER CONTAINER (Hidden in DOM within viewport to prevent mobile browser suspension) -->
+  <div class="fixed top-0 left-0 w-[1px] h-[1px] opacity-[0.01] overflow-hidden pointer-events-none z-0" aria-hidden="true">
+    <iframe id="scKhitanPlayer" allow="autoplay; encrypted-media" src="" width="100" height="100"></iframe>
   </div>
 
   <!-- TOAST NOTIFICATION -->
@@ -167,37 +167,37 @@
     <div id="mainWrapper" class="w-full lg:w-[480px] min-h-screen bg-[#f7faf7] shadow-2xl relative overflow-x-hidden pb-20">
 
       <!-- ================= COVER SECTION ================= -->
-      <section id="coverSection" class="relative min-h-screen flex flex-col items-center justify-between p-8 text-center bg-cover bg-center"
+      <section id="coverSection" class="relative h-[100dvh] min-h-[500px] max-h-[100dvh] flex flex-col items-center justify-between px-4 py-4 sm:py-6 text-center bg-cover bg-center overflow-hidden"
                style="background-image: linear-gradient(to bottom, rgba(5,46,22,0.60), rgba(5,46,22,0.92)), url('https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80');">
         
         <!-- Top Title -->
-        <div class="pt-8 space-y-2 text-white">
-          <p class="text-[11px] uppercase tracking-[0.3em] text-gold-300 font-semibold">Tasyakuran Walimatul Khitan</p>
-          <h2 id="coverChildName" class="text-3xl sm:text-4xl font-serif tracking-wider font-bold">Muhammad Fadhil Al-Fatih</h2>
+        <div class="pt-2 sm:pt-4 space-y-1 text-white shrink-0">
+          <p class="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-gold-300 font-semibold">Tasyakuran Walimatul Khitan</p>
+          <h2 id="coverChildName" class="text-2xl sm:text-3xl font-serif tracking-wider font-bold">Muhammad Fadhil Al-Fatih</h2>
         </div>
 
         <!-- Center Child Photo Frame -->
-        <div class="space-y-4 my-auto py-6">
-          <div class="w-36 h-36 mx-auto rounded-full border-4 border-gold-400/80 p-1 shadow-2xl backdrop-blur-sm">
-            <img id="coverChildPhoto" src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=400&q=80" 
-                 alt="Fadhil" 
+        <div class="space-y-2 my-auto py-2 shrink-0">
+          <div class="w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-full border-3 border-gold-400/90 p-1 shadow-2xl backdrop-blur-sm">
+            <img id="coverChildPhoto" src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=400&q=80" 
+                 alt="Foto Anak" 
                  class="w-full h-full object-cover rounded-full">
           </div>
-          <p id="coverDateText" class="text-emerald-100 text-xs font-serif tracking-widest uppercase">15 &bull; 11 &bull; 2026</p>
+          <p id="coverDateText" class="text-emerald-100 text-[11px] sm:text-xs font-serif tracking-widest uppercase">15 &bull; 11 &bull; 2026</p>
         </div>
 
         <!-- Bottom Guest Card & Buka Undangan Button -->
-        <div class="w-full max-w-sm space-y-4 pb-6">
-          <div class="bg-black/50 backdrop-blur-md border border-white/20 rounded-2xl p-4 text-white space-y-1">
-            <p class="text-[11px] text-stone-300 tracking-wider">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
-            <h3 id="guestName" class="text-lg sm:text-xl font-serif font-bold text-gold-300 tracking-wide">
+        <div class="w-full max-w-xs sm:max-w-sm space-y-2.5 pb-2 sm:pb-3 shrink-0">
+          <div class="bg-black/55 backdrop-blur-md border border-white/20 rounded-2xl p-2.5 sm:p-3 text-white space-y-0.5 shadow-lg">
+            <p class="text-[10px] text-stone-300 tracking-wider">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
+            <h3 id="guestName" class="text-base sm:text-lg font-serif font-bold text-gold-300 tracking-wide line-clamp-1">
               Tamu Undangan
             </h3>
-            <p class="text-[10px] text-stone-400 italic">*Mohon maaf bila ada kesalahan penulisan nama/gelar</p>
+            <p class="text-[9px] text-stone-400 italic">*Mohon maaf bila ada kesalahan penulisan nama/gelar</p>
           </div>
 
-          <button id="btnBukaUndangan" class="relative z-30 cursor-pointer w-full py-4 px-6 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 text-white font-bold text-xs tracking-wider shadow-2xl hover:shadow-emerald-600/50 hover:scale-[1.02] active:scale-[0.98] transition flex items-center justify-center gap-2">
-            <i data-lucide="mail-open" class="w-4 h-4"></i>
+          <button id="btnBukaUndangan" class="cursor-pointer w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 text-white font-bold text-xs tracking-wider shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition flex items-center justify-center gap-2 border border-emerald-400/30 animate-pulse">
+            <i data-lucide="mail-open" class="w-4 h-4 text-gold-300"></i>
             <span>BUKA UNDANGAN</span>
           </button>
         </div>
@@ -242,7 +242,7 @@
 
         <div class="max-w-sm mx-auto text-center space-y-4" data-aos="fade-up">
           <div class="arch-frame w-48 h-64 mx-auto border-4 border-white shadow-xl relative group">
-            <img id="childPhotoImg" src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=500&q=80" 
+            <img id="childPhotoImg" src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=500&q=80" 
                  alt="Foto Anak" 
                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
           </div>
@@ -581,40 +581,59 @@
       }
 
       // Populate Elements
-      if (document.getElementById('desktopChildName')) document.getElementById('desktopChildName').textContent = config.childFullname;
-      if (document.getElementById('coverChildName')) document.getElementById('coverChildName').textContent = config.childFullname;
-      if (document.getElementById('childFullnameText')) document.getElementById('childFullnameText').textContent = config.childFullname;
-      if (document.getElementById('childOrderText')) document.getElementById('childOrderText').textContent = config.childOrder;
-      if (document.getElementById('parentsText')) document.getElementById('parentsText').textContent = `${config.father} & ${config.mother}`;
-      if (document.getElementById('footerFamilyName')) document.getElementById('footerFamilyName').textContent = `${config.father} & ${config.mother}`;
-      if (document.getElementById('coverChildPhoto') && config.photo) document.getElementById('coverChildPhoto').src = config.photo;
-      if (document.getElementById('childPhotoImg') && config.photo) document.getElementById('childPhotoImg').src = config.photo;
+      function populateElements(cfg) {
+        if (document.getElementById('desktopChildName')) document.getElementById('desktopChildName').textContent = cfg.childFullname;
+        if (document.getElementById('coverChildName')) document.getElementById('coverChildName').textContent = cfg.childFullname;
+        if (document.getElementById('childFullnameText')) document.getElementById('childFullnameText').textContent = cfg.childFullname;
+        if (document.getElementById('childOrderText')) document.getElementById('childOrderText').textContent = cfg.childOrder;
+        if (document.getElementById('parentsText')) document.getElementById('parentsText').textContent = `${cfg.father} & ${cfg.mother}`;
+        if (document.getElementById('footerFamilyName')) document.getElementById('footerFamilyName').textContent = `${cfg.father} & ${cfg.mother}`;
+        if (document.getElementById('coverChildPhoto') && cfg.photo) document.getElementById('coverChildPhoto').src = cfg.photo;
+        if (document.getElementById('childPhotoImg') && cfg.photo) document.getElementById('childPhotoImg').src = cfg.photo;
+        if (document.getElementById('coverDateText') && cfg.eventDateDisplay) document.getElementById('coverDateText').textContent = cfg.eventDateDisplay;
 
-      if (document.getElementById('desktopDateText')) document.getElementById('desktopDateText').textContent = `${config.eventDateDisplay} • Jakarta`;
-      if (document.getElementById('eventDateDisplayText')) document.getElementById('eventDateDisplayText').textContent = config.eventDateDisplay;
-      if (document.getElementById('eventTimeText')) document.getElementById('eventTimeText').textContent = config.eventTime;
-      if (document.getElementById('eventPlaceText')) document.getElementById('eventPlaceText').textContent = config.eventPlace;
-      if (document.getElementById('eventAddressText')) document.getElementById('eventAddressText').textContent = config.eventAddress;
-      if (document.getElementById('btnMapsLink') && config.mapsUrl) document.getElementById('btnMapsLink').href = config.mapsUrl;
+        if (document.getElementById('desktopDateText')) document.getElementById('desktopDateText').textContent = `${cfg.eventDateDisplay} • Jakarta`;
+        if (document.getElementById('eventDateDisplayText')) document.getElementById('eventDateDisplayText').textContent = cfg.eventDateDisplay;
+        if (document.getElementById('eventTimeText')) document.getElementById('eventTimeText').textContent = cfg.eventTime;
+        if (document.getElementById('eventPlaceText')) document.getElementById('eventPlaceText').textContent = cfg.eventPlace;
+        if (document.getElementById('eventAddressText')) document.getElementById('eventAddressText').textContent = cfg.eventAddress;
+        if (document.getElementById('btnMapsLink') && cfg.mapsUrl) document.getElementById('btnMapsLink').href = cfg.mapsUrl;
 
-      if (document.getElementById('bank1NameText')) document.getElementById('bank1NameText').textContent = config.bank1Name;
-      if (document.getElementById('bank1NumberText')) document.getElementById('bank1NumberText').textContent = config.bank1Number;
-      if (document.getElementById('bank1HolderText')) document.getElementById('bank1HolderText').textContent = `a.n ${config.bank1Holder}`;
-      if (document.getElementById('btnCopyBank1')) {
-        document.getElementById('btnCopyBank1').setAttribute('onclick', `copyToClipboard('${config.bank1Number}', '${config.bank1Name}')`);
+        if (document.getElementById('bank1NameText')) document.getElementById('bank1NameText').textContent = cfg.bank1Name;
+        if (document.getElementById('bank1NumberText')) document.getElementById('bank1NumberText').textContent = cfg.bank1Number;
+        if (document.getElementById('bank1HolderText')) document.getElementById('bank1HolderText').textContent = `a.n ${cfg.bank1Holder}`;
+        if (document.getElementById('btnCopyBank1')) {
+          document.getElementById('btnCopyBank1').setAttribute('onclick', `copyToClipboard('${cfg.bank1Number}', '${cfg.bank1Name}')`);
+        }
+        if (document.getElementById('physicalAddressText')) document.getElementById('physicalAddressText').textContent = cfg.physicalAddress;
+        if (document.getElementById('btnCopyAddress')) {
+          document.getElementById('btnCopyAddress').setAttribute('onclick', `copyToClipboard('${cfg.physicalAddress.replace(/'/g, "\\'")}', 'Alamat')`);
+        }
+
+        // Custom Background Override (if set by user)
+        if (cfg.customBg && cfg.customBg.trim()) {
+          const bgUrl = cfg.customBg.trim();
+          const khitanDeskAmbient = document.querySelector('.hidden.lg\\:flex.fixed.inset-y-0.left-0');
+          const khitanCoverEl = document.getElementById('coverSection');
+          if (khitanDeskAmbient) khitanDeskAmbient.style.backgroundImage = `linear-gradient(to right, rgba(5,46,22,0.92), rgba(5,46,22,0.72)), url('${bgUrl}')`;
+          if (khitanCoverEl) khitanCoverEl.style.backgroundImage = `linear-gradient(to bottom, rgba(5,46,22,0.60), rgba(5,46,22,0.92)), url('${bgUrl}')`;
+        }
       }
-      if (document.getElementById('physicalAddressText')) document.getElementById('physicalAddressText').textContent = config.physicalAddress;
-      if (document.getElementById('btnCopyAddress')) {
-        document.getElementById('btnCopyAddress').setAttribute('onclick', `copyToClipboard('${config.physicalAddress.replace(/'/g, "\\'")}', 'Alamat')`);
-      }
 
-      // Custom Background Override (if set by user)
-      if (config.customBg && config.customBg.trim()) {
-        const bgUrl = config.customBg.trim();
-        const khitanDeskAmbient = document.querySelector('.hidden.lg\\:flex.fixed.inset-y-0.left-0');
-        const khitanCoverEl = document.getElementById('coverSection');
-        if (khitanDeskAmbient) khitanDeskAmbient.style.backgroundImage = `linear-gradient(to right, rgba(5,46,22,0.92), rgba(5,46,22,0.72)), url('${bgUrl}')`;
-        if (khitanCoverEl) khitanCoverEl.style.backgroundImage = `linear-gradient(to bottom, rgba(5,46,22,0.60), rgba(5,46,22,0.92)), url('${bgUrl}')`;
+      populateElements(config);
+
+      // Async fetch data/khitan.json as fallback if no URL payload is provided
+      if (!dParam) {
+        fetch('data/khitan.json')
+          .then(res => res.json())
+          .then(data => {
+            if (data && typeof data === 'object') {
+              config = Object.assign({}, defaultKhitanConfig, data, (saved ? JSON.parse(saved) : {}));
+              if (directChildPhoto) config.photo = directChildPhoto.trim();
+              populateElements(config);
+            }
+          })
+          .catch(() => {});
       }
 
       // Audio & Buka Undangan (Dual Engine: HTML5 & SoundCloud Widget)
@@ -681,20 +700,31 @@
       function playAudio() {
         playRequested = true;
         if (isSoundCloud) {
-          if (scWidget) {
+          if (scWidget && scReady) {
             try {
               scWidget.play();
               isPlaying = true;
               if (musicDisc) musicDisc.classList.remove('paused');
             } catch (e) {
-              console.log(e);
+              console.log('SC play error, fallback to HTML5 audio:', e);
+              playHtml5Audio();
             }
+          } else {
+            playHtml5Audio();
           }
-        } else if (audio) {
+        } else {
+          playHtml5Audio();
+        }
+      }
+
+      function playHtml5Audio() {
+        if (audio) {
           audio.play().then(() => {
             isPlaying = true;
             if (musicDisc) musicDisc.classList.remove('paused');
-          }).catch(e => console.log(e));
+          }).catch(e => {
+            console.log('Audio autoplay prevented by browser:', e);
+          });
         }
       }
 
@@ -703,37 +733,46 @@
         if (isSoundCloud && scWidget) {
           try {
             scWidget.pause();
-            isPlaying = false;
-            if (musicDisc) musicDisc.classList.add('paused');
-          } catch (e) {
-            console.log(e);
-          }
-        } else if (audio) {
-          audio.pause();
-          isPlaying = false;
-          if (musicDisc) musicDisc.classList.add('paused');
+          } catch (e) {}
         }
+        if (audio) {
+          try { audio.pause(); } catch(e) {}
+        }
+        isPlaying = false;
+        if (musicDisc) musicDisc.classList.add('paused');
+      }
+
+      let isUnlocked = false;
+      function unlockInvitation() {
+        if (isUnlocked) return;
+        isUnlocked = true;
+        playAudio();
+        if (floatingMusicBtn) {
+          floatingMusicBtn.style.display = 'flex';
+          floatingMusicBtn.classList.remove('hidden', 'pointer-events-none');
+        }
+        if (bottomNav) {
+          bottomNav.style.display = 'flex';
+          bottomNav.classList.remove('hidden', 'pointer-events-none', 'translate-y-full');
+        }
+        if (window.AOS) setTimeout(() => AOS.refresh(), 300);
       }
 
       if (btnBuka) {
         btnBuka.addEventListener('click', (e) => {
           if (e) e.preventDefault();
-          document.body.classList.remove('overflow-hidden');
-          document.body.style.overflow = 'auto';
-          playAudio();
-          if (floatingMusicBtn) {
-            floatingMusicBtn.style.display = 'flex';
-            floatingMusicBtn.classList.remove('hidden', 'pointer-events-none');
-          }
-          if (bottomNav) {
-            bottomNav.style.display = 'flex';
-            bottomNav.classList.remove('hidden', 'pointer-events-none', 'translate-y-full');
-          }
+          unlockInvitation();
           const firstSection = document.getElementById('salamPembuka');
           if (firstSection) firstSection.scrollIntoView({ behavior: 'smooth' });
-          if (window.AOS) setTimeout(() => AOS.refresh(), 400);
         });
       }
+
+      // Auto-unlock when user scrolls down past cover
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 60) {
+          unlockInvitation();
+        }
+      }, { passive: true });
 
       if (floatingMusicBtn) {
         floatingMusicBtn.addEventListener('click', () => {

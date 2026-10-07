@@ -656,7 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCopyWaText = document.getElementById('btnCopyWaText');
   const btnOpenWa = document.getElementById('btnOpenWa');
 
-  function generateGuestInvitation() {
+  async function generateGuestInvitation() {
     const guestName = guestInput.value.trim();
     if (!guestName) {
       alert('Silakan masukkan nama tamu terlebih dahulu.');
@@ -664,6 +664,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const currentCfg = getKhitanConfig();
+
+    // Auto-upload photo if still a local data URL
+    if (currentCfg.photo && currentCfg.photo.startsWith('data:image/')) {
+      showToast('Mengunggah foto ananda ke Cloud CDN...');
+      try {
+        const cloudUrl = await uploadImageToServer(currentCfg.photo, 'foto-ananda.jpg');
+        if (cloudUrl && cloudUrl.startsWith('http')) {
+          currentCfg.photo = cloudUrl;
+          const photoInput = document.getElementById('childPhoto');
+          if (photoInput) photoInput.value = cloudUrl;
+          localStorage.setItem('khitan_child_photo', cloudUrl);
+          saveKhitanConfig(currentCfg);
+        }
+      } catch (err) {
+        console.warn('Gagal upload foto:', err);
+      }
+    }
+
     const childName = currentCfg.childFullname || 'Muhammad Fadhil Al-Fatih';
     const parents = `${currentCfg.father || 'Bpk. Ahmad Fauzi'} & ${currentCfg.mother || 'Ibu Nurul Hidayah'}`;
 
@@ -727,8 +745,22 @@ Salam hormat,
 
   const btnCopyGeneralUrl = document.getElementById('btnCopyGeneralUrl');
   if (btnCopyGeneralUrl) {
-    btnCopyGeneralUrl.addEventListener('click', () => {
+    btnCopyGeneralUrl.addEventListener('click', async () => {
       const currentCfg = getKhitanConfig();
+      if (currentCfg.photo && currentCfg.photo.startsWith('data:image/')) {
+        showToast('Mengunggah foto ananda ke Cloud CDN...');
+        try {
+          const cloudUrl = await uploadImageToServer(currentCfg.photo, 'foto-ananda.jpg');
+          if (cloudUrl && cloudUrl.startsWith('http')) {
+            currentCfg.photo = cloudUrl;
+            const photoInput = document.getElementById('childPhoto');
+            if (photoInput) photoInput.value = cloudUrl;
+            localStorage.setItem('khitan_child_photo', cloudUrl);
+            saveKhitanConfig(currentCfg);
+          }
+        } catch (err) {}
+      }
+
       let base = window.location.href.split('builder-khitan.html')[0];
       if (!base.endsWith('/')) base += '/';
       let generalUrl = `${base}khitan.html`;

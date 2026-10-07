@@ -55,16 +55,16 @@
   <!-- SoundCloud Widget API -->
   <script src="https://w.soundcloud.com/player/api.js"></script>
 </head>
-<body class="overflow-hidden bg-[#1c1917] text-stone-800 antialiased selection:bg-gold-200 selection:text-stone-900">
+<body class="bg-[#1c1917] text-stone-800 antialiased selection:bg-gold-200 selection:text-stone-900">
 
   <!-- AUDIO ELEMENT (Background Music HTML5) -->
   <audio id="weddingAudio" loop preload="auto">
     <source src="https://assets.mixkit.co/music/preview/mixkit-wedding-waltz-piano-music-681.mp3" type="audio/mp3">
   </audio>
 
-  <!-- SOUNDCLOUD PLAYER CONTAINER (Off-Screen to allow background playback) -->
-  <div class="fixed -bottom-[9999px] -left-[9999px] w-1 h-1 overflow-hidden opacity-0 pointer-events-none" aria-hidden="true">
-    <iframe id="scPlayer" allow="autoplay; encrypted-media" src="" width="300" height="166"></iframe>
+  <!-- SOUNDCLOUD PLAYER CONTAINER (Hidden in DOM within viewport to prevent mobile browser suspension) -->
+  <div class="fixed top-0 left-0 w-[1px] h-[1px] opacity-[0.01] overflow-hidden pointer-events-none z-0" aria-hidden="true">
+    <iframe id="scPlayer" allow="autoplay; encrypted-media" src="" width="100" height="100"></iframe>
   </div>
 
   <!-- TOAST NOTIFICATION -->
@@ -135,36 +135,36 @@
     <div id="mainWrapper" class="w-full lg:w-[480px] min-h-screen bg-[#faf8f5] shadow-2xl relative overflow-x-hidden pb-20">
 
       <!-- ================= COVER SECTION (Gate / Locked on load) ================= -->
-      <section id="coverSection" class="relative min-h-screen flex flex-col items-center justify-between p-8 text-center bg-cover bg-center"
+      <section id="coverSection" class="relative h-[100dvh] min-h-[500px] max-h-[100dvh] flex flex-col items-center justify-between px-4 py-4 sm:py-6 text-center bg-cover bg-center overflow-hidden"
                style="background-image: linear-gradient(to bottom, rgba(28,25,23,0.50), rgba(28,25,23,0.88)), url('https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=85');">
         
         <!-- Top Title -->
-        <div class="pt-8 space-y-2 text-white">
-          <p class="text-[11px] uppercase tracking-[0.3em] text-gold-300 font-medium">The Wedding of</p>
-          <h2 id="coverCoupleNames" class="text-4xl sm:text-5xl font-serif tracking-wider">Dimas &amp; Sarah</h2>
+        <div class="pt-2 sm:pt-4 space-y-1 text-white shrink-0">
+          <p class="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-gold-300 font-medium">The Wedding of</p>
+          <h2 id="coverCoupleNames" class="text-3xl sm:text-4xl font-serif tracking-wider font-bold">Dimas &amp; Sarah</h2>
         </div>
 
         <!-- Center Couple Silhouette / Date Badge -->
-        <div class="space-y-4 my-auto py-6">
-          <div class="w-36 h-36 mx-auto rounded-full border-2 border-gold-300/60 p-1 shadow-2xl backdrop-blur-sm">
+        <div class="space-y-2 my-auto py-2 shrink-0">
+          <div class="w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-full border-2 border-gold-300/80 p-1 shadow-2xl backdrop-blur-sm">
             <img id="coverCoupleImg" src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=400&q=80" 
                  alt="Dimas & Sarah" 
                  class="w-full h-full object-cover rounded-full">
           </div>
-          <p id="coverDateBadge" class="text-white/90 text-sm font-serif tracking-widest uppercase">28 &bull; 12 &bull; 2026</p>
+          <p id="coverDateBadge" class="text-white/90 text-[11px] sm:text-xs font-serif tracking-widest uppercase">28 &bull; 12 &bull; 2026</p>
         </div>
 
         <!-- Bottom Guest Card & Buka Undangan Button -->
-        <div class="w-full max-w-sm space-y-4 pb-6">
-          <div class="bg-black/40 backdrop-blur-md border border-white/20 rounded-2xl p-4 text-white space-y-1">
-            <p class="text-[11px] text-stone-300 tracking-wider">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
-            <h3 id="guestName" class="text-lg sm:text-xl font-serif font-bold text-gold-200 tracking-wide">
+        <div class="w-full max-w-xs sm:max-w-sm space-y-2.5 pb-2 sm:pb-3 shrink-0">
+          <div class="bg-black/45 backdrop-blur-md border border-white/20 rounded-2xl p-2.5 sm:p-3 text-white space-y-0.5 shadow-lg">
+            <p class="text-[10px] text-stone-300 tracking-wider">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
+            <h3 id="guestName" class="text-base sm:text-lg font-serif font-bold text-gold-200 tracking-wide line-clamp-1">
               Tamu Undangan
             </h3>
-            <p class="text-[10px] text-stone-400 italic">*Mohon maaf bila ada kesalahan penulisan nama/gelar</p>
+            <p class="text-[9px] text-stone-400 italic">*Mohon maaf bila ada kesalahan penulisan nama/gelar</p>
           </div>
 
-          <button id="btnBukaUndangan" class="relative z-30 cursor-pointer w-full py-4 px-6 rounded-xl bg-gradient-to-r from-gold-500 via-gold-400 to-gold-600 text-stone-950 font-bold text-sm tracking-wider shadow-2xl hover:shadow-gold-500/50 hover:scale-[1.02] active:scale-[0.98] transition flex items-center justify-center gap-2">
+          <button id="btnBukaUndangan" class="cursor-pointer w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-gold-500 via-gold-400 to-gold-600 text-stone-950 font-bold text-xs tracking-wider shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition flex items-center justify-center gap-2 animate-pulse">
             <i data-lucide="mail-open" class="w-4 h-4"></i>
             <span>BUKA UNDANGAN</span>
           </button>
