@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor Undangan Khitanan - Walimatul Khitan</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emerald: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d'
+            },
+            gold: {
+              300: '#f6d89b',
+              400: '#e5be70',
+              500: '#cfa243'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- SoundCloud Widget API -->
+  <script src="https://w.soundcloud.com/player/api.js"></script>
+</head>
+<body class="bg-stone-100 text-stone-800 font-sans min-h-screen pb-16">
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="builderToast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none -translate-y-4 transition-all duration-300">
+    <div class="bg-stone-900 text-emerald-300 px-6 py-3 rounded-full shadow-2xl border border-emerald-500/40 flex items-center gap-2.5 text-sm font-medium">
+      <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
+      <span id="builderToastMsg">Perubahan berhasil disimpan!</span>
+    </div>
+  </div>
+
+  <!-- NAVBAR / HEADER -->
+  <header class="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="dashboard.html" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-emerald-300 bg-emerald-50/50 text-emerald-900 hover:bg-emerald-100 text-xs font-semibold transition" title="Ke Dashboard Pengguna">
+          <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-emerald-700"></i>
+          <span class="hidden sm:inline">Dashboard</span>
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-stone-200 text-stone-600 hover:text-stone-900 hover:bg-stone-50 text-xs transition" title="Kembali ke Beranda">
+          <i data-lucide="home" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Beranda</span>
+        </a>
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-800 to-stone-900 text-gold-300 flex items-center justify-center font-serif text-base font-bold shadow-md">
+          K
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-stone-900 text-sm sm:text-base">Editor Undangan Khitanan</h1>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 text-[11px] font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+              <span>Walimatul Khitan</span>
+            </div>
+          </div>
+          <p class="text-[11px] text-stone-400">Sesuaikan data tasyakuran walimatul khitan putra Anda</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="builder.html" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-300 text-xs font-medium text-amber-800 bg-amber-50 hover:bg-amber-100 transition" title="Beralih ke Undangan Pernikahan">
+          <i data-lucide="heart" class="w-3.5 h-3.5 text-amber-600"></i>
+          <span>Undangan Pernikahan</span>
+        </a>
+
+        <button type="button" id="btnReset" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-stone-300 text-xs font-medium text-stone-600 hover:bg-stone-50 hover:text-red-600 transition">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          <span>Reset Default</span>
+        </button>
+
+        <a href="khitan.html" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-semibold shadow-md hover:shadow-lg transition">
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          <span>Lihat Undangan</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-6">
+
+    <!-- TAB NAVIGATION -->
+    <div class="flex border-b border-stone-200 bg-white rounded-t-2xl px-3 pt-2 overflow-x-auto shadow-sm gap-1 scrollbar-none">
+      <button type="button" data-tab="tabAnak" class="tab-btn active inline-flex items-center gap-2 py-3 px-4 text-xs font-semibold border-b-2 border-emerald-600 text-emerald-800 bg-emerald-50/70 rounded-t-lg transition whitespace-nowrap">
+        <i data-lucide="user" class="w-4 h-4"></i>
+        <span>Data Anak &amp; Ortu</span>
+      </button>
+
+      <button type="button" data-tab="tabGaleriKhitan" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
+        <i data-lucide="images" class="w-4 h-4 text-emerald-600"></i>
+        <span>Galeri Foto</span>
+      </button>
+
+      <button type="button" data-tab="tabAcara" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
+        <i data-lucide="calendar" class="w-4 h-4"></i>
+        <span>Jadwal &amp; Lokasi</span>
+      </button>
+
+      <button type="button" data-tab="tabAmplop" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
+        <i data-lucide="gift" class="w-4 h-4"></i>
+        <span>Kado &amp; Rekening</span>
+      </button>
+
+      <button type="button" data-tab="tabMusik" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
+        <i data-lucide="music" class="w-4 h-4"></i>
+        <span>Musik Latar</span>
+      </button>
+
+      <button type="button" data-tab="tabGenerator" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
+        <i data-lucide="share-2" class="w-4 h-4 text-emerald-600"></i>
+        <span class="text-emerald-700 font-semibold">Generator Tamu (WA)</span>
+      </button>
+    </div>
+
+    <!-- FORM CONTAINER -->
+    <form id="khitanBuilderForm" class="bg-white rounded-b-2xl p-6 sm:p-8 shadow-sm border-x border-b border-stone-200">
+      
+      <!-- ================= TAB 1: DATA ANAK ================= -->
+      <div id="tabAnak" class="tab-pane space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Informasi Ananda &amp; Keluarga</h2>
+          <p class="text-xs text-stone-500">Atur identitas anak yang dikhitan dan nama kedua orang tua.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+            <h3 class="font-bold text-sm text-stone-800 pb-2 border-b border-stone-200 flex items-center gap-2">
+              <i data-lucide="smile" class="w-4 h-4 text-emerald-700"></i>
+              <span>Profil Ananda</span>
+            </h3>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Panggilan Anak</label>
+              <input type="text" id="childNickname" required placeholder="Contoh: Fadhil" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Lengkap Anak</label>
+              <input type="text" id="childFullname" required placeholder="Contoh: Muhammad Fadhil Al-Fatih" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Keterangan Anak (Putra ke-)</label>
+              <input type="text" id="childOrder" placeholder="Contoh: Putra pertama dari pasangan:" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Foto Ananda</label>
+              <div class="flex items-center gap-3 p-3 bg-white rounded-xl border border-stone-200">
+                <img id="childPhotoPreview" src="https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&w=500&q=80" alt="Preview Anak" class="w-12 h-12 rounded-full object-cover border-2 border-emerald-500 shadow-sm shrink-0">
+                <div class="flex-1 space-y-1">
+                  <input type="file" id="childPhotoFile" accept="image/*" class="hidden">
+                  <button type="button" id="btnUploadChildPhoto" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-medium shadow-sm transition cursor-pointer">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                    <span>Upload Foto Anak (HP/PC)</span>
+                  </button>
+                  <p class="text-[10px] text-stone-400">Pilih file gambar langsung dari perangkat Anda</p>
+                </div>
+              </div>
+              <input type="text" id="childPhoto" placeholder="Atau tempel link URL foto..." class="mt-1.5 w-full px-3 py-1.5 rounded-xl border border-stone-200 text-[11px] text-stone-600 focus:ring-1 focus:ring-emerald-600 outline-none">
+            </div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+            <h3 class="font-bold text-sm text-stone-800 pb-2 border-b border-stone-200 flex items-center gap-2">
+              <i data-lucide="users" class="w-4 h-4 text-emerald-700"></i>
+              <span>Kedua Orang Tua</span>
+            </h3>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Ayah</label>
+              <input type="text" id="fatherName" required placeholder="Contoh: Bpk. Ahmad Fauzi" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Ibu</label>
+              <input type="text" id="motherName" required placeholder="Contoh: Ibu Nurul Hidayah" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- Pengaturan Background Cover Khitanan (Islami & Tanpa Orang) -->
+        <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+          <div class="pb-2 border-b border-stone-200 flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-stone-800 flex items-center gap-2">
+                <i data-lucide="palette" class="w-4 h-4 text-emerald-700"></i>
+                <span>Gaya Background Cover &amp; Wallpaper Khitan</span>
+              </h3>
+              <p class="text-xs text-stone-500 mt-0.5">Motif ornamen Islami elegan tanpa gambar orang lain.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <button type="button" class="preset-khitan-bg-card p-3 rounded-xl border-2 border-emerald-600 bg-emerald-50/50 text-left transition cursor-pointer relative group" data-bg="">
+              <div class="w-full h-16 rounded-lg bg-cover bg-center mb-2 border border-stone-300" style="background-image: url('https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=300&q=70');"></div>
+              <div class="font-bold text-xs text-stone-800">Islamic Arabesque</div>
+              <div class="text-[10px] text-stone-500">Kubah &amp; ornamen geometris</div>
+            </button>
+
+            <button type="button" class="preset-khitan-bg-card p-3 rounded-xl border-2 border-stone-200 hover:border-emerald-400 bg-white text-left transition cursor-pointer relative group" data-bg="https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=1600&q=85">
+              <div class="w-full h-16 rounded-lg bg-cover bg-center mb-2 border border-stone-300" style="background-image: url('https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=300&q=70');"></div>
+              <div class="font-bold text-xs text-stone-800">Masjid &amp; Iluminasi</div>
+              <div class="text-[10px] text-stone-500">Pendar cahaya &amp; kubah hijau</div>
+            </button>
+
+            <button type="button" class="preset-khitan-bg-card p-3 rounded-xl border-2 border-stone-200 hover:border-emerald-400 bg-white text-left transition cursor-pointer relative group" data-bg="https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?auto=format&fit=crop&w=1600&q=85">
+              <div class="w-full h-16 rounded-lg bg-cover bg-center mb-2 border border-stone-300" style="background-image: url('https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?auto=format&fit=crop&w=300&q=70');"></div>
+              <div class="font-bold text-xs text-stone-800">Botanical Islamic</div>
+              <div class="text-[10px] text-stone-500">Dedaunan asri &amp; menyejukkan</div>
+            </button>
+          </div>
+
+          <!-- Custom URL / Upload -->
+          <div class="pt-3 border-t border-stone-200 space-y-2">
+            <label class="block text-xs font-semibold text-stone-700">Atau Gunakan Link / Upload Background Sendiri:</label>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input type="text" id="customBgInput" placeholder="Kosongkan untuk bawaan atau masukkan URL gambar..." class="flex-1 px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none bg-white">
+              <input type="file" id="customBgFile" accept="image/*" class="hidden">
+              <button type="button" id="btnUploadCustomBg" class="px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold flex items-center justify-center gap-1.5 shrink-0 cursor-pointer transition">
+                <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                <span>Upload Foto Background</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 1.5: GALERI FOTO KHITAN ================= -->
+      <div id="tabGaleriKhitan" class="tab-pane hidden space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Galeri Foto Tasyakuran Ananda</h2>
+          <p class="text-xs text-stone-500">Upload momen kebersamaan dan foto ananda. Foto akan otomatis dikompresi agar cepat dimuat oleh keluarga dan tamu.</p>
+        </div>
+
+        <!-- Upload Box -->
+        <div class="p-6 rounded-2xl bg-gradient-to-b from-stone-50 to-white border-2 border-dashed border-stone-300 hover:border-emerald-600 transition text-center space-y-3">
+          <div class="w-12 h-12 mx-auto rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center shadow-sm">
+            <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+          </div>
+          <div class="space-y-1">
+            <h4 class="font-bold text-sm text-stone-800">Upload Foto Galeri Tasyakuran</h4>
+            <p class="text-xs text-stone-500 max-w-sm mx-auto">Klik tombol di bawah untuk memilih satu atau banyak foto langsung dari galeri HP atau komputer Anda.</p>
+          </div>
+          <div>
+            <input type="file" id="khitanGalleryFileInput" accept="image/*" multiple class="hidden">
+            <button type="button" id="btnTriggerKhitanGalleryUpload" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs shadow-md transition cursor-pointer">
+              <i data-lucide="image-plus" class="w-4 h-4 text-gold-300"></i>
+              <span>Pilih / Upload Foto (Bisa Banyak Sekaligus)</span>
+            </button>
+          </div>
+          <p class="text-[11px] text-stone-400">Mendukung format JPG, PNG, WEBP &bull; Otomatis dioptimalkan</p>
+        </div>
+
+        <!-- Alternative: Tambah via URL -->
+        <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+          <label class="block text-xs font-semibold text-stone-700">Atau Tambahkan dari Link Gambar (URL):</label>
+          <div class="flex gap-2">
+            <input type="url" id="khitanGalleryUrlInput" placeholder="https://..." class="flex-1 px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none bg-white">
+            <button type="button" id="btnAddKhitanGalleryUrl" class="px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-medium transition flex items-center gap-1.5 shrink-0">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Tambah Foto</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Preview Grid -->
+        <div class="space-y-3 pt-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-sm text-stone-900 flex items-center gap-2">
+              <span>Daftar Foto Galeri Khitan</span>
+              <span id="khitanGalleryCountBadge" class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 text-[10px] font-bold">0 Foto</span>
+            </h3>
+            <button type="button" id="btnClearAllKhitanGallery" class="text-xs text-red-600 hover:text-red-700 font-medium cursor-pointer">Hapus Semua Foto</button>
+          </div>
+
+          <div id="khitanGalleryPreviewGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 2: ACARA ================= -->
+      <div id="tabAcara" class="tab-pane hidden space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Jadwal Tasyakuran &amp; Lokasi</h2>
+          <p class="text-xs text-stone-500">Atur waktu pelaksanaan syukuran walimatul khitan dan alamat tempat acara.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Teks Tanggal Acara (Tampilan)</label>
+              <input type="text" id="eventDateDisplay" placeholder="Ahad, 15 November 2026" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Target Waktu Countdown (YYYY-MM-DDTHH:MM)</label>
+              <input type="datetime-local" id="eventDateIso" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Waktu / Jam Acara</label>
+              <input type="text" id="eventTime" placeholder="Pukul 09.00 - 13.00 WIB" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Tempat / Gedung / Rumah</label>
+              <input type="text" id="eventPlace" placeholder="Kediaman / Aula Al-Ikhlas" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-stone-700 mb-1">Alamat Lengkap</label>
+            <input type="text" id="eventAddress" placeholder="Jl. Cempaka Putih Timur No. 28, Jakarta Pusat" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-stone-700 mb-1">Link Google Maps</label>
+            <input type="url" id="mapsUrl" placeholder="https://maps.google.com/?q=..." class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 3: AMPLOP & KADO ================= -->
+      <div id="tabAmplop" class="tab-pane hidden space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Kado &amp; Rekening Syukuran</h2>
+          <p class="text-xs text-stone-500">Nomor rekening untuk tamu yang ingin memberikan tanda kasih secara transfer.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Bank</label>
+              <input type="text" id="bank1Name" placeholder="BCA" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nomor Rekening</label>
+              <input type="text" id="bank1Number" placeholder="1234567890" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Atas Nama (Pemilik)</label>
+              <input type="text" id="bank1Holder" placeholder="Ahmad Fauzi (Ayah)" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-stone-700 mb-1">Alamat Pengiriman Kado Fisik</label>
+            <textarea id="physicalAddress" rows="2" placeholder="Tuliskan alamat pengiriman kado..." class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none resize-none"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 4: MUSIK ================= -->
+      <div id="tabMusik" class="tab-pane hidden space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Pengaturan Musik Latar</h2>
+          <p class="text-xs text-stone-500">Mendukung link <strong>SoundCloud</strong> (bebas pilih lagu nasheed atau religi) atau file audio MP3 langsung.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-semibold text-stone-700">Tautan Musik (SoundCloud atau File MP3):</label>
+              <span id="audioFormatBadge" class="hidden px-2.5 py-0.5 rounded-full text-[10px] font-bold"></span>
+            </div>
+            <div class="flex gap-2">
+              <input type="url" id="audioUrl" placeholder="https://soundcloud.com/... atau https://.../lagu.mp3" class="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none bg-white">
+              <button type="button" id="btnTestAudio" class="px-4 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold transition flex items-center gap-1.5 shrink-0 shadow cursor-pointer">
+                <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                <span id="btnTestAudioText">Tes Putar</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-stone-400 mt-1.5 leading-relaxed">
+              💡 <strong>Tips:</strong> Anda bisa menyalin link lagu atau lantunan sholawat/nasheed dari <strong>SoundCloud</strong> (misal Maher Zain, Harris J, Mishary Rashid) dan menempelkannya di sini!
+            </p>
+          </div>
+
+          <!-- Pilihan Rekomendasi Musik Khitanan -->
+          <div class="pt-3 border-t border-stone-200 space-y-2.5">
+            <h4 class="text-xs font-bold text-stone-800 flex items-center gap-1.5">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600"></i>
+              <span>Pilihan Musik Rekomendasi (Klik untuk Menggunakan):</span>
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button type="button" class="preset-song-btn text-left p-3 rounded-xl bg-white hover:bg-emerald-50/70 border border-stone-200 hover:border-emerald-400 transition group flex items-center justify-between cursor-pointer"
+                      data-url="https://soundcloud.com/shb-bahri/maher-zain-x-harris-j-qalbi">
+                <div>
+                  <div class="font-bold text-xs text-stone-800 group-hover:text-emerald-900">Maher Zain x Harris J - Qalbi</div>
+                  <div class="text-[10px] text-stone-500">SoundCloud Track &bull; Nuansa Religi Syahdu</div>
+                </div>
+                <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-100/60 px-2 py-0.5 rounded-md">Pilih</span>
+              </button>
+
+              <button type="button" class="preset-song-btn text-left p-3 rounded-xl bg-white hover:bg-emerald-50/70 border border-stone-200 hover:border-emerald-400 transition group flex items-center justify-between cursor-pointer"
+                      data-url="https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3">
+                <div>
+                  <div class="font-bold text-xs text-stone-800 group-hover:text-emerald-900">Serene Acoustic &amp; Ambient</div>
+                  <div class="text-[10px] text-stone-500">MP3 &bull; Menenangkan &amp; Hangat</div>
+                </div>
+                <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-100/60 px-2 py-0.5 rounded-md">Pilih</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden Audio Preview Elements in Builder -->
+        <audio id="builderTestAudio" preload="none"></audio>
+        <div class="fixed -bottom-[9999px] -left-[9999px] w-1 h-1 overflow-hidden opacity-0 pointer-events-none" aria-hidden="true">
+          <iframe id="builderScPlayer" allow="autoplay; encrypted-media" src="" width="300" height="166"></iframe>
+        </div>
+      </div>
+
+      <!-- ================= TAB 5: GENERATOR TAMU (WA) ================= -->
+      <div id="tabGenerator" class="tab-pane hidden space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Generator Tamu &amp; Pesan WhatsApp Khitanan</h2>
+          <p class="text-xs text-stone-500">Buat tautan personal untuk setiap tamu dengan format pesan Walimatul Khitan yang santun.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-stone-800 mb-1">Nama Tamu Undangan</label>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input type="text" id="guestInput" placeholder="Contoh: Bapak H. Ridwan &amp; Keluarga" class="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none bg-white">
+              <button type="button" id="btnGenerateLink" class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs transition flex items-center justify-center gap-1.5 shadow">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span>Buat Link &amp; Pesan</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Result Container -->
+          <div id="generatedResultBox" class="hidden space-y-4 pt-4 border-t border-emerald-200/80">
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Tautan Personal Khitanan</label>
+              <div class="flex gap-2">
+                <input type="text" id="generatedUrlInput" readonly class="flex-1 px-3.5 py-2 rounded-xl bg-white border border-stone-200 text-xs text-stone-600 font-mono">
+                <button type="button" id="btnCopyUrl" class="px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-medium flex items-center gap-1 transition">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  <span>Salin Link</span>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Format Pesan WhatsApp Siap Kirim</label>
+              <textarea id="generatedWaPreview" rows="8" readonly class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-stone-200 text-xs font-sans text-stone-700 leading-relaxed resize-none"></textarea>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center gap-2 pt-1">
+              <button type="button" id="btnCopyWaText" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-stone-800 hover:bg-stone-900 text-white text-xs font-medium flex items-center justify-center gap-2 transition">
+                <i data-lucide="clipboard" class="w-4 h-4"></i>
+                <span>Salin Teks WhatsApp</span>
+              </button>
+
+              <a id="btnOpenWa" href="#" target="_blank" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center justify-center gap-2 transition shadow">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                <span>Buka &amp; Kirim di WhatsApp</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM ACTION BAR -->
+      <div class="pt-6 border-t border-stone-200 flex items-center justify-between mt-8">
+        <p class="text-[11px] text-stone-400 italic">*Semua data tersimpan otomatis di browser</p>
+        <button type="submit" class="px-6 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold shadow-lg hover:shadow-emerald-900/20 transition flex items-center gap-2">
+          <i data-lucide="save" class="w-4 h-4 text-emerald-300"></i>
+          <span>Simpan Perubahan</span>
+        </button>
+      </div>
+    </form>
+  </main>
+
+  <script src="js/builder-khitan.js"></script>
+</body>
+</html>

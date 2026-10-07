@@ -1,0 +1,347 @@
+/* Custom Styles for Wedding Invitation (Inveet.id Style) */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sacramento&display=swap');
+
+:root {
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-cursive: 'Sacramento', cursive;
+  --theme-accent: #c5a880;
+  --theme-accent-dark: #7c4d29;
+  --theme-bg-main: #faf8f5;
+  --theme-bg-alt: #f5f1ea;
+  --theme-text-main: #3b3531;
+  --theme-card-bg: #ffffff;
+  --theme-card-border: rgba(231, 224, 213, 0.8);
+}
+
+/* ================= THEME DEFINITIONS ================= */
+
+/* 1. Warm Champagne (Default) */
+[data-theme="champagne"] {
+  --theme-accent: #c5a880;
+  --theme-accent-dark: #7c4d29;
+  --theme-bg-main: #faf8f5;
+  --theme-bg-alt: #f5f1ea;
+  --theme-text-main: #3b3531;
+  --theme-card-bg: #ffffff;
+  --theme-card-border: rgba(231, 224, 213, 0.8);
+}
+
+/* 2. Sage Botanical (Rustic Garden) */
+[data-theme="sage"] {
+  --theme-accent: #5e8367;
+  --theme-accent-dark: #2f4e37;
+  --theme-bg-main: #f5f8f5;
+  --theme-bg-alt: #e9f0e9;
+  --theme-text-main: #243327;
+  --theme-card-bg: #ffffff;
+  --theme-card-border: rgba(197, 214, 199, 0.7);
+}
+[data-theme="sage"] #mainWrapper {
+  background-color: #f5f8f5 !important;
+}
+[data-theme="sage"] #salamPembuka,
+[data-theme="sage"] section:nth-of-type(even) {
+  background-color: #f5f8f5 !important;
+}
+[data-theme="sage"] #mempelai,
+[data-theme="sage"] #acara,
+[data-theme="sage"] #galeri,
+[data-theme="sage"] #wishesSection {
+  background-color: #e9f0e9 !important;
+}
+[data-theme="sage"] #btnBukaUndangan {
+  background: linear-gradient(to right, #4c6d54, #62876b, #3b5742) !important;
+  color: #ffffff !important;
+}
+[data-theme="sage"] .arch-frame {
+  border-color: #ffffff !important;
+  box-shadow: 0 10px 25px -5px rgba(45, 78, 55, 0.15);
+}
+[data-theme="sage"] .text-gold-600,
+[data-theme="sage"] .text-gold-700 {
+  color: #3b5e43 !important;
+}
+[data-theme="sage"] .text-amber-900,
+[data-theme="sage"] .text-amber-800 {
+  color: #26422d !important;
+}
+[data-theme="sage"] .bg-amber-800 {
+  background-color: #2f4e37 !important;
+}
+[data-theme="sage"] .bg-amber-800:hover {
+  background-color: #233b2a !important;
+}
+[data-theme="sage"] .border-gold-300 {
+  border-color: #8dae94 !important;
+}
+[data-theme="sage"] .bg-gold-500 {
+  background-color: #5e8367 !important;
+}
+[data-theme="sage"] .text-gold-500 {
+  color: #5e8367 !important;
+}
+[data-theme="sage"] .text-gold-300 {
+  color: #b5d5bd !important;
+}
+[data-theme="sage"] .text-gold-200 {
+  color: #d6ebd9 !important;
+}
+
+/* 3. Midnight Rose (Dark Romance) */
+[data-theme="midnight"] {
+  --theme-accent: #dca3a3;
+  --theme-accent-dark: #b86e6e;
+  --theme-bg-main: #141316;
+  --theme-bg-alt: #1c1a20;
+  --theme-text-main: #e8e3e7;
+  --theme-card-bg: #222027;
+  --theme-card-border: rgba(75, 68, 80, 0.6);
+}
+[data-theme="midnight"] #mainWrapper {
+  background-color: #141316 !important;
+  color: #e5e0e4 !important;
+}
+[data-theme="midnight"] #salamPembuka,
+[data-theme="midnight"] section:nth-of-type(even) {
+  background-color: #141316 !important;
+}
+[data-theme="midnight"] #mempelai,
+[data-theme="midnight"] #acara,
+[data-theme="midnight"] #galeri,
+[data-theme="midnight"] #wishesSection {
+  background-color: #1a181e !important;
+}
+[data-theme="midnight"] .bg-white {
+  background-color: #211f26 !important;
+  border-color: #34303b !important;
+  color: #e8e3e7 !important;
+}
+[data-theme="midnight"] .text-stone-800,
+[data-theme="midnight"] .text-stone-700 {
+  color: #f1ecf0 !important;
+}
+[data-theme="midnight"] .text-stone-600,
+[data-theme="midnight"] .text-stone-500 {
+  color: #b6adb4 !important;
+}
+[data-theme="midnight"] #btnBukaUndangan {
+  background: linear-gradient(to right, #c78383, #e4a7a7, #ad6a6a) !important;
+  color: #1b1113 !important;
+}
+[data-theme="midnight"] .text-gold-600,
+[data-theme="midnight"] .text-gold-700 {
+  color: #df9e9e !important;
+}
+[data-theme="midnight"] .text-amber-900,
+[data-theme="midnight"] .text-amber-800 {
+  color: #f5cfcf !important;
+}
+[data-theme="midnight"] .bg-amber-800 {
+  background-color: #8c4e4e !important;
+}
+[data-theme="midnight"] .bg-amber-800:hover {
+  background-color: #743e3e !important;
+}
+[data-theme="midnight"] .border-gold-300 {
+  border-color: #8f5858 !important;
+}
+[data-theme="midnight"] .bg-gold-500 {
+  background-color: #c78383 !important;
+}
+[data-theme="midnight"] .text-gold-500 {
+  color: #df9e9e !important;
+}
+[data-theme="midnight"] .text-gold-300 {
+  color: #f5c9c9 !important;
+}
+[data-theme="midnight"] .text-gold-200 {
+  color: #fbe2e2 !important;
+}
+[data-theme="midnight"] .bg-stone-50 {
+  background-color: #28252f !important;
+  border-color: #3c3845 !important;
+}
+[data-theme="midnight"] input,
+[data-theme="midnight"] select,
+[data-theme="midnight"] textarea {
+  background-color: #27242e !important;
+  border-color: #433e4d !important;
+  color: #f1ecf0 !important;
+}
+[data-theme="midnight"] #bottomNav {
+  background-color: rgba(30, 27, 35, 0.88) !important;
+  border-color: rgba(65, 59, 75, 0.8) !important;
+}
+[data-theme="midnight"] #floatingMusicBtn {
+  background-color: rgba(35, 32, 42, 0.88) !important;
+  border-color: rgba(100, 85, 105, 0.8) !important;
+}
+
+/* 4. Royal Navy & Silver (Modern Minimalist) */
+[data-theme="royal"] {
+  --theme-accent: #4d719e;
+  --theme-accent-dark: #1e3654;
+  --theme-bg-main: #f5f7fa;
+  --theme-bg-alt: #e9eef5;
+  --theme-text-main: #1e293b;
+  --theme-card-bg: #ffffff;
+  --theme-card-border: rgba(203, 213, 225, 0.8);
+}
+[data-theme="royal"] #mainWrapper {
+  background-color: #f5f7fa !important;
+}
+[data-theme="royal"] #salamPembuka,
+[data-theme="royal"] section:nth-of-type(even) {
+  background-color: #f5f7fa !important;
+}
+[data-theme="royal"] #mempelai,
+[data-theme="royal"] #acara,
+[data-theme="royal"] #galeri,
+[data-theme="royal"] #wishesSection {
+  background-color: #e9eef5 !important;
+}
+[data-theme="royal"] #btnBukaUndangan {
+  background: linear-gradient(to right, #244169, #3f6699, #1b3252) !important;
+  color: #ffffff !important;
+}
+[data-theme="royal"] .text-gold-600,
+[data-theme="royal"] .text-gold-700 {
+  color: #264a78 !important;
+}
+[data-theme="royal"] .text-amber-900,
+[data-theme="royal"] .text-amber-800 {
+  color: #172d4a !important;
+}
+[data-theme="royal"] .bg-amber-800 {
+  background-color: #1e3654 !important;
+}
+[data-theme="royal"] .bg-amber-800:hover {
+  background-color: #14253b !important;
+}
+[data-theme="royal"] .border-gold-300 {
+  border-color: #7b9ec9 !important;
+}
+[data-theme="royal"] .bg-gold-500 {
+  background-color: #3f6699 !important;
+}
+[data-theme="royal"] .text-gold-500 {
+  color: #3f6699 !important;
+}
+[data-theme="royal"] .text-gold-300 {
+  color: #a9c6eb !important;
+}
+[data-theme="royal"] .text-gold-200 {
+  color: #cfe1f7 !important;
+}
+
+/* Base styling */
+body {
+  font-family: var(--font-sans);
+  background-color: #1a1816;
+  color: #3b3531;
+  overflow-x: hidden;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-cursive {
+  font-family: var(--font-cursive);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1ede7;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--theme-accent, #c5a880);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-accent-dark, #a98960);
+}
+
+/* Background ornament float animation */
+@keyframes softFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+}
+
+.animate-soft-float {
+  animation: softFloat 6s ease-in-out infinite;
+}
+
+/* Music vinyl spin animation */
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 5s linear infinite;
+}
+
+.paused {
+  animation-play-state: paused !important;
+}
+
+/* Arch Photo Frame styling */
+.arch-frame {
+  border-top-left-radius: 9999px;
+  border-top-right-radius: 9999px;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* Toast Notification */
+#toast, #builderToast {
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Lightbox Modal transition */
+#lightbox {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Bottom dock active indicator */
+.nav-btn.active {
+  color: var(--theme-accent, #c5a880);
+}
+.nav-btn.active svg {
+  stroke: var(--theme-accent, #c5a880);
+}
+
+/* Theme Selection Card Highlight */
+.theme-card.selected {
+  border-color: #b45309 !important;
+  box-shadow: 0 0 0 2px #d97706, 0 10px 20px -3px rgba(180, 83, 9, 0.15) !important;
+}

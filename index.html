@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inveet - Platform Undangan Pernikahan Online &amp; Undangan Nikah Digital</title>
+  
+  <meta name="description" content="Buat undangan pernikahan online gratis di Inveet. Pilih tema undangan nikah digital, kelola RSVP dan daftar tamu, lalu bagikan personal lewat WhatsApp.">
+  <meta property="og:title" content="Inveet - Undangan Pernikahan Online & Undangan Nikah Digital">
+  <meta property="og:description" content="Buat undangan pernikahan online gratis di Inveet. Coba simulator langsung di web, pilih tema eksklusif, dan bagikan ke tamu dengan mudah.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              500: '#165d99',
+              600: '#114a7c',
+              700: '#0c3860'
+            },
+            gold: {
+              300: '#e8c99b',
+              500: '#c5a880',
+              600: '#b08c5c',
+              700: '#8c6b3e'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', '"Playfair Display"', 'serif'],
+            cursive: ['"Sacramento"', 'cursive']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sacramento&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-[#fafafa] text-stone-900 font-sans antialiased selection:bg-amber-100 selection:text-amber-950">
+
+  <!-- ================= MODAL PILIH KATEGORI UNDANGAN ================= -->
+  <div id="categoryModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4 transition-all duration-300">
+    <div class="bg-white rounded-[2rem] max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-stone-200 relative transform transition-all">
+      <!-- Close Button -->
+      <button id="closeCategoryModal" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="text-center space-y-2 mb-8">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800 bg-amber-50 px-3.5 py-1 rounded-full border border-amber-200">
+          Langkah Pertama
+        </span>
+        <h3 class="text-2xl sm:text-3xl font-extrabold text-stone-900">Pilih Jenis Undangan</h3>
+        <p class="text-xs text-stone-500 max-w-md mx-auto">
+          Silakan tentukan jenis acara yang ingin Anda buat sebelum masuk ke tahap pemilihan desain dan pengisian data.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <!-- Opsi 1: Pernikahan -->
+        <div class="rounded-2xl p-6 border-2 border-amber-300 hover:border-amber-600 bg-gradient-to-b from-amber-50/40 to-white shadow-sm hover:shadow-xl transition group flex flex-col justify-between space-y-5">
+          <div class="space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center group-hover:scale-110 transition shadow-sm">
+              <i data-lucide="heart" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <span class="text-[10px] uppercase font-bold tracking-wider text-amber-700">The Wedding</span>
+              <h4 class="text-xl font-bold text-stone-900 mt-0.5">Undangan Pernikahan</h4>
+              <p class="text-xs text-stone-600 leading-relaxed mt-1.5">
+                Untuk momen sakral pernikahan, akad nikah &amp; resepsi. Dilengkapi profil kedua mempelai, kisah cinta, RSVP, dan amplop digital.
+              </p>
+            </div>
+          </div>
+          <div class="space-y-2 pt-2">
+            <a href="builder.html?tier=free" class="block w-full py-3 rounded-xl bg-amber-800 hover:bg-amber-900 text-white font-bold text-xs text-center shadow transition">
+              Buat Undangan Pernikahan
+            </a>
+            <a href="invitation.html" target="_blank" class="block w-full py-2 rounded-xl text-stone-600 hover:text-stone-900 text-[11px] font-semibold text-center border border-stone-200 hover:bg-stone-50 transition">
+              Lihat Contoh Demo
+            </a>
+          </div>
+        </div>
+
+        <!-- Opsi 2: Khitanan -->
+        <div class="rounded-2xl p-6 border-2 border-emerald-300 hover:border-emerald-600 bg-gradient-to-b from-emerald-50/40 to-white shadow-sm hover:shadow-xl transition group flex flex-col justify-between space-y-5">
+          <div class="space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center group-hover:scale-110 transition shadow-sm">
+              <i data-lucide="moon-star" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-700">Walimatul Khitan</span>
+              <h4 class="text-xl font-bold text-stone-900 mt-0.5">Undangan Khitanan</h4>
+              <p class="text-xs text-stone-600 leading-relaxed mt-1.5">
+                Tasyakuran khitanan putra tercinta. Dilengkapi doa anak sholeh, profil ananda, agenda syukuran, ramah tamah, dan kado syukuran.
+              </p>
+            </div>
+          </div>
+          <div class="space-y-2 pt-2">
+            <a href="builder-khitan.html" class="block w-full py-3 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs text-center shadow transition">
+              Buat Undangan Khitanan
+            </a>
+            <a href="khitan.html" target="_blank" class="block w-full py-2 rounded-xl text-stone-600 hover:text-stone-900 text-[11px] font-semibold text-center border border-stone-200 hover:bg-stone-50 transition">
+              Lihat Contoh Demo
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= HEADER / NAVBAR ================= -->
+  <header class="fixed top-0 inset-x-0 z-40 bg-white/85 backdrop-blur-md border-b border-stone-200/80 transition shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-2.5">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-700 via-amber-800 to-stone-950 text-gold-300 font-serif font-bold text-xl flex items-center justify-center shadow-md shadow-amber-900/20">
+          I
+        </div>
+        <div class="flex flex-col">
+          <span class="text-xl font-bold tracking-tight text-stone-900">inveet<span class="text-amber-600">.id</span></span>
+          <span class="text-[9px] font-semibold text-stone-400 tracking-wider -mt-1 uppercase">Platform Undangan</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden md:flex items-center gap-1 text-sm font-medium text-stone-600">
+        <button type="button" class="btn-open-category-modal px-3.5 py-2 rounded-full text-amber-900 font-semibold bg-amber-50 hover:bg-amber-100 transition flex items-center gap-1.5">
+          <i data-lucide="layers" class="w-4 h-4 text-amber-700"></i>
+          <span>Pilih Acara</span>
+        </button>
+        <a href="#fitur" class="px-3.5 py-2 rounded-full hover:text-stone-900 hover:bg-stone-100/80 transition">Fitur</a>
+        <a href="#demo" class="px-3.5 py-2 rounded-full hover:text-stone-900 hover:bg-stone-100/80 transition flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Simulator Gratis</span>
+        </a>
+        <a href="#showcase" class="px-3.5 py-2 rounded-full hover:text-stone-900 hover:bg-stone-100/80 transition">Pilihan Tema</a>
+        <a href="#pricing" class="px-3.5 py-2 rounded-full hover:text-stone-900 hover:bg-stone-100/80 transition">Harga Paket</a>
+        <a href="#faq" class="px-3.5 py-2 rounded-full hover:text-stone-900 hover:bg-stone-100/80 transition">FAQ</a>
+      </nav>
+
+      <!-- CTA Buttons -->
+      <div class="hidden sm:flex items-center gap-2.5">
+        <a href="dashboard.html" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-stone-300 hover:border-amber-600 bg-white hover:bg-amber-50/50 text-stone-700 hover:text-amber-900 text-xs font-semibold shadow-xs transition">
+          <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-amber-700"></i>
+          <span>Dashboard Saya</span>
+        </a>
+        <button type="button" class="btn-open-category-modal inline-flex items-center gap-2 text-xs font-bold text-white bg-amber-800 hover:bg-amber-900 px-5 py-2.5 rounded-full shadow-lg shadow-amber-900/15 transition transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-gold-300"></i>
+          <span>Buat Undangan</span>
+        </button>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button id="mobileMenuBtn" type="button" class="md:hidden p-2 rounded-xl text-stone-700 hover:bg-stone-100 transition">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Dropdown -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-stone-200 px-6 py-5 space-y-3 shadow-lg">
+      <a href="dashboard.html" class="block text-sm font-bold text-amber-800 py-1.5 flex items-center gap-2">
+        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+        <span>Dashboard Pengguna</span>
+      </a>
+      <a href="#fitur" class="block text-sm font-medium text-stone-700 py-1.5">Fitur</a>
+      <a href="#demo" class="block text-sm font-medium text-stone-700 py-1.5 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Simulator Gratis</span>
+      </a>
+      <a href="#showcase" class="block text-sm font-medium text-stone-700 py-1.5">Pilihan Tema</a>
+      <a href="#pricing" class="block text-sm font-medium text-stone-700 py-1.5">Harga Paket</a>
+      <a href="#faq" class="block text-sm font-medium text-stone-700 py-1.5">FAQ</a>
+      <div class="pt-3 border-t border-stone-100 flex flex-col gap-2">
+        <a href="dashboard.html" class="w-full text-center py-2.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-900 text-xs font-bold shadow-xs flex items-center justify-center gap-2 transition">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+          <span>Buka Dashboard Pengguna</span>
+        </a>
+        <button type="button" class="btn-open-category-modal w-full text-center py-2.5 rounded-xl bg-amber-800 hover:bg-amber-900 text-white text-xs font-bold shadow flex items-center justify-center gap-2 transition cursor-pointer">
+          <i data-lucide="sparkles" class="w-4 h-4 text-gold-300"></i>
+          <span>Buat Undangan (Nikah / Khitan)</span>
+        </button>
+        <div class="grid grid-cols-2 gap-2 text-center text-xs">
+          <a href="invitation.html" target="_blank" class="py-2 rounded-xl border border-stone-300 font-semibold text-stone-700 hover:bg-stone-50">Demo Nikah</a>
+          <a href="khitan.html" target="_blank" class="py-2 rounded-xl border border-emerald-300 text-emerald-800 font-semibold bg-emerald-50/60 hover:bg-emerald-100">Demo Khitan</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-20">
+
+    <!-- ================= HERO SECTION ================= -->
+    <section class="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28 bg-gradient-to-b from-stone-50 via-white to-stone-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          
+          <!-- Left Column: Copy & CTAs -->
+          <div class="lg:col-span-7 space-y-6 text-left">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200/80 text-amber-900 text-xs font-semibold">
+              <span class="w-2 h-2 rounded-full bg-amber-600 animate-ping"></span>
+              <span>Platform Undangan Digital No. #1 (Pernikahan &amp; Khitanan)</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-stone-900 leading-[1.12]">
+              Undangan online modern <br>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-700 via-amber-800 to-stone-950">
+                yang personal &amp; siap dibagikan.
+              </span>
+            </h1>
+
+            <p class="text-base sm:text-lg text-stone-600 max-w-xl leading-relaxed font-light">
+              Inveet adalah platform pembuat undangan digital premium untuk <strong>Pernikahan</strong> dan <strong>Walimatul Khitan</strong>. Pilih tema eksklusif, lengkapi jadwal acara &amp; amplop digital, lalu bagikan ke WhatsApp tamu dalam hitungan menit.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <button type="button" class="btn-open-category-modal inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-amber-800 hover:bg-amber-900 text-white font-bold text-sm shadow-xl shadow-amber-900/20 hover:scale-[1.02] active:scale-[0.98] transition cursor-pointer">
+                <i data-lucide="sparkles" class="w-4 h-4 text-gold-300"></i>
+                <span>Mulai Buat Undangan</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+
+              <a href="#demo" class="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-white hover:bg-stone-50 text-stone-800 font-semibold text-sm border border-stone-200/90 shadow-sm hover:shadow transition">
+                <i data-lucide="play-circle" class="w-4 h-4 text-amber-700"></i>
+                <span>Simulator Gratis</span>
+              </a>
+
+              <a href="#showcase" class="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold text-sm transition">
+                <i data-lucide="palette" class="w-4 h-4 text-stone-600"></i>
+                <span>Koleksi Desain</span>
+              </a>
+            </div>
+
+            <!-- Social Proof Statistics -->
+            <div class="pt-8 border-t border-stone-200/80 grid grid-cols-3 gap-4 max-w-lg">
+              <div>
+                <p class="text-2xl sm:text-3xl font-bold text-stone-900">6.500+</p>
+                <p class="text-xs text-stone-500 font-medium mt-0.5">Pasangan Bahagia</p>
+              </div>
+              <div>
+                <p class="text-2xl sm:text-3xl font-bold text-stone-900">7.000.000+</p>
+                <p class="text-xs text-stone-500 font-medium mt-0.5">Tamu Terlayani</p>
+              </div>
+              <div>
+                <p class="text-2xl sm:text-3xl font-bold text-emerald-700">100%</p>
+                <p class="text-xs text-stone-500 font-medium mt-0.5">Bisa Uji Coba Gratis</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Hero Visual Showcase (Smartphone Frame with Floating Cards) -->
+          <div class="lg:col-span-5 flex justify-center relative">
+            <!-- Decorative Glow -->
+            <div class="absolute -top-10 -right-10 w-72 h-72 bg-amber-200/40 rounded-full blur-3xl -z-10"></div>
+            <div class="absolute -bottom-10 -left-10 w-72 h-72 bg-rose-200/30 rounded-full blur-3xl -z-10"></div>
+
+            <!-- Phone Frame -->
+            <div class="w-[300px] sm:w-[330px] rounded-[3rem] p-3.5 bg-stone-900 shadow-2xl border-4 border-stone-800 relative ring-1 ring-white/20">
+              <!-- Speaker Notch -->
+              <div class="w-24 h-4 bg-black rounded-full mx-auto mb-2"></div>
+              
+              <!-- Screen Preview Content -->
+              <div class="w-full aspect-[9/18] rounded-[2.3rem] overflow-hidden relative flex flex-col justify-between p-6 text-center text-white bg-cover bg-center shadow-inner"
+                   style="background-image: linear-gradient(to bottom, rgba(28,25,23,0.35), rgba(28,25,23,0.85)), url('https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=600&q=80');">
+                
+                <div class="pt-4 space-y-1">
+                  <p class="text-[10px] tracking-[0.25em] text-gold-300 uppercase font-medium">The Wedding of</p>
+                  <h3 class="text-2xl font-serif">Dimas &amp; Sarah</h3>
+                </div>
+
+                <div class="space-y-2 my-auto">
+                  <div class="w-24 h-24 mx-auto rounded-full border-2 border-gold-300 p-0.5 shadow-lg">
+                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=300&q=80" alt="Couple" class="w-full h-full object-cover rounded-full">
+                  </div>
+                  <p class="text-xs font-serif tracking-widest">28 &bull; 12 &bull; 2026</p>
+                </div>
+
+                <div class="space-y-3 pb-2">
+                  <div class="bg-black/40 backdrop-blur-sm border border-white/20 rounded-xl p-2.5 text-xs">
+                    <p class="text-[9px] text-stone-300">Kepada Yth:</p>
+                    <p class="font-bold text-gold-200">Bapak Joko &amp; Keluarga</p>
+                  </div>
+                  <a href="invitation.html" target="_blank" class="block w-full py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-amber-700 text-stone-950 font-bold text-xs shadow hover:opacity-95 transition">
+                    BUKA UNDANGAN
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating Badge 1 -->
+            <div class="absolute top-12 -left-6 sm:-left-8 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-stone-200/80 flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                <i data-lucide="message-square-heart" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="text-[11px] font-bold text-stone-900">RSVP Real-Time</p>
+                <p class="text-[10px] text-stone-500">Konfirmasi hadir instan</p>
+              </div>
+            </div>
+
+            <!-- Floating Badge 2 -->
+            <div class="absolute bottom-16 -right-6 sm:-right-8 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-stone-200/80 flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+                <i data-lucide="disc-3" class="w-5 h-5 animate-spin"></i>
+              </div>
+              <div>
+                <p class="text-[11px] font-bold text-stone-900">Musik Autoplay</p>
+                <p class="text-[10px] text-stone-500">Lagu romantis pengiring</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LIVE SIMULATOR SECTION (UJI COBA GRATIS LANGSUNG) ================= -->
+    <section id="demo" class="py-20 bg-stone-100/70 border-y border-stone-200 relative">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto space-y-3 mb-14">
+          <span class="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-100/80 px-3 py-1 rounded-full">
+            Uji Coba Langsung di Web
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-stone-900">
+            Simulator Undangan Pernikahan
+          </h2>
+          <p class="text-stone-600 text-sm leading-relaxed">
+            Ketikkan nama Anda dan pasangan, pilih tema desain favorit, dan saksikan tampilan undangan digital berubah secara instan di simulator berikut tanpa perlu mendaftar terlebih dahulu!
+          </p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-stone-200 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Form Simulator -->
+          <div class="lg:col-span-7 space-y-6">
+            <div>
+              <h3 class="text-lg font-bold text-stone-900">Sesuaikan Tampilan Cepat:</h3>
+              <p class="text-xs text-stone-500">Coba ubah isian di bawah ini dan perhatikan layar ponsel di sebelah kanan.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1">Nama Panggilan Pria</label>
+                <input type="text" id="simGroom" value="Dimas" placeholder="Contoh: Dimas" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1">Nama Panggilan Wanita</label>
+                <input type="text" id="simBride" value="Sarah" placeholder="Contoh: Sarah" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-stone-700 mb-1">Tanggal Acara</label>
+              <input type="text" id="simDate" value="28 Desember 2026" placeholder="Contoh: 28 Desember 2026" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+
+            <!-- Pilihan Tema Cepat -->
+            <div>
+              <label class="block text-xs font-semibold text-stone-700 mb-2">Pilih Konsep Tema Desain:</label>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button type="button" data-theme="champagne" class="sim-theme-btn active p-2.5 rounded-xl border border-amber-500 ring-2 ring-amber-500 bg-amber-50 text-left transition">
+                  <span class="block text-[11px] font-bold text-stone-900">Champagne</span>
+                  <span class="text-[9px] text-stone-500">Classic Gold</span>
+                </button>
+                <button type="button" data-theme="sage" class="sim-theme-btn p-2.5 rounded-xl border border-stone-200 text-left hover:border-stone-400 transition">
+                  <span class="block text-[11px] font-bold text-emerald-950">Olive Lace</span>
+                  <span class="text-[9px] text-stone-500">Rustic Sage</span>
+                </button>
+                <button type="button" data-theme="midnight" class="sim-theme-btn p-2.5 rounded-xl border border-stone-200 text-left hover:border-stone-400 transition">
+                  <span class="block text-[11px] font-bold text-pink-950">Noir Calla</span>
+                  <span class="text-[9px] text-stone-500">Dark Rose</span>
+                </button>
+                <button type="button" data-theme="royal" class="sim-theme-btn p-2.5 rounded-xl border border-stone-200 text-left hover:border-stone-400 transition">
+                  <span class="block text-[11px] font-bold text-blue-950">Voyage</span>
+                  <span class="text-[9px] text-stone-500">Royal Navy</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Tombol Action Lanjut -->
+            <div class="pt-4 border-t border-stone-100 flex flex-col sm:flex-row items-center gap-3">
+              <a id="simBtnContinue" href="builder.html?tier=free" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-amber-800 hover:bg-amber-900 text-white font-bold text-xs tracking-wide shadow-lg transition flex items-center justify-center gap-2">
+                <i data-lucide="edit-3" class="w-4 h-4 text-gold-300"></i>
+                <span>Lanjutkan Desain Ini (Versi Gratis)</span>
+              </a>
+              <p class="text-[11px] text-stone-500 italic">*Data langsung terisi di editor</p>
+            </div>
+          </div>
+
+          <!-- Smartphone Interactive Preview Mockup -->
+          <div class="lg:col-span-5 flex justify-center">
+            <div class="w-[280px] sm:w-[310px] rounded-[3rem] p-3 bg-stone-900 shadow-2xl border-4 border-stone-800 ring-1 ring-stone-700">
+              <div class="w-20 h-3.5 bg-black rounded-full mx-auto mb-2"></div>
+              
+              <!-- Screen Simulator -->
+              <div id="previewPhone" class="w-full aspect-[9/17] rounded-[2.2rem] overflow-hidden flex flex-col justify-between p-6 text-center text-white relative shadow-inner">
+                <div class="space-y-1 pt-2">
+                  <p class="text-[10px] tracking-[0.25em] text-gold-300 uppercase font-medium">The Wedding of</p>
+                  <h3 id="previewNames" class="text-2xl font-serif">Dimas &amp; Sarah</h3>
+                </div>
+
+                <div class="space-y-2 my-auto">
+                  <div class="w-20 h-20 mx-auto rounded-full border-2 border-white/60 p-0.5 shadow-lg">
+                    <img id="previewCoverImg" src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=300&q=80" alt="Couple" class="w-full h-full object-cover rounded-full">
+                  </div>
+                  <p id="previewDate" class="text-xs font-serif tracking-widest uppercase">28 Desember 2026</p>
+                </div>
+
+                <div class="space-y-2">
+                  <div class="bg-black/40 backdrop-blur-md rounded-xl p-2 text-xs">
+                    <p class="text-[9px] text-stone-300">Kepada Yth:</p>
+                    <p class="font-bold text-gold-200">Tamu Undangan</p>
+                  </div>
+                  <div id="previewBtn" class="w-full py-2 px-3 rounded-lg font-bold text-xs tracking-wider shadow">
+                    BUKA UNDANGAN
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FITUR UNGGULAN SECTION ================= -->
+    <section id="fitur" class="py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto space-y-3 mb-16">
+          <span class="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-100/80 px-3 py-1 rounded-full">
+            Fitur Lengkap
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-stone-900">
+            Semua yang Anda butuhkan untuk undangan modern
+          </h2>
+          <p class="text-stone-600 text-sm">
+            Praktis, interaktif, dan mudah disebarkan ke ribuan tamu hanya dengan satu klik.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Fitur 1 -->
+          <div class="p-7 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-3 hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center">
+              <i data-lucide="user-check" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-stone-900">Nama Tamu Terkunci</h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Tiap tautan yang Anda bagikan mencantumkan nama tamu secara personal. Tamu merasa dihargai dan undangan terasa eksklusif.
+            </p>
+          </div>
+
+          <!-- Fitur 2 -->
+          <div class="p-7 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-3 hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-900 flex items-center justify-center">
+              <i data-lucide="send" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-stone-900">Generator WhatsApp</h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Ketik nama tamu, dan sistem langsung menyusun tautan plus draft pesan WhatsApp yang santun dan siap Anda kirimkan.
+            </p>
+          </div>
+
+          <!-- Fitur 3 -->
+          <div class="p-7 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-3 hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-rose-100 text-rose-900 flex items-center justify-center">
+              <i data-lucide="message-square" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-stone-900">RSVP &amp; Buku Doa</h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Tamu dapat mengonfirmasi kehadiran serta mengirimkan doa restu yang langsung terpajang rapi di halaman undangan Anda.
+            </p>
+          </div>
+
+          <!-- Fitur 4 -->
+          <div class="p-7 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-3 hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-900 flex items-center justify-center">
+              <i data-lucide="credit-card" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-stone-900">Amplop Digital (1-Click Copy)</h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Kemudahan bagi tamu untuk memberikan hadiah pernikahan dengan nomor rekening bank dan alamat pengiriman kado fisik.
+            </p>
+          </div>
+
+          <!-- Fitur 5 -->
+          <div class="p-7 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-3 hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-900 flex items-center justify-center">
+              <i data-lucide="disc" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-stone-900">Musik Latar Romantis</h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Dilengkapi pemutar musik dengan floating vinyl icon yang berputar otomatis saat undangan dibuka oleh tamu.
+            </p>
+          </div>
+
+          <!-- Fitur 6 -->
+          <div class="p-7 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-3 hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center">
+              <i data-lucide="map-pin" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-stone-900">Google Maps &amp; Kalender</h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Peta rute lokasi interaktif dan tombol sekali klik untuk menyimpan jadwal pernikahan langsung ke Google Calendar tamu.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= SHOWCASE DESAIN RESMI ================= -->
+    <section id="showcase" class="py-24 bg-stone-50 border-t border-stone-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto space-y-3 mb-10">
+          <span class="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-100/80 px-3 py-1 rounded-full">
+            Inveet Theme Showcase
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-stone-900">
+            Koleksi Tema Desain Elegan
+          </h2>
+          <p class="text-stone-600 text-sm">
+            Setiap tema didesain dengan presisi tipografi, palet warna berkelas, dan animasi halus.
+          </p>
+
+          <!-- Category Toggle Tabs -->
+          <div class="pt-4 flex flex-wrap items-center justify-center gap-3">
+            <button type="button" id="showcaseTabWedding" class="px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-amber-800 text-white shadow-md">
+              <i data-lucide="heart" class="w-4 h-4 text-gold-300"></i>
+              <span>Undangan Pernikahan (4 Tema)</span>
+            </button>
+            <button type="button" id="showcaseTabKhitan" class="px-5 py-2.5 rounded-full text-xs font-bold transition flex items-center gap-2 bg-white text-stone-700 border border-stone-300 hover:bg-stone-100">
+              <i data-lucide="moon-star" class="w-4 h-4 text-emerald-600"></i>
+              <span>Undangan Khitanan (Walimatul Khitan)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Wedding Grid -->
+        <div id="showcaseWeddingGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <!-- Showcase 1: Olive Lace -->
+          <div class="bg-white rounded-3xl overflow-hidden border border-stone-200/80 shadow-md hover:shadow-xl transition group flex flex-col justify-between">
+            <div>
+              <div class="h-56 bg-[#e9f0e9] relative overflow-hidden flex items-center justify-center p-4">
+                <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=600&q=80" alt="Olive Lace" class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition duration-500">
+                <span class="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-900 uppercase">Trending</span>
+              </div>
+              <div class="p-5 space-y-2">
+                <h3 class="font-bold text-base text-stone-900">Olive Lace</h3>
+                <p class="text-xs text-stone-500 leading-relaxed">
+                  Sentuhan renda rajut halus dan hijau sage menyejukkan. Sangat pas untuk pesta kebun dan nuansa alam.
+                </p>
+              </div>
+            </div>
+            <div class="p-5 pt-0 space-y-2">
+              <a href="invitation.html?theme=sage" target="_blank" class="block w-full py-2.5 text-center rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-semibold text-xs transition">
+                Lihat Demo Tema
+              </a>
+              <a href="builder.html?tier=free&theme=sage" class="block w-full py-2 text-center rounded-xl border border-stone-200 text-stone-700 hover:bg-stone-50 text-[11px] font-semibold transition">
+                Buat dengan Desain Ini
+              </a>
+            </div>
+          </div>
+
+          <!-- Showcase 2: Noir Calla -->
+          <div class="bg-white rounded-3xl overflow-hidden border border-stone-200/80 shadow-md hover:shadow-xl transition group flex flex-col justify-between">
+            <div>
+              <div class="h-56 bg-[#1a181e] relative overflow-hidden flex items-center justify-center p-4">
+                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=600&q=80" alt="Noir Calla" class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition duration-500">
+                <span class="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-pink-900/80 text-pink-200 uppercase">Eksklusif</span>
+              </div>
+              <div class="p-5 space-y-2">
+                <h3 class="font-bold text-base text-stone-900">Noir Calla</h3>
+                <p class="text-xs text-stone-500 leading-relaxed">
+                  Nuansa arang obsidian dan sentuhan rose gold sinematik. Memberikan kesan intim, megah, dan mewah.
+                </p>
+              </div>
+            </div>
+            <div class="p-5 pt-0 space-y-2">
+              <a href="invitation.html?theme=midnight" target="_blank" class="block w-full py-2.5 text-center rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-semibold text-xs transition">
+                Lihat Demo Tema
+              </a>
+              <a href="builder.html?tier=free&theme=midnight" class="block w-full py-2 text-center rounded-xl border border-stone-200 text-stone-700 hover:bg-stone-50 text-[11px] font-semibold transition">
+                Buat dengan Desain Ini
+              </a>
+            </div>
+          </div>
+
+          <!-- Showcase 3: Voyage of Us -->
+          <div class="bg-white rounded-3xl overflow-hidden border border-stone-200/80 shadow-md hover:shadow-xl transition group flex flex-col justify-between">
+            <div>
+              <div class="h-56 bg-[#e9eef5] relative overflow-hidden flex items-center justify-center p-4">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80" alt="Voyage of Us" class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition duration-500">
+                <span class="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-900 uppercase">Modern</span>
+              </div>
+              <div class="p-5 space-y-2">
+                <h3 class="font-bold text-base text-stone-900">Voyage of Us</h3>
+                <p class="text-xs text-stone-500 leading-relaxed">
+                  Konsep destination wedding &amp; boarding pass dengan biru navy anggun dan detail atlas emas.
+                </p>
+              </div>
+            </div>
+            <div class="p-5 pt-0 space-y-2">
+              <a href="invitation.html?theme=royal" target="_blank" class="block w-full py-2.5 text-center rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-semibold text-xs transition">
+                Lihat Demo Tema
+              </a>
+              <a href="builder.html?tier=free&theme=royal" class="block w-full py-2 text-center rounded-xl border border-stone-200 text-stone-700 hover:bg-stone-50 text-[11px] font-semibold transition">
+                Buat dengan Desain Ini
+              </a>
+            </div>
+          </div>
+
+          <!-- Showcase 4: Warm Champagne -->
+          <div class="bg-white rounded-3xl overflow-hidden border border-stone-200/80 shadow-md hover:shadow-xl transition group flex flex-col justify-between">
+            <div>
+              <div class="h-56 bg-[#f5f1ea] relative overflow-hidden flex items-center justify-center p-4">
+                <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=600&q=80" alt="Warm Champagne" class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition duration-500">
+                <span class="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 uppercase">Classic</span>
+              </div>
+              <div class="p-5 space-y-2">
+                <h3 class="font-bold text-base text-stone-900">Warm Champagne</h3>
+                <p class="text-xs text-stone-500 leading-relaxed">
+                  Sentuhan ivory hangat dan emas klasik. Pilihan abadi dan terpopuler untuk akad dan resepsi megah.
+                </p>
+              </div>
+            </div>
+            <div class="p-5 pt-0 space-y-2">
+              <a href="invitation.html?theme=champagne" target="_blank" class="block w-full py-2.5 text-center rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-semibold text-xs transition">
+                Lihat Demo Tema
+              </a>
+              <a href="builder.html?tier=free&theme=champagne" class="block w-full py-2 text-center rounded-xl border border-stone-200 text-stone-700 hover:bg-stone-50 text-[11px] font-semibold transition">
+                Buat dengan Desain Ini
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Khitan Grid (Walimatul Khitan) -->
+        <div id="showcaseKhitanGrid" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- Khitan Theme 1: Zamrud Barokah -->
+          <div class="bg-white rounded-3xl overflow-hidden border border-emerald-200 shadow-md hover:shadow-xl transition group flex flex-col justify-between">
+            <div>
+              <div class="h-56 bg-emerald-950 relative overflow-hidden flex items-center justify-center p-4">
+                <img src="https://images.unsplash.com/photo-1584286595398-a59f21d313f5?auto=format&fit=crop&w=600&q=80" alt="Zamrud Barokah" class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition duration-500 opacity-90">
+                <span class="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-900 uppercase">Favorit Khitan</span>
+              </div>
+              <div class="p-5 space-y-2">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-bold text-base text-stone-900">Zamrud Barokah</h3>
+                  <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">Nuansa Hijau Islami</span>
+                </div>
+                <p class="text-xs text-stone-500 leading-relaxed">
+                  Perpaduan hijau zamrud agung, ornamen kubah syar'i, dan doa anak sholeh penyejuk hati keluarga.
+                </p>
+              </div>
+            </div>
+            <div class="p-5 pt-0 space-y-2">
+              <a href="khitan.html" target="_blank" class="block w-full py-2.5 text-center rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-xs transition">
+                Lihat Demo Khitan
+              </a>
+              <a href="builder-khitan.html" class="block w-full py-2 text-center rounded-xl border border-emerald-300 text-emerald-800 hover:bg-emerald-50 text-[11px] font-semibold transition">
+                Buat Undangan Khitan
+              </a>
+            </div>
+          </div>
+
+          <!-- Khitan Theme 2: Al-Fatih Gold -->
+          <div class="bg-white rounded-3xl overflow-hidden border border-amber-200 shadow-md hover:shadow-xl transition group flex flex-col justify-between">
+            <div>
+              <div class="h-56 bg-amber-950 relative overflow-hidden flex items-center justify-center p-4">
+                <img src="https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=600&q=80" alt="Al-Fatih Gold" class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition duration-500 opacity-90">
+                <span class="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 uppercase">Elegan Syar'i</span>
+              </div>
+              <div class="p-5 space-y-2">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-bold text-base text-stone-900">Al-Fatih Gold</h3>
+                  <span class="text-[10px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md">Emas &amp; Ivory</span>
+                </div>
+                <p class="text-xs text-stone-500 leading-relaxed">
+                  Sentuhan kaligrafi emas megah dan warna gading bersih, memberikan kesan tasyakuran walimah yang khidmat.
+                </p>
+              </div>
+            </div>
+            <div class="p-5 pt-0 space-y-2">
+              <a href="khitan.html" target="_blank" class="block w-full py-2.5 text-center rounded-xl bg-amber-800 hover:bg-amber-900 text-white font-semibold text-xs transition">
+                Lihat Demo Khitan
+              </a>
+              <a href="builder-khitan.html" class="block w-full py-2 text-center rounded-xl border border-amber-300 text-amber-900 hover:bg-amber-50 text-[11px] font-semibold transition">
+                Buat Undangan Khitan
+              </a>
+            </div>
+          </div>
+
+          <!-- Khitan Theme 3: Bintang Firdaus -->
+          <div class="bg-white rounded-3xl overflow-hidden border border-teal-200 shadow-md hover:shadow-xl transition group flex flex-col justify-between">
+            <div>
+              <div class="h-56 bg-teal-950 relative overflow-hidden flex items-center justify-center p-4">
+                <img src="https://images.unsplash.com/photo-1590076215667-875d4ef2d7ee?auto=format&fit=crop&w=600&q=80" alt="Bintang Firdaus" class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition duration-500 opacity-90">
+                <span class="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-100 text-teal-900 uppercase">Ceria &amp; Berkah</span>
+              </div>
+              <div class="p-5 space-y-2">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-bold text-base text-stone-900">Bintang Firdaus</h3>
+                  <span class="text-[10px] font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-md">Pastel Mint</span>
+                </div>
+                <p class="text-xs text-stone-500 leading-relaxed">
+                  Nuansa lembut mint dan bintang emas ramah anak yang menyejukkan hati tamu undangan dan kerabat.
+                </p>
+              </div>
+            </div>
+            <div class="p-5 pt-0 space-y-2">
+              <a href="khitan.html" target="_blank" class="block w-full py-2.5 text-center rounded-xl bg-teal-800 hover:bg-teal-900 text-white font-semibold text-xs transition">
+                Lihat Demo Khitan
+              </a>
+              <a href="builder-khitan.html" class="block w-full py-2 text-center rounded-xl border border-teal-300 text-teal-800 hover:bg-teal-50 text-[11px] font-semibold transition">
+                Buat Undangan Khitan
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PRICING / PAKET HARGA ================= -->
+    <section id="pricing" class="py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto space-y-3 mb-16">
+          <span class="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-100/80 px-3 py-1 rounded-full">
+            Harga Transparan
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-stone-900">
+            Pilihan Paket Sesuai Kebutuhan
+          </h2>
+          <p class="text-stone-600 text-sm">
+            Mulai dari coba gratis tanpa komitmen hingga paket terlengkap dengan akses semua tema eksklusif.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch">
+          
+          <!-- Paket 1: Gratis (Trial) -->
+          <div class="rounded-3xl p-8 bg-stone-50 border border-stone-200 flex flex-col justify-between hover:shadow-lg transition">
+            <div class="space-y-6">
+              <div>
+                <span class="px-3 py-1 rounded-full text-[10px] font-bold bg-stone-200 text-stone-700 uppercase">Uji Coba</span>
+                <h3 class="text-xl font-bold text-stone-900 mt-2">Paket Gratis</h3>
+                <p class="text-xs text-stone-500 mt-1">Coba alur pembuatan &amp; preview tampilan.</p>
+              </div>
+
+              <div>
+                <span class="text-4xl font-extrabold text-stone-900">Rp 0</span>
+                <span class="text-xs text-stone-500 font-medium"> / 2 hari</span>
+              </div>
+
+              <ul class="space-y-3 text-xs text-stone-600 border-t border-stone-200/80 pt-6">
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+                  <span>Akses Dashboard Editor</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+                  <span>Pilihan Tema Standar</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+                  <span>Hitung Mundur Acara</span>
+                </li>
+                <li class="flex items-center gap-2 text-stone-400">
+                  <i data-lucide="x" class="w-4 h-4"></i>
+                  <span>Masa aktif 2 hari</span>
+                </li>
+                <li class="flex items-center gap-2 text-stone-400">
+                  <i data-lucide="x" class="w-4 h-4"></i>
+                  <span>Ada watermark platform</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="pt-8">
+              <a href="builder.html?tier=free" class="block w-full py-3.5 text-center rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs shadow transition">
+                Coba Gratis Sekarang
+              </a>
+            </div>
+          </div>
+
+          <!-- Paket 2: Silver (Best Value) -->
+          <div class="rounded-3xl p-8 bg-gradient-to-b from-white to-amber-50/50 border-2 border-amber-600 shadow-xl flex flex-col justify-between relative transform md:-translate-y-2">
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-amber-700 text-white text-[10px] font-bold uppercase tracking-wider shadow">
+              Paling Populer
+            </div>
+
+            <div class="space-y-6">
+              <div>
+                <span class="px-3 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 uppercase">Best Value</span>
+                <h3 class="text-xl font-bold text-stone-900 mt-2">Paket Silver</h3>
+                <p class="text-xs text-stone-500 mt-1">Ideal untuk pernikahan modern yang lengkap.</p>
+              </div>
+
+              <div>
+                <span class="text-4xl font-extrabold text-stone-900">Rp 49.000</span>
+                <span class="text-xs text-stone-500 font-medium"> / selamanya</span>
+              </div>
+
+              <ul class="space-y-3 text-xs text-stone-700 border-t border-stone-200/80 pt-6">
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                  <span class="font-semibold">Masa Aktif Selamanya</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                  <span>Generator Tamu WhatsApp Tak Terbatas</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                  <span>Amplop Digital &amp; Kado Fisik</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                  <span>RSVP &amp; Buku Doa Tak Terbatas</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                  <span>Musik Latar Kustom (MP3 Bebas)</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="pt-8">
+              <a href="builder.html?tier=silver" class="block w-full py-3.5 text-center rounded-xl bg-amber-800 hover:bg-amber-900 text-white font-bold text-xs shadow-lg shadow-amber-900/20 transition">
+                Pilih Paket Silver
+              </a>
+            </div>
+          </div>
+
+          <!-- Paket 3: Sapphire VIP -->
+          <div class="rounded-3xl p-8 bg-stone-900 text-white shadow-xl flex flex-col justify-between hover:shadow-2xl transition">
+            <div class="space-y-6">
+              <div>
+                <span class="px-3 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-gold-300 uppercase">Eksklusif</span>
+                <h3 class="text-xl font-bold text-white mt-2">Sapphire VIP</h3>
+                <p class="text-xs text-stone-400 mt-1">Pengalaman pernikahan termewah tanpa batas.</p>
+              </div>
+
+              <div>
+                <span class="text-4xl font-extrabold text-white">Rp 99.000</span>
+                <span class="text-xs text-stone-400 font-medium"> / selamanya</span>
+              </div>
+
+              <ul class="space-y-3 text-xs text-stone-300 border-t border-stone-800 pt-6">
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check-circle" class="w-4 h-4 text-gold-400"></i>
+                  <span class="font-semibold text-white">Semua Fitur Paket Silver</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check-circle" class="w-4 h-4 text-gold-400"></i>
+                  <span>Akses Semua Tema Eksklusif Inveet</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check-circle" class="w-4 h-4 text-gold-400"></i>
+                  <span>Galeri Foto &amp; Video Tak Terbatas</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check-circle" class="w-4 h-4 text-gold-400"></i>
+                  <span>Tanpa Watermark Platform</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check-circle" class="w-4 h-4 text-gold-400"></i>
+                  <span>Prioritas Dukungan Desain</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="pt-8">
+              <a href="builder.html?tier=vip" class="block w-full py-3.5 text-center rounded-xl bg-gradient-to-r from-gold-500 to-amber-700 text-stone-950 font-bold text-xs shadow-lg transition hover:opacity-95">
+                Pilih Paket Sapphire VIP
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Walimatul Khitan Banner in Pricing -->
+        <div class="mt-12 max-w-4xl mx-auto rounded-3xl bg-gradient-to-r from-emerald-900 to-stone-900 text-white p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl border border-emerald-700/40">
+          <div class="space-y-2 text-center sm:text-left">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-800/80 text-emerald-200 text-[10px] font-bold uppercase tracking-wider">
+              <i data-lucide="moon-star" class="w-3.5 h-3.5 text-gold-300"></i>
+              <span>Spesial Walimatul Khitan</span>
+            </div>
+            <h3 class="text-xl font-bold text-white">Butuh Undangan Khitanan untuk Ananda?</h3>
+            <p class="text-xs text-emerald-100 max-w-xl leading-relaxed">
+              Buat undangan tasyakuran walimatul khitan lengkap dengan doa anak sholeh, agenda syukuran, peta lokasi, amplop berkah syukuran, dan generator WhatsApp.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto shrink-0">
+            <a href="khitan.html" target="_blank" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-xs text-center transition">
+              Lihat Demo Khitan
+            </a>
+            <a href="builder-khitan.html" class="px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-bold text-xs text-center shadow-lg transition">
+              Buat Undangan Khitan
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= FAQ SECTION ================= -->
+    <section id="faq" class="py-24 bg-stone-50 border-t border-stone-200">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto space-y-3 mb-16">
+          <span class="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-100/80 px-3 py-1 rounded-full">
+            FAQ
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-stone-900">
+            Pertanyaan yang Sering Diajukan
+          </h2>
+          <p class="text-stone-600 text-sm">
+            Semua yang perlu Anda ketahui mengenai platform Inveet.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <!-- FAQ 1 -->
+          <div class="faq-item bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
+            <button type="button" class="faq-trigger w-full flex items-center justify-between text-left font-bold text-sm text-stone-900">
+              <span>Berapa lama proses pembuatan undangan online?</span>
+              <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-stone-400 transition-transform"></i>
+            </button>
+            <div class="faq-content hidden mt-3 pt-3 border-t border-stone-100 text-xs text-stone-600 leading-relaxed">
+              Hanya membutuhkan waktu 5 hingga 10 menit! Cukup isi nama acara (Pernikahan atau Walimatul Khitan), tanggal &amp; tempat acara, nomor rekening, dan pilih tema yang Anda sukai.
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="faq-item bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
+            <button type="button" class="faq-trigger w-full flex items-center justify-between text-left font-bold text-sm text-stone-900">
+              <span>Apakah saya bisa mencoba secara gratis terlebih dahulu?</span>
+              <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-stone-400 transition-transform"></i>
+            </button>
+            <div class="faq-content hidden mt-3 pt-3 border-t border-stone-100 text-xs text-stone-600 leading-relaxed">
+              Bisa! Kami menyediakan simulator interaktif langsung di homepage dan paket Uji Coba Gratis di editor tanpa perlu kartu kredit.
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="faq-item bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
+            <button type="button" class="faq-trigger w-full flex items-center justify-between text-left font-bold text-sm text-stone-900">
+              <span>Bagaimana cara membagikan undangan dengan nama tamu personal via WhatsApp?</span>
+              <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-stone-400 transition-transform"></i>
+            </button>
+            <div class="faq-content hidden mt-3 pt-3 border-t border-stone-100 text-xs text-stone-600 leading-relaxed">
+              Di dalam Dashboard Editor (tab Generator Tamu WA), cukup ketik nama tamu yang ingin diundang. Sistem otomatis menghasilkan tautan khusus dan draft pesan WhatsApp sopan yang bisa Anda kirimkan langsung hanya dengan sekali klik.
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="faq-item bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
+            <button type="button" class="faq-trigger w-full flex items-center justify-between text-left font-bold text-sm text-stone-900">
+              <span>Apakah tema dan data undangan bisa diubah setelah disimpan?</span>
+              <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-stone-400 transition-transform"></i>
+            </button>
+            <div class="faq-content hidden mt-3 pt-3 border-t border-stone-100 text-xs text-stone-600 leading-relaxed">
+              Tentu bisa! Kapan saja Anda dapat membuka kembali dashboard pembuat undangan dan mengubah nama, tanggal, musik, ataupun tema visual tanpa merusak tautan yang sudah dibagikan.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-stone-950 text-white py-14 border-t border-stone-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-700 to-stone-900 text-gold-300 font-serif font-bold text-lg flex items-center justify-center">
+            I
+          </div>
+          <div>
+            <span class="font-bold text-lg text-white">inveet<span class="text-amber-500">.id</span></span>
+            <p class="text-xs text-stone-400">Platform Undangan Digital Pernikahan &amp; Khitanan Terpercaya</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-5 text-xs text-stone-400">
+          <a href="#fitur" class="hover:text-white transition">Fitur</a>
+          <a href="#demo" class="hover:text-white transition">Simulator</a>
+          <a href="#showcase" class="hover:text-white transition">Tema Desain</a>
+          <a href="#pricing" class="hover:text-white transition">Harga</a>
+          <a href="invitation.html" target="_blank" class="hover:text-amber-400 transition">Demo Pernikahan</a>
+          <a href="khitan.html" target="_blank" class="hover:text-emerald-400 transition">Demo Khitanan</a>
+          <a href="builder.html" class="hover:text-amber-400 transition">Editor Pernikahan</a>
+          <a href="builder-khitan.html" class="hover:text-emerald-400 transition">Editor Khitanan</a>
+        </div>
+
+      </div>
+
+      <div class="mt-10 pt-6 border-t border-stone-800/80 flex flex-col sm:flex-row items-center justify-between text-[11px] text-stone-500 gap-4">
+        <p>&copy; 2026 Inveet.id. Hak cipta dilindungi undang-undang.</p>
+        <p>Didesain secara khusus untuk momen sakral &amp; berkah keluarga Indonesia.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/landing.js"></script>
+</body>
+</html>

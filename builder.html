@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor &amp; Pembuat Undangan - Inveet Style</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              50: '#fbf8f3',
+              100: '#f4ede0',
+              200: '#ebd9bf',
+              300: '#dfbe96',
+              400: '#d1a06d',
+              500: '#c5a880',
+              600: '#b87b38',
+              700: '#99602e',
+              800: '#7c4d29',
+              900: '#653f24'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts -->
+  <!-- SoundCloud Widget API -->
+  <script src="https://w.soundcloud.com/player/api.js"></script>
+</head>
+<body class="bg-stone-100 text-stone-800 font-sans min-h-screen pb-16">
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="builderToast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none -translate-y-4 transition-all duration-300">
+    <div class="bg-stone-900 text-gold-300 px-6 py-3 rounded-full shadow-2xl border border-gold-500/40 flex items-center gap-2.5 text-sm font-medium">
+      <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
+      <span id="builderToastMsg">Perubahan berhasil disimpan!</span>
+    </div>
+  </div>
+
+  <!-- NAVBAR / HEADER -->
+  <header class="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="dashboard.html" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-amber-200 bg-amber-50/50 text-amber-900 hover:bg-amber-100 text-xs font-semibold transition" title="Ke Dashboard Pengguna">
+          <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-amber-700"></i>
+          <span class="hidden sm:inline">Dashboard</span>
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-stone-200 text-stone-600 hover:text-stone-900 hover:bg-stone-50 text-xs transition" title="Kembali ke Beranda">
+          <i data-lucide="home" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Beranda</span>
+        </a>
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-700 to-stone-900 text-gold-300 flex items-center justify-center font-serif text-base font-bold shadow-md">
+          W
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-stone-900 text-sm sm:text-base">Editor Undangan</h1>
+            <div id="currentTierBadge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-700 border border-stone-300 text-[11px] font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span>Paket Gratis</span>
+            </div>
+          </div>
+          <p class="text-[11px] text-stone-400">Sesuaikan data &amp; desain undangan digital Anda</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="builder-khitan.html" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-300 text-xs font-medium text-emerald-800 bg-emerald-50 hover:bg-emerald-100 transition" title="Beralih ke Undangan Khitan">
+          <i data-lucide="moon-star" class="w-3.5 h-3.5 text-emerald-600"></i>
+          <span>Undangan Khitan</span>
+        </a>
+
+        <button type="button" id="btnReset" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-stone-300 text-xs font-medium text-stone-600 hover:bg-stone-50 hover:text-red-600 transition">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          <span>Reset Default</span>
+        </button>
+
+        <a href="invitation.html" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-800 hover:bg-amber-900 text-white text-xs font-semibold shadow-md hover:shadow-lg transition">
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          <span>Lihat Undangan</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-6">
+
+    <!-- TAB NAVIGATION -->
+    <div class="flex border-b border-stone-200 bg-white rounded-t-2xl px-3 pt-2 overflow-x-auto shadow-sm gap-1 scrollbar-none">
+      <button type="button" data-tab="tabTheme" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-semibold border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
+        <i data-lucide="palette" class="w-4 h-4 text-amber-600"></i>
+        <span>Pilih Desain / Tema</span>
+      </button>
+
+      <button type="button" data-tab="tabMempelai" class="tab-btn active inline-flex items-center gap-2 py-3 px-4 text-xs font-semibold border-b-2 border-amber-600 text-amber-700 bg-amber-50/70 rounded-t-lg transition whitespace-nowrap">
+        <i data-lucide="heart" class="w-4 h-4"></i>
+        <span>Data Mempelai</span>
+      </button>
+
+      <button type="button" data-tab="tabGaleri" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
+        <i data-lucide="images" class="w-4 h-4 text-rose-500"></i>
+        <span>Galeri Foto</span>
+      </button>
+
+      <button type="button" data-tab="tabAcara" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
+        <i data-lucide="calendar" class="w-4 h-4"></i>
+        <span>Jadwal &amp; Lokasi</span>
+      </button>
+
+      <button type="button" data-tab="tabAmplop" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
+        <i data-lucide="gift" class="w-4 h-4"></i>
+        <span>Amplop Digital</span>
+      </button>
+
+      <button type="button" data-tab="tabMusik" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
+        <i data-lucide="music" class="w-4 h-4"></i>
+        <span>Musik Latar</span>
+      </button>
+
+      <button type="button" data-tab="tabGenerator" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
+        <i data-lucide="share-2" class="w-4 h-4 text-emerald-600"></i>
+        <span class="text-emerald-700 font-semibold">Generator Tamu (WA)</span>
+      </button>
+    </div>
+
+    <!-- FORM CONTAINER -->
+    <form id="builderForm" class="bg-white rounded-b-2xl p-6 sm:p-8 shadow-sm border-x border-b border-stone-200">
+      <input type="hidden" id="selectedTheme" value="champagne">
+
+      <!-- ================= TAB 0: PILIH TEMA DESAIN ================= -->
+      <div id="tabTheme" class="tab-pane hidden space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Pilih Desain &amp; Tema Undangan</h2>
+          <p class="text-xs text-stone-500">Pilih gaya visual, palet warna, dan atmosfer yang paling cocok untuk hari bahagia Anda.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+          <!-- Theme 1: Warm Champagne -->
+          <div class="theme-card selected cursor-pointer rounded-2xl p-5 border-2 border-amber-600 bg-[#faf8f5] shadow-sm hover:shadow-md transition relative flex flex-col justify-between"
+               data-theme-val="champagne">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 uppercase tracking-wider">Classic &bull; Default</span>
+                <span class="theme-check text-amber-700 font-bold flex items-center gap-1 text-xs">
+                  <i data-lucide="check-circle-2" class="w-4 h-4"></i> Aktif
+                </span>
+              </div>
+              <div>
+                <h3 class="font-serif font-bold text-lg text-stone-900">Warm Champagne</h3>
+                <p class="text-xs text-stone-600 leading-relaxed mt-1">
+                  Sentuhan ivory hangat dan aksen emas klasik. Memberikan kesan pernikahan sakral, megah, dan abadi.
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-stone-200/70 mt-4 flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #faf8f5;" title="Ivory Light"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #ebd9bf;" title="Warm Champagne"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #c5a880;" title="Gold Accent"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #7c4d29;" title="Deep Amber"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #2c2523;" title="Primary Dark"></span>
+              </div>
+              <button type="button" class="btn-select-theme text-xs font-semibold text-amber-800 hover:text-amber-900">
+                Pilih Tema
+              </button>
+            </div>
+          </div>
+
+          <!-- Theme 2: Sage Botanical -->
+          <div class="theme-card cursor-pointer rounded-2xl p-5 border-2 border-stone-200 bg-[#f5f8f5] shadow-sm hover:shadow-md transition relative flex flex-col justify-between"
+               data-theme-val="sage">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-900 uppercase tracking-wider">Rustic &bull; Garden</span>
+                <span class="theme-check hidden text-emerald-700 font-bold flex items-center gap-1 text-xs">
+                  <i data-lucide="check-circle-2" class="w-4 h-4"></i> Aktif
+                </span>
+              </div>
+              <div>
+                <h3 class="font-serif font-bold text-lg text-emerald-950">Sage Botanical</h3>
+                <p class="text-xs text-stone-600 leading-relaxed mt-1">
+                  Dominasi hijau sage menyejukkan dengan aksen dedaunan eukaliptus alami. Pilihan populer untuk konsep garden party atau outdoor.
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-stone-200/70 mt-4 flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #f5f8f5;" title="Sage Light"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #d6ebd9;" title="Mint Cream"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #5e8367;" title="Sage Green"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #2f4e37;" title="Forest Shadow"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #1e2b21;" title="Deep Earth"></span>
+              </div>
+              <button type="button" class="btn-select-theme text-xs font-semibold text-emerald-800 hover:text-emerald-900">
+                Pilih Tema
+              </button>
+            </div>
+          </div>
+
+          <!-- Theme 3: Midnight Rose -->
+          <div class="theme-card cursor-pointer rounded-2xl p-5 border-2 border-stone-200 bg-[#1c1a20] text-white shadow-sm hover:shadow-md transition relative flex flex-col justify-between"
+               data-theme-val="midnight">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-pink-900/60 text-pink-200 uppercase tracking-wider">Dark &bull; Romance</span>
+                <span class="theme-check hidden text-pink-400 font-bold flex items-center gap-1 text-xs">
+                  <i data-lucide="check-circle-2" class="w-4 h-4"></i> Aktif
+                </span>
+              </div>
+              <div>
+                <h3 class="font-serif font-bold text-lg text-pink-100">Midnight Rose</h3>
+                <p class="text-xs text-stone-300 leading-relaxed mt-1">
+                  Atmosfer arang obsidian yang megah dipadukan dengan aksen rose gold lembut. Memberikan nuansa intim, dramatis, dan sangat eksklusif.
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-stone-700 mt-4 flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full border border-stone-600 shadow-sm" style="background-color: #141316;" title="Obsidian Base"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-600 shadow-sm" style="background-color: #222027;" title="Charcoal Card"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-600 shadow-sm" style="background-color: #dca3a3;" title="Blush Rose Gold"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-600 shadow-sm" style="background-color: #b86e6e;" title="Deep Rose"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-600 shadow-sm" style="background-color: #fbe2e2;" title="Soft Pearl"></span>
+              </div>
+              <button type="button" class="btn-select-theme text-xs font-semibold text-pink-300 hover:text-pink-200">
+                Pilih Tema
+              </button>
+            </div>
+          </div>
+
+          <!-- Theme 4: Royal Navy & Silver -->
+          <div class="theme-card cursor-pointer rounded-2xl p-5 border-2 border-stone-200 bg-[#f5f7fa] shadow-sm hover:shadow-md transition relative flex flex-col justify-between"
+               data-theme-val="royal">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-900 uppercase tracking-wider">Modern &bull; Minimalist</span>
+                <span class="theme-check hidden text-blue-700 font-bold flex items-center gap-1 text-xs">
+                  <i data-lucide="check-circle-2" class="w-4 h-4"></i> Aktif
+                </span>
+              </div>
+              <div>
+                <h3 class="font-serif font-bold text-lg text-slate-900">Royal Navy &amp; Silver</h3>
+                <p class="text-xs text-stone-600 leading-relaxed mt-1">
+                  Kombinasi biru navy anggun dengan nuansa perak dingin kontemporer. Sangat bersih, maskulin-anggun, dan modern.
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-stone-200/70 mt-4 flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #f5f7fa;" title="Slate Clean"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #cfe1f7;" title="Ice Silver"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #4d719e;" title="Royal Slate"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #1e3654;" title="Deep Navy"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300 shadow-sm" style="background-color: #0d1b2a;" title="Midnight Sea"></span>
+              </div>
+              <button type="button" class="btn-select-theme text-xs font-semibold text-blue-800 hover:text-blue-900">
+                Pilih Tema
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pengaturan Background Cover & Wallpaper (Tanpa Gambar Orang) -->
+        <div class="mt-8 p-6 rounded-2xl bg-white border border-stone-200/80 shadow-sm space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-stone-100">
+            <div>
+              <h3 class="font-bold text-sm text-stone-900 flex items-center gap-2">
+                <i data-lucide="palette" class="w-4 h-4 text-amber-700"></i>
+                <span>Gaya Background &amp; Ornamen Cover</span>
+              </h3>
+              <p class="text-xs text-stone-500 mt-0.5">Semua background didesain murni bermotif ornamen mewah dan estetis tanpa ada foto orang lain.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+            <!-- Preset 1: Default Theme -->
+            <button type="button" class="preset-bg-card p-3 rounded-xl border-2 border-amber-600 bg-amber-50/50 text-left transition cursor-pointer relative group" data-bg="">
+              <div class="w-full h-16 rounded-lg bg-gradient-to-r from-stone-900 via-amber-950 to-stone-900 mb-2 border border-stone-300 flex items-center justify-center text-gold-300 text-[10px] font-bold">
+                Otomatis Tema
+              </div>
+              <div class="font-bold text-xs text-stone-800">Bawaan Tema</div>
+              <div class="text-[10px] text-stone-500">Ornamen sesuai tema terpilih</div>
+            </button>
+
+            <!-- Preset 2: Botanical Floral -->
+            <button type="button" class="preset-bg-card p-3 rounded-xl border-2 border-stone-200 hover:border-amber-400 bg-white text-left transition cursor-pointer relative group" data-bg="https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?auto=format&fit=crop&w=1600&q=85">
+              <div class="w-full h-16 rounded-lg bg-cover bg-center mb-2 border border-stone-300" style="background-image: url('https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?auto=format&fit=crop&w=300&q=70');"></div>
+              <div class="font-bold text-xs text-stone-800">Botanical Foliage</div>
+              <div class="text-[10px] text-stone-500">Dedaunan alami menyejukkan</div>
+            </button>
+
+            <!-- Preset 3: Luxury Gold Vintage -->
+            <button type="button" class="preset-bg-card p-3 rounded-xl border-2 border-stone-200 hover:border-amber-400 bg-white text-left transition cursor-pointer relative group" data-bg="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1600&q=85">
+              <div class="w-full h-16 rounded-lg bg-cover bg-center mb-2 border border-stone-300" style="background-image: url('https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=300&q=70');"></div>
+              <div class="font-bold text-xs text-stone-800">Gold Damask Art</div>
+              <div class="text-[10px] text-stone-500">Lukisan ornamen emas antik</div>
+            </button>
+
+            <!-- Preset 4: Midnight Dark Fluid -->
+            <button type="button" class="preset-bg-card p-3 rounded-xl border-2 border-stone-200 hover:border-amber-400 bg-white text-left transition cursor-pointer relative group" data-bg="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1600&q=85">
+              <div class="w-full h-16 rounded-lg bg-cover bg-center mb-2 border border-stone-300" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=300&q=70');"></div>
+              <div class="font-bold text-xs text-stone-800">Obsidian Luxury</div>
+              <div class="text-[10px] text-stone-500">Marmer gelap aksen emas</div>
+            </button>
+          </div>
+
+          <!-- Custom Background Upload / URL -->
+          <div class="pt-3 border-t border-stone-100 space-y-2">
+            <label class="block text-xs font-semibold text-stone-700">Atau Gunakan Background Kustom Sendiri (URL / Upload):</label>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input type="text" id="customBgInput" placeholder="Kosongkan untuk bawaan tema atau masukkan URL gambar..." class="flex-1 px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none bg-stone-50">
+              <input type="file" id="customBgFile" accept="image/*" class="hidden">
+              <button type="button" id="btnUploadCustomBg" class="px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold flex items-center justify-center gap-1.5 shrink-0 cursor-pointer transition">
+                <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                <span>Upload dari PC / HP</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-stone-400">Pilihan ini akan menggantikan background cover di layar laptop (desktop) maupun tampilan ponsel.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 1: MEMPELAI ================= -->
+      <div id="tabMempelai" class="tab-pane space-y-8">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Informasi Kedua Mempelai</h2>
+          <p class="text-xs text-stone-500">Atur nama, keluarga, dan foto untuk mempelai pria dan wanita.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Mempelai Pria -->
+          <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-stone-200">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+              <h3 class="font-bold text-sm text-stone-800">Mempelai Pria</h3>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Panggilan</label>
+              <input type="text" id="groomNickname" required placeholder="Contoh: Dimas" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Lengkap &amp; Gelar</label>
+              <input type="text" id="groomFullname" required placeholder="Contoh: Dimas Arya Pratama, S.T." class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Status Anak</label>
+              <input type="text" id="groomOrder" placeholder="Contoh: Putra pertama dari Pasangan" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs font-medium text-stone-700 mb-1">Nama Ayah</label>
+                <input type="text" id="groomFather" placeholder="Bpk. Bambang Sutrisno" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-stone-700 mb-1">Nama Ibu</label>
+                <input type="text" id="groomMother" placeholder="Ibu Sri Rahayu" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Username Instagram (tanpa @)</label>
+              <input type="text" id="groomInstagram" placeholder="dimasarya" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Foto Mempelai Pria</label>
+              <div class="flex items-center gap-3 p-3 bg-white rounded-xl border border-stone-200">
+                <img id="groomPhotoPreview" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80" alt="Preview Pria" class="w-12 h-12 rounded-full object-cover border-2 border-amber-500 shadow-sm shrink-0">
+                <div class="flex-1 space-y-1">
+                  <input type="file" id="groomPhotoFile" accept="image/*" class="hidden">
+                  <button type="button" id="btnUploadGroomPhoto" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-800 hover:bg-amber-900 text-white text-xs font-medium shadow-sm transition">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                    <span>Upload Foto Pria (HP/PC)</span>
+                  </button>
+                  <p class="text-[10px] text-stone-400">Pilih file gambar langsung dari perangkat Anda</p>
+                </div>
+              </div>
+              <input type="text" id="groomPhoto" placeholder="Atau tempel link URL foto..." class="mt-1.5 w-full px-3 py-1.5 rounded-xl border border-stone-200 text-[11px] text-stone-600 focus:ring-1 focus:ring-amber-600 outline-none">
+            </div>
+          </div>
+
+          <!-- Mempelai Wanita -->
+          <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-stone-200">
+              <span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
+              <h3 class="font-bold text-sm text-stone-800">Mempelai Wanita</h3>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Panggilan</label>
+              <input type="text" id="brideNickname" required placeholder="Contoh: Sarah" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Lengkap &amp; Gelar</label>
+              <input type="text" id="brideFullname" required placeholder="Contoh: Sarah Dania Putri, S.Ds." class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Status Anak</label>
+              <input type="text" id="brideOrder" placeholder="Contoh: Putri kedua dari Pasangan" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs font-medium text-stone-700 mb-1">Nama Ayah</label>
+                <input type="text" id="brideFather" placeholder="Bpk. Hendra Gunawan" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-stone-700 mb-1">Nama Ibu</label>
+                <input type="text" id="brideMother" placeholder="Ibu Maya Novita" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Username Instagram (tanpa @)</label>
+              <input type="text" id="brideInstagram" placeholder="sarahdania" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Foto Mempelai Wanita</label>
+              <div class="flex items-center gap-3 p-3 bg-white rounded-xl border border-stone-200">
+                <img id="bridePhotoPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80" alt="Preview Wanita" class="w-12 h-12 rounded-full object-cover border-2 border-pink-500 shadow-sm shrink-0">
+                <div class="flex-1 space-y-1">
+                  <input type="file" id="bridePhotoFile" accept="image/*" class="hidden">
+                  <button type="button" id="btnUploadBridePhoto" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-pink-700 hover:bg-pink-800 text-white text-xs font-medium shadow-sm transition">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                    <span>Upload Foto Wanita (HP/PC)</span>
+                  </button>
+                  <p class="text-[10px] text-stone-400">Pilih file gambar langsung dari perangkat Anda</p>
+                </div>
+              </div>
+              <input type="text" id="bridePhoto" placeholder="Atau tempel link URL foto..." class="mt-1.5 w-full px-3 py-1.5 rounded-xl border border-stone-200 text-[11px] text-stone-600 focus:ring-1 focus:ring-amber-600 outline-none">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 1.5: GALERI FOTO ================= -->
+      <div id="tabGaleri" class="tab-pane hidden space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Galeri Foto Pre-Wedding &amp; Dokumentasi</h2>
+          <p class="text-xs text-stone-500">Upload foto langsung dari memori HP atau Laptop Anda. Foto akan otomatis dikompresi agar ringan dan tidak lemot saat dibuka tamu.</p>
+        </div>
+
+        <!-- Upload Box -->
+        <div class="p-6 rounded-2xl bg-gradient-to-b from-stone-50 to-white border-2 border-dashed border-stone-300 hover:border-amber-600 transition text-center space-y-3">
+          <div class="w-12 h-12 mx-auto rounded-full bg-amber-100 text-amber-800 flex items-center justify-center shadow-sm">
+            <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+          </div>
+          <div class="space-y-1">
+            <h4 class="font-bold text-sm text-stone-800">Upload Foto dari Galeri HP / PC</h4>
+            <p class="text-xs text-stone-500 max-w-sm mx-auto">Klik tombol di bawah untuk memilih satu atau banyak foto sekaligus langsung dari perangkat Anda.</p>
+          </div>
+          <div>
+            <input type="file" id="galleryFileInput" accept="image/*" multiple class="hidden">
+            <button type="button" id="btnTriggerGalleryUpload" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-amber-800 hover:bg-amber-900 text-white font-bold text-xs shadow-md transition cursor-pointer">
+              <i data-lucide="image-plus" class="w-4 h-4 text-gold-300"></i>
+              <span>Pilih / Upload Foto (Bisa Banyak Sekaligus)</span>
+            </button>
+          </div>
+          <p class="text-[11px] text-stone-400">Mendukung format JPG, PNG, WEBP &bull; Otomatis dioptimalkan</p>
+        </div>
+
+        <!-- Alternative: Tambah via URL -->
+        <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+          <label class="block text-xs font-semibold text-stone-700">Atau Tambahkan dari Link Gambar (URL Online):</label>
+          <div class="flex gap-2">
+            <input type="url" id="galleryUrlInput" placeholder="https://..." class="flex-1 px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none bg-white">
+            <button type="button" id="btnAddGalleryUrl" class="px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-medium transition flex items-center gap-1.5 shrink-0">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Tambah Foto</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Preview Grid -->
+        <div class="space-y-3 pt-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-sm text-stone-900 flex items-center gap-2">
+              <span>Daftar Foto Galeri</span>
+              <span id="galleryCountBadge" class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-bold">5 Foto</span>
+            </h3>
+            <button type="button" id="btnClearAllGallery" class="text-xs text-red-600 hover:text-red-700 font-medium cursor-pointer">Hapus Semua Foto</button>
+          </div>
+
+          <div id="galleryPreviewGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 2: ACARA & LOKASI ================= -->
+      <div id="tabAcara" class="tab-pane hidden space-y-8">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Jadwal &amp; Lokasi Acara</h2>
+          <p class="text-xs text-stone-500">Atur tanggal pernikahan, hitung mundur, sesi akad dan resepsi.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+          <h3 class="font-bold text-sm text-stone-800">Tanggal Utama &amp; Hitung Mundur</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Teks Tanggal (Tampilan Undangan)</label>
+              <input type="text" id="eventDateDisplay" placeholder="Sabtu, 28 Desember 2026" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Target Waktu Countdown (YYYY-MM-DDTHH:MM)</label>
+              <input type="datetime-local" id="eventDateIso" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Akad Nikah -->
+          <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+            <h3 class="font-bold text-sm text-stone-800">Sesi Akad Nikah</h3>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Waktu / Jam</label>
+              <input type="text" id="akadTime" placeholder="Pukul 08.00 - 10.00 WIB" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Tempat / Masjid</label>
+              <input type="text" id="akadPlace" placeholder="Masjid Agung Al-Barkah" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Alamat Lengkap</label>
+              <input type="text" id="akadAddress" placeholder="Jl. Veteran No. 45, Jakarta Pusat" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+          </div>
+
+          <!-- Resepsi -->
+          <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+            <h3 class="font-bold text-sm text-stone-800">Sesi Resepsi Pernikahan</h3>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Waktu / Jam</label>
+              <input type="text" id="resepsiTime" placeholder="Pukul 11.00 - 14.00 WIB" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Gedung / Hotel</label>
+              <input type="text" id="resepsiPlace" placeholder="Grand Ballroom Hotel Santika" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Alamat Lengkap</label>
+              <input type="text" id="resepsiAddress" placeholder="Jl. Hayam Wuruk No. 125, Jakarta Barat" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-stone-700 mb-1">Link Google Maps Lokasi</label>
+          <input type="url" id="mapsUrl" placeholder="https://maps.google.com/?q=..." class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+        </div>
+      </div>
+
+      <!-- ================= TAB 3: AMPLOP DIGITAL ================= -->
+      <div id="tabAmplop" class="tab-pane hidden space-y-8">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Amplop Digital &amp; Kado</h2>
+          <p class="text-xs text-stone-500">Nomor rekening bank untuk tanda kasih digital dari tamu undangan.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Bank 1 -->
+          <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+            <h3 class="font-bold text-sm text-stone-800">Rekening Bank 1</h3>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Bank</label>
+              <input type="text" id="bank1Name" placeholder="BCA" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nomor Rekening</label>
+              <input type="text" id="bank1Number" placeholder="8801234567" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Atas Nama (Pemilik)</label>
+              <input type="text" id="bank1Holder" placeholder="Dimas Arya Pratama" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+          </div>
+
+          <!-- Bank 2 -->
+          <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+            <h3 class="font-bold text-sm text-stone-800">Rekening Bank 2</h3>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Bank</label>
+              <input type="text" id="bank2Name" placeholder="MANDIRI" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Nomor Rekening</label>
+              <input type="text" id="bank2Number" placeholder="1370012345678" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Atas Nama (Pemilik)</label>
+              <input type="text" id="bank2Holder" placeholder="Sarah Dania Putri" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-stone-700 mb-1">Alamat Penerimaan Kado Fisik</label>
+          <textarea id="physicalAddress" rows="2" placeholder="Tuliskan alamat lengkap pengiriman kado..." class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none resize-none"></textarea>
+        </div>
+      </div>
+
+      <!-- ================= TAB 4: MUSIK ================= -->
+      <div id="tabMusik" class="tab-pane hidden space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Pengaturan Musik Latar</h2>
+          <p class="text-xs text-stone-500">Mendukung link <strong>SoundCloud</strong> (bebas pilih lagu apa saja) atau link file audio MP3 langsung.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-semibold text-stone-700">Tautan Musik (SoundCloud atau File MP3):</label>
+              <span id="audioFormatBadge" class="hidden px-2.5 py-0.5 rounded-full text-[10px] font-bold"></span>
+            </div>
+            <div class="flex gap-2">
+              <input type="url" id="audioUrl" placeholder="https://soundcloud.com/... atau https://.../lagu.mp3" class="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none bg-white">
+              <button type="button" id="btnTestAudio" class="px-4 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold transition flex items-center gap-1.5 shrink-0 shadow cursor-pointer">
+                <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                <span id="btnTestAudioText">Tes Putar</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-stone-400 mt-1.5 leading-relaxed">
+              💡 <strong>Tips:</strong> Anda bisa menyalin link lagu apa saja dari <strong>SoundCloud</strong> (misal lagu Maher Zain, Nasyid, atau lagu pop romantis) dan menempelkannya di sini. Platform akan otomatis mengintegrasikannya!
+            </p>
+          </div>
+
+          <!-- Pilihan Rekomendasi Musik Populer -->
+          <div class="pt-3 border-t border-stone-200 space-y-2.5">
+            <h4 class="text-xs font-bold text-stone-800 flex items-center gap-1.5">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-600"></i>
+              <span>Pilihan Musik Rekomendasi (Klik untuk Menggunakan):</span>
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button type="button" class="preset-song-btn text-left p-3 rounded-xl bg-white hover:bg-amber-50/70 border border-stone-200 hover:border-amber-400 transition group flex items-center justify-between cursor-pointer"
+                      data-url="https://soundcloud.com/shb-bahri/maher-zain-x-harris-j-qalbi">
+                <div>
+                  <div class="font-bold text-xs text-stone-800 group-hover:text-amber-900">Maher Zain x Harris J - Qalbi</div>
+                  <div class="text-[10px] text-stone-500">SoundCloud Track &bull; Nuansa Religi Syahdu</div>
+                </div>
+                <span class="text-[10px] font-semibold text-amber-700 bg-amber-100/60 px-2 py-0.5 rounded-md">Pilih</span>
+              </button>
+
+              <button type="button" class="preset-song-btn text-left p-3 rounded-xl bg-white hover:bg-amber-50/70 border border-stone-200 hover:border-amber-400 transition group flex items-center justify-between cursor-pointer"
+                      data-url="https://assets.mixkit.co/music/preview/mixkit-wedding-waltz-piano-music-681.mp3">
+                <div>
+                  <div class="font-bold text-xs text-stone-800 group-hover:text-amber-900">Wedding Waltz Piano</div>
+                  <div class="text-[10px] text-stone-500">MP3 &bull; Piano Klasik Romantis</div>
+                </div>
+                <span class="text-[10px] font-semibold text-amber-700 bg-amber-100/60 px-2 py-0.5 rounded-md">Pilih</span>
+              </button>
+
+              <button type="button" class="preset-song-btn text-left p-3 rounded-xl bg-white hover:bg-amber-50/70 border border-stone-200 hover:border-amber-400 transition group flex items-center justify-between cursor-pointer"
+                      data-url="https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3">
+                <div>
+                  <div class="font-bold text-xs text-stone-800 group-hover:text-amber-900">Serene Acoustic &amp; Ambient</div>
+                  <div class="text-[10px] text-stone-500">MP3 &bull; Petikan Akustik Hangat</div>
+                </div>
+                <span class="text-[10px] font-semibold text-amber-700 bg-amber-100/60 px-2 py-0.5 rounded-md">Pilih</span>
+              </button>
+
+              <button type="button" class="preset-song-btn text-left p-3 rounded-xl bg-white hover:bg-amber-50/70 border border-stone-200 hover:border-amber-400 transition group flex items-center justify-between cursor-pointer"
+                      data-url="https://assets.mixkit.co/music/preview/mixkit-romantic-moment-114.mp3">
+                <div>
+                  <div class="font-bold text-xs text-stone-800 group-hover:text-amber-900">Romantic Strings &amp; Piano</div>
+                  <div class="text-[10px] text-stone-500">MP3 &bull; Intim &amp; Menenangkan</div>
+                </div>
+                <span class="text-[10px] font-semibold text-amber-700 bg-amber-100/60 px-2 py-0.5 rounded-md">Pilih</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden Audio Preview Elements in Builder -->
+        <audio id="builderTestAudio" preload="none"></audio>
+        <div class="fixed -bottom-[9999px] -left-[9999px] w-1 h-1 overflow-hidden opacity-0 pointer-events-none" aria-hidden="true">
+          <iframe id="builderScPlayer" allow="autoplay; encrypted-media" src="" width="300" height="166"></iframe>
+        </div>
+      </div>
+
+      <!-- ================= TAB 5: GENERATOR TAMU (WHATSAPP) ================= -->
+      <div id="tabGenerator" class="tab-pane hidden space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Generator Link Tamu &amp; Undangan WhatsApp</h2>
+          <p class="text-xs text-stone-500">Buat tautan personal untuk setiap nama tamu dan kirim langsung via WhatsApp dengan pesan sopan.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-stone-800 mb-1">Nama Tamu Undangan</label>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input type="text" id="guestInput" placeholder="Contoh: Bapak Joko &amp; Keluarga" class="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none bg-white">
+              <button type="button" id="btnGenerateLink" class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs transition flex items-center justify-center gap-1.5 shadow">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span>Buat Link &amp; Pesan</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Result Container -->
+          <div id="generatedResultBox" class="hidden space-y-4 pt-4 border-t border-emerald-200/80">
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Tautan Personal Undangan</label>
+              <div class="flex gap-2">
+                <input type="text" id="generatedUrlInput" readonly class="flex-1 px-3.5 py-2 rounded-xl bg-white border border-stone-200 text-xs text-stone-600 font-mono">
+                <button type="button" id="btnCopyUrl" class="px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-medium flex items-center gap-1 transition">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  <span>Salin Link</span>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-stone-700 mb-1">Format Pesan WhatsApp Siap Kirim</label>
+              <textarea id="generatedWaPreview" rows="8" readonly class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-stone-200 text-xs font-sans text-stone-700 leading-relaxed resize-none"></textarea>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center gap-2 pt-1">
+              <button type="button" id="btnCopyWaText" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-stone-800 hover:bg-stone-900 text-white text-xs font-medium flex items-center justify-center gap-2 transition">
+                <i data-lucide="clipboard" class="w-4 h-4"></i>
+                <span>Salin Teks WhatsApp</span>
+              </button>
+
+              <a id="btnOpenWa" href="#" target="_blank" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center justify-center gap-2 transition shadow">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                <span>Buka &amp; Kirim di WhatsApp</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM ACTION BAR -->
+      <div class="pt-6 border-t border-stone-200 flex items-center justify-between mt-8">
+        <p class="text-[11px] text-stone-400 italic">*Semua perubahan disimpan otomatis di browser</p>
+        <button type="submit" class="px-6 py-2.5 rounded-xl bg-amber-800 hover:bg-amber-900 text-white text-xs font-bold shadow-lg hover:shadow-amber-900/20 transition flex items-center gap-2">
+          <i data-lucide="save" class="w-4 h-4 text-gold-300"></i>
+          <span>Simpan Perubahan</span>
+        </button>
+      </div>
+    </form>
+  </main>
+
+  <script src="js/builder.js"></script>
+</body>
+</html>

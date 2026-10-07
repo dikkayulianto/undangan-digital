@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Undangan Tasyakuran Walimatul Khitan</title>
+  
+  <meta name="description" content="Tasyakuran Walimatul Khitan Muhammad Fadhil Al-Fatih">
+  <meta property="og:title" content="Tasyakuran Walimatul Khitan - Fadhil">
+  <meta property="og:description" content="Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emerald: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+              950: '#052e16'
+            },
+            gold: {
+              300: '#f6d89b',
+              400: '#e5be70',
+              500: '#cfa243',
+              600: '#b3862b'
+            }
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', '"Playfair Display"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            arabic: ['"Amiri"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- AOS Animation CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Spinning disc animation */
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+      animation: spinSlow 6s linear infinite;
+    }
+    .paused {
+      animation-play-state: paused !important;
+    }
+    .arch-frame {
+      border-top-left-radius: 9999px;
+      border-top-right-radius: 9999px;
+      border-bottom-left-radius: 1.5rem;
+      border-bottom-right-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(22, 101, 52, 0.2);
+    }
+  </style>
+
+  <!-- SoundCloud Widget API -->
+  <script src="https://w.soundcloud.com/player/api.js"></script>
+</head>
+<body class="overflow-hidden bg-[#0c1e14] text-stone-800 antialiased selection:bg-emerald-200">
+
+  <!-- AUDIO ELEMENT (Background Instrumental Nasheed / Ambient HTML5) -->
+  <audio id="khitanAudio" loop preload="auto">
+    <source src="https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3" type="audio/mp3">
+  </audio>
+
+  <!-- SOUNDCLOUD PLAYER CONTAINER (Off-Screen) -->
+  <div class="fixed -bottom-[9999px] -left-[9999px] w-1 h-1 overflow-hidden opacity-0 pointer-events-none" aria-hidden="true">
+    <iframe id="scKhitanPlayer" allow="autoplay; encrypted-media" src="" width="300" height="166"></iframe>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none -translate-y-4 transition-all duration-300">
+    <div class="bg-stone-900/90 backdrop-blur-md text-emerald-300 px-5 py-3 rounded-full shadow-2xl border border-emerald-500/30 flex items-center gap-2.5 text-xs tracking-wide">
+      <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+      <span id="toastMessage">Berhasil disalin!</span>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX MODAL -->
+  <div id="khitanLightbox" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+    <button id="closeKhitanLightbox" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition cursor-pointer">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <img id="khitanLightboxImg" src="" alt="Gallery Preview" class="max-w-full max-h-[85vh] rounded-xl object-contain shadow-2xl border border-white/20">
+  </div>
+
+  <!-- FLOATING MUSIC BUTTON -->
+  <button id="floatingMusicBtn" class="fixed bottom-24 right-5 z-40 hidden w-12 h-12 rounded-full bg-white/90 backdrop-blur-md border border-emerald-300 shadow-xl flex items-center justify-center text-emerald-900 hover:scale-110 active:scale-95 transition group">
+    <div class="music-icon" id="musicDisc">
+      <i data-lucide="disc-3" class="w-6 h-6 text-emerald-800 animate-spin-slow"></i>
+    </div>
+  </button>
+
+  <!-- FLOATING BOTTOM NAVIGATION -->
+  <nav id="bottomNav" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-[400px] bg-white/90 backdrop-blur-lg border border-stone-200 shadow-2xl rounded-full py-2.5 px-4 flex items-center justify-between translate-y-full transition-transform duration-500">
+    <a href="#coverSection" class="nav-btn flex flex-col items-center gap-1 text-[10px] text-stone-400 hover:text-emerald-700 transition">
+      <i data-lucide="home" class="w-4 h-4"></i>
+      <span>Cover</span>
+    </a>
+    <a href="#profilAnak" class="nav-btn flex flex-col items-center gap-1 text-[10px] text-stone-400 hover:text-emerald-700 transition">
+      <i data-lucide="user" class="w-4 h-4"></i>
+      <span>Profil</span>
+    </a>
+    <a href="#acara" class="nav-btn flex flex-col items-center gap-1 text-[10px] text-stone-400 hover:text-emerald-700 transition">
+      <i data-lucide="calendar" class="w-4 h-4"></i>
+      <span>Acara</span>
+    </a>
+    <a href="#galeriKhitan" class="nav-btn flex flex-col items-center gap-1 text-[10px] text-stone-400 hover:text-emerald-700 transition">
+      <i data-lucide="images" class="w-4 h-4"></i>
+      <span>Galeri</span>
+    </a>
+    <a href="#hadiah" class="nav-btn flex flex-col items-center gap-1 text-[10px] text-stone-400 hover:text-emerald-700 transition">
+      <i data-lucide="gift" class="w-4 h-4"></i>
+      <span>Hadiah</span>
+    </a>
+    <a href="#wishesSection" class="nav-btn flex flex-col items-center gap-1 text-[10px] text-stone-400 hover:text-emerald-700 transition">
+      <i data-lucide="message-square-heart" class="w-4 h-4"></i>
+      <span>Doa Restu</span>
+    </a>
+  </nav>
+
+  <!-- DESKTOP SPLIT CONTAINER -->
+  <div class="min-h-screen flex justify-center lg:justify-end relative bg-neutral-950">
+    
+    <!-- DESKTOP AMBIENT COVER -->
+    <div class="hidden lg:flex fixed inset-y-0 left-0 right-[480px] bg-cover bg-center items-center justify-center p-16"
+         style="background-image: linear-gradient(to right, rgba(5,46,22,0.92), rgba(5,46,22,0.72)), url('https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=1600&q=85');">
+      <div class="max-w-xl text-center text-white space-y-6" data-aos="fade-up">
+        <span class="text-xs uppercase tracking-[0.35em] text-gold-300 font-semibold">Tasyakuran Walimatul Khitan</span>
+        <h1 id="desktopChildName" class="text-5xl xl:text-6xl font-serif tracking-wide font-normal">Muhammad Fadhil Al-Fatih</h1>
+        <p id="desktopDateText" class="text-emerald-200 font-light text-sm tracking-widest uppercase">Ahad, 15 November 2026 &bull; Jakarta</p>
+        <div class="w-16 h-[1px] bg-gold-400/50 mx-auto my-6"></div>
+        <p class="font-arabic text-2xl text-gold-300 leading-loose">
+          بَارَكَ اللهُ لَكَ فِي الْمَوْهُوْبِ لَكَ وَشَكَرْتَ الْوَاهِبَ وَبَلَغَ أَشُدَّهُ وَرُزِقْتَ بِرَّهُ
+        </p>
+        <p class="text-stone-300 italic text-xs max-w-md mx-auto leading-relaxed">
+          "Semoga Allah memberkahimu atas anak yang dianugerahkan kepadamu, semoga engkau bersyukur kepada Sang Pemberi, dan semoga anak ini tumbuh dewasa serta engkau dikaruniai kebaktiannya."
+        </p>
+      </div>
+    </div>
+
+    <!-- MAIN MOBILE CONTAINER -->
+    <div id="mainWrapper" class="w-full lg:w-[480px] min-h-screen bg-[#f7faf7] shadow-2xl relative overflow-x-hidden pb-20">
+
+      <!-- ================= COVER SECTION ================= -->
+      <section id="coverSection" class="relative min-h-screen flex flex-col items-center justify-between p-8 text-center bg-cover bg-center"
+               style="background-image: linear-gradient(to bottom, rgba(5,46,22,0.60), rgba(5,46,22,0.92)), url('https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80');">
+        
+        <!-- Top Title -->
+        <div class="pt-8 space-y-2 text-white">
+          <p class="text-[11px] uppercase tracking-[0.3em] text-gold-300 font-semibold">Tasyakuran Walimatul Khitan</p>
+          <h2 id="coverChildName" class="text-3xl sm:text-4xl font-serif tracking-wider font-bold">Muhammad Fadhil Al-Fatih</h2>
+        </div>
+
+        <!-- Center Child Photo Frame -->
+        <div class="space-y-4 my-auto py-6">
+          <div class="w-36 h-36 mx-auto rounded-full border-4 border-gold-400/80 p-1 shadow-2xl backdrop-blur-sm">
+            <img id="coverChildPhoto" src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=400&q=80" 
+                 alt="Fadhil" 
+                 class="w-full h-full object-cover rounded-full">
+          </div>
+          <p id="coverDateText" class="text-emerald-100 text-xs font-serif tracking-widest uppercase">15 &bull; 11 &bull; 2026</p>
+        </div>
+
+        <!-- Bottom Guest Card & Buka Undangan Button -->
+        <div class="w-full max-w-sm space-y-4 pb-6">
+          <div class="bg-black/50 backdrop-blur-md border border-white/20 rounded-2xl p-4 text-white space-y-1">
+            <p class="text-[11px] text-stone-300 tracking-wider">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
+            <h3 id="guestName" class="text-lg sm:text-xl font-serif font-bold text-gold-300 tracking-wide">
+              Tamu Undangan
+            </h3>
+            <p class="text-[10px] text-stone-400 italic">*Mohon maaf bila ada kesalahan penulisan nama/gelar</p>
+          </div>
+
+          <button id="btnBukaUndangan" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 text-white font-bold text-xs tracking-wider shadow-lg hover:shadow-emerald-600/30 hover:scale-[1.02] active:scale-[0.98] transition flex items-center justify-center gap-2">
+            <i data-lucide="mail-open" class="w-4 h-4"></i>
+            <span>BUKA UNDANGAN</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ================= SALAM & DOA PEMBUKA ================= -->
+      <section id="salamPembuka" class="py-16 px-6 text-center relative bg-[#f7faf7]">
+        <div class="max-w-sm mx-auto space-y-6" data-aos="fade-up">
+          <div class="w-10 h-10 mx-auto text-emerald-700 flex items-center justify-center">
+            <i data-lucide="moon-star" class="w-8 h-8"></i>
+          </div>
+
+          <p class="font-serif text-lg text-emerald-950 font-semibold">
+            Assalamu’alaikum Warahmatullahi Wabarakatuh
+          </p>
+
+          <p class="text-xs text-stone-600 leading-relaxed font-light">
+            Dengan memohon rahmat dan ridho Allah Subhanahu Wa Ta'ala, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara tasyakuran khitan putra kami:
+          </p>
+
+          <!-- Doa Box -->
+          <div class="p-6 rounded-2xl bg-white border border-emerald-100 shadow-sm relative space-y-3">
+            <p class="font-arabic text-xl text-emerald-900 leading-loose">
+              رَبِّ هَبْ لِي مِنَ الصَّالِحِينَ
+            </p>
+            <p class="text-xs italic text-stone-600 leading-relaxed">
+              "Ya Tuhanku, anugerahkanlah kepadaku (seorang anak) yang termasuk orang yang sholeh."
+            </p>
+            <span class="block text-[11px] font-semibold text-emerald-800 tracking-wider">
+              (QS. As-Saffat: 100)
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PROFIL ANAK ================= -->
+      <section id="profilAnak" class="py-12 px-6 bg-[#edf3ed] relative">
+        <div class="text-center space-y-1 mb-8" data-aos="fade-up">
+          <span class="text-xs uppercase tracking-[0.25em] text-emerald-700 font-semibold">Profil Putra Kami</span>
+          <h2 class="text-3xl font-serif text-emerald-950 font-bold">Yang Berbahagia</h2>
+        </div>
+
+        <div class="max-w-sm mx-auto text-center space-y-4" data-aos="fade-up">
+          <div class="arch-frame w-48 h-64 mx-auto border-4 border-white shadow-xl relative group">
+            <img id="childPhotoImg" src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=500&q=80" 
+                 alt="Foto Anak" 
+                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+          </div>
+
+          <div class="space-y-1">
+            <h3 id="childFullnameText" class="text-2xl font-serif font-bold text-stone-900">Muhammad Fadhil Al-Fatih</h3>
+            <p id="childOrderText" class="text-xs text-emerald-800 font-medium">Putra pertama dari pasangan:</p>
+            <p id="parentsText" class="text-xs font-semibold text-stone-700">Bpk. Ahmad Fauzi &amp; Ibu Nurul Hidayah</p>
+          </div>
+
+          <div class="p-4 bg-white/80 rounded-2xl border border-emerald-100 text-xs text-stone-600 leading-relaxed italic">
+            "Semoga menjadi anak yang sholeh, berbakti kepada kedua orang tua, cerdas, dan berguna bagi agama, bangsa, serta sesama. Aamiin ya Rabbal 'Alamin."
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= COUNTDOWN ================= -->
+      <section class="py-14 px-6 text-center bg-[#f7faf7] relative">
+        <div class="max-w-sm mx-auto space-y-6" data-aos="fade-up">
+          <span class="text-xs uppercase tracking-[0.25em] text-emerald-700 font-semibold">Menghitung Hari</span>
+          <h2 class="text-3xl font-serif text-stone-900 font-bold">Hari Bahagia</h2>
+
+          <!-- Countdown Grid -->
+          <div class="grid grid-cols-4 gap-2 pt-2">
+            <div class="bg-white border border-stone-200/80 rounded-xl p-3 shadow-sm flex flex-col items-center">
+              <span id="days" class="text-2xl font-bold font-serif text-emerald-900">00</span>
+              <span class="text-[10px] uppercase tracking-wider text-stone-400 font-medium">Hari</span>
+            </div>
+            <div class="bg-white border border-stone-200/80 rounded-xl p-3 shadow-sm flex flex-col items-center">
+              <span id="hours" class="text-2xl font-bold font-serif text-emerald-900">00</span>
+              <span class="text-[10px] uppercase tracking-wider text-stone-400 font-medium">Jam</span>
+            </div>
+            <div class="bg-white border border-stone-200/80 rounded-xl p-3 shadow-sm flex flex-col items-center">
+              <span id="minutes" class="text-2xl font-bold font-serif text-emerald-900">00</span>
+              <span class="text-[10px] uppercase tracking-wider text-stone-400 font-medium">Menit</span>
+            </div>
+            <div class="bg-white border border-stone-200/80 rounded-xl p-3 shadow-sm flex flex-col items-center">
+              <span id="seconds" class="text-2xl font-bold font-serif text-emerald-900">00</span>
+              <span class="text-[10px] uppercase tracking-wider text-stone-400 font-medium">Detik</span>
+            </div>
+          </div>
+
+          <div>
+            <a id="btnCalendar" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tasyakuran+Khitan+Muhammad+Fadhil&dates=20261115T020000Z/20261115T070000Z" 
+               target="_blank" 
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-900 text-white text-xs font-semibold shadow hover:bg-emerald-950 transition">
+              <i data-lucide="calendar-plus" class="w-4 h-4 text-gold-300"></i>
+              <span>Simpan ke Google Calendar</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= RINCIAN ACARA & LOKASI ================= -->
+      <section id="acara" class="py-14 px-6 bg-[#edf3ed] relative">
+        <div class="text-center space-y-1 mb-8" data-aos="fade-up">
+          <span class="text-xs uppercase tracking-[0.25em] text-emerald-700 font-semibold">Agenda Tasyakuran</span>
+          <h2 class="text-3xl font-serif text-stone-900 font-bold">Waktu &amp; Lokasi</h2>
+        </div>
+
+        <div class="space-y-6 max-w-sm mx-auto">
+          <!-- Card Syukuran & Doa Bersama -->
+          <div class="bg-white rounded-2xl p-6 border border-emerald-100 shadow-md space-y-4 text-center relative overflow-hidden" data-aos="fade-up">
+            <div class="w-12 h-12 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+              <i data-lucide="sparkles" class="w-6 h-6"></i>
+            </div>
+            <div class="space-y-1">
+              <h3 class="text-xl font-serif font-bold text-stone-900">Tasyakuran &amp; Ramah Tamah</h3>
+              <p id="eventDateDisplayText" class="text-xs text-emerald-700 font-semibold">Ahad, 15 November 2026</p>
+              <p id="eventTimeText" class="text-xs text-stone-500">Pukul 09.00 - 13.00 WIB</p>
+            </div>
+            <div class="text-xs text-stone-600 border-t border-stone-100 pt-3 space-y-0.5">
+              <p id="eventPlaceText" class="font-bold text-stone-800">Kediaman Mempelai / Aula Al-Ikhlas</p>
+              <p id="eventAddressText" class="text-stone-500">Jl. Cempaka Putih Timur No. 28, Jakarta Pusat</p>
+            </div>
+          </div>
+
+          <!-- Google Maps Action -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200/80 shadow-sm text-center space-y-3" data-aos="fade-up">
+            <a id="btnMapsLink" href="https://maps.google.com/?q=Jakarta" 
+               target="_blank" 
+               class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-emerald-800 text-white text-xs font-semibold hover:bg-emerald-900 transition">
+              <i data-lucide="map-pin" class="w-4 h-4 text-gold-300"></i>
+              <span>Petunjuk Arah Google Maps</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= GALERI FOTO TASYAKURAN ================= -->
+      <section id="galeriKhitan" class="py-14 px-6 bg-[#edf3ed] relative">
+        <div class="text-center space-y-1 mb-8" data-aos="fade-up">
+          <span class="text-xs uppercase tracking-[0.25em] text-emerald-700 font-semibold">Momen Berkah</span>
+          <h2 class="text-3xl font-serif text-stone-900 font-bold">Galeri Tasyakuran</h2>
+        </div>
+
+        <div id="khitanGalleryGrid" class="grid grid-cols-2 gap-3 max-w-sm mx-auto" data-aos="fade-up">
+          <!-- Populated from config.gallery -->
+        </div>
+      </section>
+
+      <!-- ================= AMPLOP DIGITAL / TANDA KASIH ================= -->
+      <section id="hadiah" class="py-14 px-6 bg-[#f7faf7] relative">
+        <div class="text-center space-y-2 mb-8" data-aos="fade-up">
+          <span class="text-xs uppercase tracking-[0.25em] text-emerald-700 font-semibold">Tanda Kasih</span>
+          <h2 class="text-3xl font-serif text-stone-900 font-bold">Kado Syukuran</h2>
+          <p class="text-xs text-stone-600 max-w-xs mx-auto leading-relaxed">
+            Doa restu Anda merupakan karunia terindah bagi ananda tercinta. Namun jika Anda berkenan memberikan tanda kasih digital:
+          </p>
+        </div>
+
+        <div class="space-y-4 max-w-sm mx-auto" data-aos="fade-up">
+          <!-- Card Rekening 1 -->
+          <div class="bg-gradient-to-br from-emerald-950 to-emerald-900 rounded-2xl p-5 text-white shadow-xl space-y-4 relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span id="bank1NameText" class="font-bold text-lg tracking-wider text-gold-300">BCA</span>
+              <i data-lucide="credit-card" class="w-5 h-5 text-emerald-400"></i>
+            </div>
+            <div class="space-y-1">
+              <p class="text-emerald-300/80 text-[10px] tracking-widest uppercase">Nomor Rekening</p>
+              <div class="flex items-center justify-between">
+                <span id="bank1NumberText" class="font-mono text-lg font-bold tracking-widest text-white">1234 5678 90</span>
+              </div>
+              <p id="bank1HolderText" class="text-xs text-emerald-200 font-medium">a.n Ahmad Fauzi (Ayah)</p>
+            </div>
+            <button id="btnCopyBank1" onclick="copyToClipboard('1234567890', 'BCA')" class="w-full py-2 px-3 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-medium flex items-center justify-center gap-2 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5 text-gold-300"></i>
+              <span>Salin No. Rekening</span>
+            </button>
+          </div>
+
+          <!-- Kirim Kado Fisik -->
+          <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm space-y-2 text-center">
+            <div class="w-8 h-8 mx-auto text-emerald-700 flex items-center justify-center">
+              <i data-lucide="gift" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-serif font-bold text-stone-800 text-sm">Alamat Pengiriman Kado</h4>
+            <p id="physicalAddressText" class="text-xs text-stone-600 leading-relaxed">
+              Jl. Cempaka Putih Timur No. 28, RT 02/RW 04, Cempaka Putih, Jakarta Pusat
+            </p>
+            <button id="btnCopyAddress" onclick="copyToClipboard('Jl. Cempaka Putih Timur No. 28, RT 02/RW 04, Cempaka Putih, Jakarta Pusat', 'Alamat')" class="text-xs text-emerald-700 font-semibold inline-flex items-center gap-1 hover:underline pt-1">
+              <i data-lucide="copy" class="w-3 h-3"></i>
+              <span>Salin Alamat</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= RSVP & BUKU UCAPAN ================= -->
+      <section id="wishesSection" class="py-14 px-6 bg-[#edf3ed] relative">
+        <div class="text-center space-y-2 mb-8" data-aos="fade-up">
+          <span class="text-xs uppercase tracking-[0.25em] text-emerald-700 font-semibold">Doa &amp; Ucapan</span>
+          <h2 class="text-3xl font-serif text-stone-900 font-bold">Buku Tamu Syukuran</h2>
+          <p class="text-xs text-stone-600">Berikan ucapan selamat &amp; doa terbaik untuk ananda</p>
+        </div>
+
+        <div class="max-w-sm mx-auto space-y-6" data-aos="fade-up">
+          <!-- Form RSVP -->
+          <form id="rsvpForm" class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-md space-y-3.5">
+            <div>
+              <label for="rsvpName" class="block text-xs font-semibold text-stone-700 mb-1">Nama Anda</label>
+              <input type="text" id="rsvpName" required placeholder="Contoh: Pak RT &amp; Warga" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none transition">
+            </div>
+
+            <div>
+              <label for="rsvpStatus" class="block text-xs font-semibold text-stone-700 mb-1">Konfirmasi Kehadiran</label>
+              <select id="rsvpStatus" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none transition bg-white">
+                <option value="hadir">Insya Allah Hadir</option>
+                <option value="tidak">Mohon Maaf Berhalangan</option>
+                <option value="ragu">Masih Ragu-ragu</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="rsvpMessage" class="block text-xs font-semibold text-stone-700 mb-1">Doa &amp; Harapan</label>
+              <textarea id="rsvpMessage" rows="3" required placeholder="Tuliskan doa terbaik untuk ananda..." class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none transition resize-none"></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-3 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-xs tracking-wider shadow transition flex items-center justify-center gap-2">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              <span>KIRIM DOA RESTU</span>
+            </button>
+          </form>
+
+          <!-- Wishes List -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-xs text-stone-500 px-1">
+              <span class="font-semibold text-stone-700">Untaian Doa Tamu</span>
+              <span id="wishesCount">(0)</span>
+            </div>
+
+            <div id="wishesContainer" class="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PENUTUP & FOOTER ================= -->
+      <footer class="py-16 px-6 bg-[#0a1e12] text-white text-center relative overflow-hidden">
+        <div class="max-w-sm mx-auto space-y-6" data-aos="fade-up">
+          <p class="text-xs text-emerald-100/80 font-light leading-relaxed">
+            Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir serta memberikan doa restu kepada ananda tercinta.
+          </p>
+
+          <p class="font-serif text-sm text-gold-300">
+            Wassalamu’alaikum Warahmatullahi Wabarakatuh
+          </p>
+
+          <div class="pt-4 space-y-1">
+            <p class="text-xs tracking-widest text-emerald-300 uppercase font-medium">Keluarga Besar</p>
+            <h2 id="footerFamilyName" class="text-2xl font-serif text-white tracking-wider">Bpk. Ahmad Fauzi &amp; Ibu Nurul Hidayah</h2>
+          </div>
+
+          <!-- Edit Undangan & Home Link -->
+          <div class="pt-4 flex items-center justify-center gap-2">
+            <a href="index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 text-[11px] border border-emerald-800 transition">
+              <i data-lucide="home" class="w-3.5 h-3.5"></i>
+              <span>Beranda Inveet</span>
+            </a>
+            <a href="builder-khitan.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-900/60 hover:bg-emerald-800 text-gold-300 text-[11px] border border-emerald-800 transition">
+              <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+              <span>Edit Undangan Khitan</span>
+            </a>
+          </div>
+
+          <div class="pt-6 border-t border-emerald-900/80 text-[10px] text-stone-500 space-y-1">
+            <p>Made with &hearts; Undangan Walimatul Khitan</p>
+            <p class="text-stone-600">Platform Inveet.id Digital Invitation</p>
+          </div>
+        </div>
+      </footer>
+
+    </div> <!-- End Main Mobile Container -->
+  </div> <!-- End Desktop Split Container -->
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true, offset: 50 });
+  </script>
+  <script>
+    /**
+     * Script Undangan Khitanan Interaktif
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+
+      // Dynamic Guest Name
+      const urlParams = new URLSearchParams(window.location.search);
+      const guestNameParam = urlParams.get('to');
+      const guestNameElement = document.getElementById('guestName');
+      if (guestNameElement) {
+        if (guestNameParam && guestNameParam.trim() !== '') {
+          guestNameElement.textContent = decodeURIComponent(guestNameParam.replace(/\+/g, ' '));
+        } else {
+          guestNameElement.textContent = 'Tamu Undangan';
+        }
+      }
+
+      // Default Khitan Config
+      const defaultKhitanConfig = {
+        childNickname: 'Fadhil',
+        childFullname: 'Muhammad Fadhil Al-Fatih',
+        childOrder: 'Putra pertama dari pasangan:',
+        father: 'Bpk. Ahmad Fauzi',
+        mother: 'Ibu Nurul Hidayah',
+        photo: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=500&q=80',
+        eventDateDisplay: 'Ahad, 15 November 2026',
+        eventDateIso: '2026-11-15T09:00:00+07:00',
+        eventTime: 'Pukul 09.00 - 13.00 WIB',
+        eventPlace: 'Kediaman Mempelai / Aula Al-Ikhlas',
+        eventAddress: 'Jl. Cempaka Putih Timur No. 28, Jakarta Pusat',
+        mapsUrl: 'https://maps.google.com/?q=Jakarta',
+        bank1Name: 'BCA',
+        bank1Number: '1234567890',
+        bank1Holder: 'Ahmad Fauzi (Ayah)',
+        physicalAddress: 'Jl. Cempaka Putih Timur No. 28, RT 02/RW 04, Cempaka Putih, Jakarta Pusat'
+      };
+
+      let config = defaultKhitanConfig;
+      const saved = localStorage.getItem('khitan_config');
+      if (saved) {
+        try { config = Object.assign({}, defaultKhitanConfig, JSON.parse(saved)); } catch(e) {}
+      }
+
+      // Populate Elements
+      if (document.getElementById('desktopChildName')) document.getElementById('desktopChildName').textContent = config.childFullname;
+      if (document.getElementById('coverChildName')) document.getElementById('coverChildName').textContent = config.childFullname;
+      if (document.getElementById('childFullnameText')) document.getElementById('childFullnameText').textContent = config.childFullname;
+      if (document.getElementById('childOrderText')) document.getElementById('childOrderText').textContent = config.childOrder;
+      if (document.getElementById('parentsText')) document.getElementById('parentsText').textContent = `${config.father} & ${config.mother}`;
+      if (document.getElementById('footerFamilyName')) document.getElementById('footerFamilyName').textContent = `${config.father} & ${config.mother}`;
+      if (document.getElementById('coverChildPhoto') && config.photo) document.getElementById('coverChildPhoto').src = config.photo;
+      if (document.getElementById('childPhotoImg') && config.photo) document.getElementById('childPhotoImg').src = config.photo;
+
+      if (document.getElementById('desktopDateText')) document.getElementById('desktopDateText').textContent = `${config.eventDateDisplay} • Jakarta`;
+      if (document.getElementById('eventDateDisplayText')) document.getElementById('eventDateDisplayText').textContent = config.eventDateDisplay;
+      if (document.getElementById('eventTimeText')) document.getElementById('eventTimeText').textContent = config.eventTime;
+      if (document.getElementById('eventPlaceText')) document.getElementById('eventPlaceText').textContent = config.eventPlace;
+      if (document.getElementById('eventAddressText')) document.getElementById('eventAddressText').textContent = config.eventAddress;
+      if (document.getElementById('btnMapsLink') && config.mapsUrl) document.getElementById('btnMapsLink').href = config.mapsUrl;
+
+      if (document.getElementById('bank1NameText')) document.getElementById('bank1NameText').textContent = config.bank1Name;
+      if (document.getElementById('bank1NumberText')) document.getElementById('bank1NumberText').textContent = config.bank1Number;
+      if (document.getElementById('bank1HolderText')) document.getElementById('bank1HolderText').textContent = `a.n ${config.bank1Holder}`;
+      if (document.getElementById('btnCopyBank1')) {
+        document.getElementById('btnCopyBank1').setAttribute('onclick', `copyToClipboard('${config.bank1Number}', '${config.bank1Name}')`);
+      }
+      if (document.getElementById('physicalAddressText')) document.getElementById('physicalAddressText').textContent = config.physicalAddress;
+      if (document.getElementById('btnCopyAddress')) {
+        document.getElementById('btnCopyAddress').setAttribute('onclick', `copyToClipboard('${config.physicalAddress.replace(/'/g, "\\'")}', 'Alamat')`);
+      }
+
+      // Custom Background Override (if set by user)
+      if (config.customBg && config.customBg.trim()) {
+        const bgUrl = config.customBg.trim();
+        const khitanDeskAmbient = document.querySelector('.hidden.lg\\:flex.fixed.inset-y-0.left-0');
+        const khitanCoverEl = document.getElementById('coverSection');
+        if (khitanDeskAmbient) khitanDeskAmbient.style.backgroundImage = `linear-gradient(to right, rgba(5,46,22,0.92), rgba(5,46,22,0.72)), url('${bgUrl}')`;
+        if (khitanCoverEl) khitanCoverEl.style.backgroundImage = `linear-gradient(to bottom, rgba(5,46,22,0.60), rgba(5,46,22,0.92)), url('${bgUrl}')`;
+      }
+
+      // Audio & Buka Undangan (Dual Engine: HTML5 & SoundCloud Widget)
+      const audio = document.getElementById('khitanAudio');
+      const btnBuka = document.getElementById('btnBukaUndangan');
+      const floatingMusicBtn = document.getElementById('floatingMusicBtn');
+      const musicDisc = document.getElementById('musicDisc');
+      const bottomNav = document.getElementById('bottomNav');
+      let isPlaying = false;
+      let isSoundCloud = false;
+      let scWidget = null;
+      let scReady = false;
+      let playRequested = false;
+
+      const audioUrl = config.audioUrl || 'https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3';
+
+      if (audioUrl.includes('soundcloud.com')) {
+        isSoundCloud = true;
+        const cleanUrl = audioUrl.split('?')[0];
+        const scFrame = document.getElementById('scKhitanPlayer');
+        if (scFrame) {
+          scFrame.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(cleanUrl)}&color=%23166534&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false`;
+          
+          function setupKhitanSC() {
+            if (window.SC && window.SC.Widget) {
+              try {
+                scWidget = SC.Widget(scFrame);
+                scWidget.bind(SC.Widget.Events.READY, () => {
+                  scReady = true;
+                  if (playRequested) {
+                    scWidget.play();
+                  }
+                });
+                scWidget.bind(SC.Widget.Events.PLAY, () => {
+                  isPlaying = true;
+                  if (musicDisc) musicDisc.classList.remove('paused');
+                });
+                scWidget.bind(SC.Widget.Events.PAUSE, () => {
+                  isPlaying = false;
+                  if (musicDisc) musicDisc.classList.add('paused');
+                });
+                scWidget.bind(SC.Widget.Events.FINISH, () => {
+                  if (scWidget) {
+                    scWidget.seekTo(0);
+                    scWidget.play();
+                  }
+                });
+              } catch (e) {
+                console.error('Error init SoundCloud in Khitan:', e);
+              }
+            } else {
+              setTimeout(setupKhitanSC, 200);
+            }
+          }
+          setupKhitanSC();
+        }
+      } else {
+        isSoundCloud = false;
+        if (audio) {
+          audio.src = audioUrl;
+        }
+      }
+
+      function playAudio() {
+        playRequested = true;
+        if (isSoundCloud) {
+          if (scWidget) {
+            try {
+              scWidget.play();
+              isPlaying = true;
+              if (musicDisc) musicDisc.classList.remove('paused');
+            } catch (e) {
+              console.log(e);
+            }
+          }
+        } else if (audio) {
+          audio.play().then(() => {
+            isPlaying = true;
+            if (musicDisc) musicDisc.classList.remove('paused');
+          }).catch(e => console.log(e));
+        }
+      }
+
+      function pauseAudio() {
+        playRequested = false;
+        if (isSoundCloud && scWidget) {
+          try {
+            scWidget.pause();
+            isPlaying = false;
+            if (musicDisc) musicDisc.classList.add('paused');
+          } catch (e) {
+            console.log(e);
+          }
+        } else if (audio) {
+          audio.pause();
+          isPlaying = false;
+          if (musicDisc) musicDisc.classList.add('paused');
+        }
+      }
+
+      if (btnBuka) {
+        btnBuka.addEventListener('click', () => {
+          document.body.classList.remove('overflow-hidden');
+          playAudio();
+          if (floatingMusicBtn) floatingMusicBtn.classList.remove('hidden');
+          if (bottomNav) bottomNav.classList.remove('translate-y-full');
+          const firstSection = document.getElementById('salamPembuka');
+          if (firstSection) firstSection.scrollIntoView({ behavior: 'smooth' });
+          if (window.AOS) setTimeout(() => AOS.refresh(), 400);
+        });
+      }
+
+      if (floatingMusicBtn) {
+        floatingMusicBtn.addEventListener('click', () => {
+          if (isPlaying) {
+            pauseAudio();
+          } else {
+            playAudio();
+          }
+        });
+      }
+
+      // Live Countdown
+      let targetDate = new Date(config.eventDateIso || '2026-11-15T09:00:00+07:00').getTime();
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const dist = targetDate - now;
+        if (dist < 0) return;
+        const d = Math.floor(dist / (1000 * 60 * 60 * 24));
+        const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((dist % (1000 * 60)) / 1000);
+        const pad = (n) => String(n).padStart(2, '0');
+        if (document.getElementById('days')) document.getElementById('days').textContent = pad(d);
+        if (document.getElementById('hours')) document.getElementById('hours').textContent = pad(h);
+        if (document.getElementById('minutes')) document.getElementById('minutes').textContent = pad(m);
+        if (document.getElementById('seconds')) document.getElementById('seconds').textContent = pad(s);
+      }
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+
+      // Clipboard toast
+      window.copyToClipboard = function(text, label) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(`${label || 'Informasi'} berhasil disalin!`);
+        });
+      };
+
+      function showToast(msg) {
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toastMessage');
+        if (toast && toastMsg) {
+          toastMsg.textContent = msg;
+          toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-4');
+          toast.classList.add('opacity-100', 'translate-y-0');
+          setTimeout(() => {
+            toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-4');
+            toast.classList.remove('opacity-100', 'translate-y-0');
+          }, 3200);
+        }
+      }
+
+      // Render Galeri Khitan
+      const kGallery = (config.gallery && Array.isArray(config.gallery) && config.gallery.length > 0)
+        ? config.gallery
+        : [
+            'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&w=800&q=80'
+          ];
+
+      const kGrid = document.getElementById('khitanGalleryGrid');
+      if (kGrid && Array.isArray(kGallery) && kGallery.length > 0) {
+        kGrid.innerHTML = '';
+        kGallery.forEach((photoUrl, idx) => {
+          const isFull = (idx % 3 === 2);
+          const item = document.createElement('div');
+          item.className = `khitan-gallery-item cursor-pointer overflow-hidden rounded-2xl shadow-md group relative h-48 ${isFull ? 'col-span-2' : ''}`;
+          item.setAttribute('data-full', photoUrl);
+          item.innerHTML = `
+            <img src="${photoUrl}" alt="Khitan Gallery ${idx + 1}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+            <div class="absolute inset-0 bg-emerald-950/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
+              <i data-lucide="zoom-in" class="w-6 h-6 text-gold-300"></i>
+            </div>
+          `;
+          kGrid.appendChild(item);
+        });
+        if (window.lucide) lucide.createIcons();
+      }
+
+      // Lightbox Khitan
+      const kLightbox = document.getElementById('khitanLightbox');
+      const kLightboxImg = document.getElementById('khitanLightboxImg');
+      const closeKLightbox = document.getElementById('closeKhitanLightbox');
+
+      document.addEventListener('click', (e) => {
+        const item = e.target.closest('.khitan-gallery-item');
+        if (item) {
+          const src = item.getAttribute('data-full') || item.querySelector('img')?.src;
+          if (src && kLightbox && kLightboxImg) {
+            kLightboxImg.src = src;
+            kLightbox.classList.remove('hidden');
+            setTimeout(() => kLightbox.classList.remove('opacity-0'), 20);
+          }
+        }
+      });
+
+      if (closeKLightbox && kLightbox) {
+        closeKLightbox.addEventListener('click', () => {
+          kLightbox.classList.add('opacity-0');
+          setTimeout(() => kLightbox.classList.add('hidden'), 300);
+        });
+        kLightbox.addEventListener('click', (e) => {
+          if (e.target === kLightbox) {
+            kLightbox.classList.add('opacity-0');
+            setTimeout(() => kLightbox.classList.add('hidden'), 300);
+          }
+        });
+      }
+
+      // RSVP & Wishes
+      const defaultWishes = [
+        { name: 'Ustadz Mansur & Keluarga', attendance: 'hadir', message: 'Barakallahu fiik ananda Fadhil. Semoga lekas sembuh, menjadi anak sholeh yang senantiasa membanggakan orang tua dan taat pada agama.', time: '2 jam yang lalu' },
+        { name: 'Pak RT Bambang', attendance: 'hadir', message: 'Selamat atas khitanan ananda Fadhil. Insya Allah kami sekeluarga hadir memberikan doa restu.', time: '5 jam yang lalu' }
+      ];
+
+      function getWishes() {
+        const savedW = localStorage.getItem('khitan_wishes');
+        if (!savedW) return defaultWishes;
+        try { return JSON.parse(savedW); } catch { return defaultWishes; }
+      }
+
+      function renderWishes() {
+        const container = document.getElementById('wishesContainer');
+        const count = document.getElementById('wishesCount');
+        if (!container) return;
+        const wishes = getWishes();
+        if (count) count.textContent = `(${wishes.length})`;
+        container.innerHTML = '';
+        wishes.forEach(w => {
+          const card = document.createElement('div');
+          card.className = 'p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-sm flex flex-col gap-1 text-xs';
+          card.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-stone-800">${w.name}</span>
+              <span class="text-[10px] text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full">${w.attendance === 'hadir' ? 'Hadir' : 'Doa Restu'}</span>
+            </div>
+            <p class="text-stone-600 mt-0.5 leading-relaxed">${w.message}</p>
+            <span class="text-[10px] text-stone-400 self-end">${w.time}</span>
+          `;
+          container.appendChild(card);
+        });
+      }
+
+      const rsvpForm = document.getElementById('rsvpForm');
+      if (rsvpForm) {
+        rsvpForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const name = document.getElementById('rsvpName').value.trim();
+          const attendance = document.getElementById('rsvpStatus').value;
+          const msg = document.getElementById('rsvpMessage').value.trim();
+          if (!name || !msg) return;
+
+          const wishes = getWishes();
+          wishes.unshift({ name, attendance, message: msg, time: 'Baru saja' });
+          localStorage.setItem('khitan_wishes', JSON.stringify(wishes));
+          renderWishes();
+          rsvpForm.reset();
+          showToast('Terima kasih atas doa restu Anda!');
+        });
+      }
+      renderWishes();
+    });
+  </script>
+</body>
+</html>
