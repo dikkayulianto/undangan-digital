@@ -24,7 +24,8 @@ const defaultKhitanConfig = {
     'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&w=800&q=80'
-  ]
+  ],
+  theme: 'cream'
 };
 
 /**
@@ -93,6 +94,7 @@ async function uploadImageToServer(dataUrl, filename) {
 // Encode config into compact URL parameter so guests can view on any device
 function encodeKhitanConfigForUrl(cfg) {
   const compact = {
+    th: cfg.theme || 'cream',
     nn: cfg.childNickname || '',
     fn: cfg.childFullname || '',
     o: cfg.childOrder || '',
@@ -158,12 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => {
       const target = btn.getAttribute('data-tab');
       tabBtns.forEach(b => {
-        b.classList.remove('active', 'border-emerald-600', 'text-emerald-800', 'bg-emerald-50/70');
+        b.classList.remove('active', 'border-amber-600', 'text-amber-900', 'bg-amber-50/70', 'border-emerald-600', 'text-emerald-800', 'bg-emerald-50/70');
         b.classList.add('border-transparent', 'text-stone-500');
       });
       tabPanes.forEach(pane => pane.classList.add('hidden'));
 
-      btn.classList.add('active', 'border-emerald-600', 'text-emerald-800', 'bg-emerald-50/70');
+      btn.classList.add('active', 'border-amber-600', 'text-amber-900', 'bg-amber-50/70');
       btn.classList.remove('border-transparent', 'text-stone-500');
       const activePane = document.getElementById(target);
       if (activePane) activePane.classList.remove('hidden');
@@ -172,6 +174,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Populate Form Fields
   const config = getKhitanConfig();
+
+  // Bright Theme Selection
+  const themeInput = document.getElementById('selectedKhitanTheme');
+  const themeCards = document.querySelectorAll('.theme-khitan-card');
+
+  function updateKhitanThemeUI(selected) {
+    if (themeInput) themeInput.value = selected;
+    themeCards.forEach(card => {
+      const val = card.getAttribute('data-theme-val');
+      const check = card.querySelector('.theme-khitan-check');
+      if (val === selected) {
+        card.classList.add('border-amber-600', 'selected');
+        card.classList.remove('border-stone-200');
+        if (check) check.classList.remove('hidden');
+      } else {
+        card.classList.remove('border-amber-600', 'selected');
+        card.classList.add('border-stone-200');
+        if (check) check.classList.add('hidden');
+      }
+    });
+  }
+
+  const currentTheme = config.theme || 'cream';
+  updateKhitanThemeUI(currentTheme);
+
+  themeCards.forEach(card => {
+    card.addEventListener('click', () => {
+      const val = card.getAttribute('data-theme-val');
+      updateKhitanThemeUI(val);
+      const cur = getKhitanConfig();
+      cur.theme = val;
+      saveKhitanConfig(cur);
+      const themeLabel = val === 'cream' ? 'Warm Cream & Gold' : (val === 'sage' ? 'Sage Terang' : 'Royal Ivory');
+      showToast(`Tema terang "${themeLabel}" dipilih!`);
+    });
+  });
 
   // Child & Parents
   document.getElementById('childNickname').value = config.childNickname || '';
@@ -610,7 +648,8 @@ document.addEventListener('DOMContentLoaded', () => {
       bank1Holder: document.getElementById('bank1Holder').value.trim(),
       physicalAddress: document.getElementById('physicalAddress').value.trim(),
       audioUrl: document.getElementById('audioUrl').value.trim(),
-      customBg: document.getElementById('customBgInput')?.value?.trim() || ''
+      customBg: document.getElementById('customBgInput')?.value?.trim() || '',
+      theme: document.getElementById('selectedKhitanTheme')?.value || 'cream'
     };
 
     if (saveKhitanConfig(newConfig)) {
@@ -687,6 +726,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Base URL resolution (clean origin - avoids 404 folder nesting)
     const baseOrigin = window.location.origin;
     let fullInvitationUrl = `${baseOrigin}/khitan.html?to=${encodeURIComponent(guestName)}`;
+    if (currentCfg.theme && currentCfg.theme !== 'cream') {
+      fullInvitationUrl += `&theme=${encodeURIComponent(currentCfg.theme)}`;
+    }
 
     const waMessage = 
 `Kepada Yth.
@@ -756,7 +798,10 @@ Salam hormat,
         } catch (err) {}
       }
 
-      const generalUrl = `${window.location.origin}/khitan.html`;
+      let generalUrl = `${window.location.origin}/khitan.html`;
+      if (currentCfg.theme && currentCfg.theme !== 'cream') {
+        generalUrl += `?theme=${encodeURIComponent(currentCfg.theme)}`;
+      }
       navigator.clipboard.writeText(generalUrl).then(() => {
         showToast('Link undangan umum (siap share grup WA) berhasil disalin!');
       });

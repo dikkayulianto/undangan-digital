@@ -102,13 +102,18 @@
 
     <!-- TAB NAVIGATION -->
     <div class="flex border-b border-stone-200 bg-white rounded-t-2xl px-3 pt-2 overflow-x-auto shadow-sm gap-1 scrollbar-none">
-      <button type="button" data-tab="tabAnak" class="tab-btn active inline-flex items-center gap-2 py-3 px-4 text-xs font-semibold border-b-2 border-emerald-600 text-emerald-800 bg-emerald-50/70 rounded-t-lg transition whitespace-nowrap">
+      <button type="button" data-tab="tabTemaKhitan" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-semibold border-b-2 border-amber-600 text-amber-900 bg-amber-50/70 rounded-t-lg transition whitespace-nowrap active">
+        <i data-lucide="palette" class="w-4 h-4 text-amber-600"></i>
+        <span>Tema Warna Terang</span>
+      </button>
+
+      <button type="button" data-tab="tabAnak" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
         <i data-lucide="user" class="w-4 h-4"></i>
         <span>Data Anak &amp; Ortu</span>
       </button>
 
       <button type="button" data-tab="tabGaleriKhitan" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
-        <i data-lucide="images" class="w-4 h-4 text-emerald-600"></i>
+        <i data-lucide="images" class="w-4 h-4 text-amber-600"></i>
         <span>Galeri Foto</span>
       </button>
 
@@ -128,16 +133,120 @@
       </button>
 
       <button type="button" data-tab="tabGenerator" class="tab-btn inline-flex items-center gap-2 py-3 px-4 text-xs font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-800 rounded-t-lg transition whitespace-nowrap">
-        <i data-lucide="share-2" class="w-4 h-4 text-emerald-600"></i>
-        <span class="text-emerald-700 font-semibold">Generator Tamu (WA)</span>
+        <i data-lucide="share-2" class="w-4 h-4 text-amber-600"></i>
+        <span class="text-amber-800 font-semibold">Generator Tamu (WA)</span>
       </button>
     </div>
 
     <!-- FORM CONTAINER -->
     <form id="khitanBuilderForm" class="bg-white rounded-b-2xl p-6 sm:p-8 shadow-sm border-x border-b border-stone-200">
-      
+      <input type="hidden" id="selectedKhitanTheme" value="cream">
+
+      <!-- ================= TAB 0: TEMA WARNA TERANG ================= -->
+      <div id="tabTemaKhitan" class="tab-pane space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-stone-900">Pilih Desain &amp; Tema Warna Terang</h2>
+          <p class="text-xs text-stone-500">Pilih suasana visual undangan dengan nuansa terang elegan, hangat, dan islami.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
+          <!-- Theme 1: Warm Cream & Gold (Default) -->
+          <div class="theme-khitan-card selected cursor-pointer rounded-2xl p-5 border-2 border-amber-600 bg-[#fdfbf7] shadow-sm hover:shadow-md transition relative flex flex-col justify-between"
+               data-theme-val="cream">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 uppercase tracking-wider">Favorit &bull; Default</span>
+                <span class="theme-khitan-check text-amber-700 font-bold flex items-center gap-1 text-xs">
+                  <i data-lucide="check-circle-2" class="w-4 h-4"></i> Aktif
+                </span>
+              </div>
+              <div>
+                <h3 class="font-serif font-bold text-base text-stone-900">Warm Cream &amp; Gold</h3>
+                <p class="text-xs text-stone-600 leading-relaxed mt-1">
+                  Sentuhan warna krem lembut, ivory hangat, dan aksen emas klasik. Suasana syukuran khitan yang mewah dan bersahaja.
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-amber-100 mt-4 flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full border border-stone-300" style="background-color: #fbf9f5;" title="Ivory Cream"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300" style="background-color: #f4ece1;" title="Warm Latte"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300" style="background-color: #b58744;" title="Gold Accent"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300" style="background-color: #7f5a23;" title="Bronze"></span>
+              </div>
+              <button type="button" class="btn-select-khitan-theme text-xs font-semibold text-amber-800">
+                Pilih Tema
+              </button>
+            </div>
+          </div>
+
+          <!-- Theme 2: Sage Terang (Mint Ivory) -->
+          <div class="theme-khitan-card cursor-pointer rounded-2xl p-5 border-2 border-stone-200 bg-[#f7faf7] shadow-sm hover:shadow-md transition relative flex flex-col justify-between"
+               data-theme-val="sage">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-900 uppercase tracking-wider">Sejuk &bull; Fresh</span>
+                <span class="theme-khitan-check hidden text-emerald-700 font-bold flex items-center gap-1 text-xs">
+                  <i data-lucide="check-circle-2" class="w-4 h-4"></i> Aktif
+                </span>
+              </div>
+              <div>
+                <h3 class="font-serif font-bold text-base text-stone-900">Sage Terang (Mint Ivory)</h3>
+                <p class="text-xs text-stone-600 leading-relaxed mt-1">
+                  Perpaduan hijau sage pastel terang dengan dasar krem ivory yang menyejukkan hati dan bersih.
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-emerald-100 mt-4 flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full border border-stone-300" style="background-color: #f6f9f6;" title="Mint Light"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300" style="background-color: #eaf2ea;" title="Pastel Sage"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300" style="background-color: #527c5e;" title="Sage Green"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300" style="background-color: #2d4734;" title="Deep Forest"></span>
+              </div>
+              <button type="button" class="btn-select-khitan-theme text-xs font-semibold text-emerald-800">
+                Pilih Tema
+              </button>
+            </div>
+          </div>
+
+          <!-- Theme 3: Royal Ivory & Pearl Gold -->
+          <div class="theme-khitan-card cursor-pointer rounded-2xl p-5 border-2 border-stone-200 bg-[#faf9f6] shadow-sm hover:shadow-md transition relative flex flex-col justify-between"
+               data-theme-val="ivory">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-900 uppercase tracking-wider">Mewah &bull; Bersih</span>
+                <span class="theme-khitan-check hidden text-amber-700 font-bold flex items-center gap-1 text-xs">
+                  <i data-lucide="check-circle-2" class="w-4 h-4"></i> Aktif
+                </span>
+              </div>
+              <div>
+                <h3 class="font-serif font-bold text-base text-stone-900">Royal Ivory &amp; Pearl</h3>
+                <p class="text-xs text-stone-600 leading-relaxed mt-1">
+                  Warna putih mutiara gading dengan aksen champagne gold murni. Tampilan minimalis aristokrat yang sangat cerah.
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-stone-200 mt-4 flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full border border-stone-300" style="background-color: #ffffff;" title="Pure White"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300" style="background-color: #f4f2ed;" title="Pearl Ivory"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300" style="background-color: #c9a35e;" title="Champagne Gold"></span>
+                <span class="w-4 h-4 rounded-full border border-stone-300" style="background-color: #57462c;" title="Dark Amber"></span>
+              </div>
+              <button type="button" class="btn-select-khitan-theme text-xs font-semibold text-amber-800">
+                Pilih Tema
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- ================= TAB 1: DATA ANAK ================= -->
-      <div id="tabAnak" class="tab-pane space-y-6">
+      <div id="tabAnak" class="tab-pane hidden space-y-6">
         <div>
           <h2 class="text-lg font-bold text-stone-900">Informasi Ananda &amp; Keluarga</h2>
           <p class="text-xs text-stone-500">Atur identitas anak yang dikhitan dan nama kedua orang tua.</p>
