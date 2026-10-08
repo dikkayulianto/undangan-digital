@@ -4,7 +4,7 @@
   "childOrder": "Putra Kedua dari pasangan:",
   "father": "Bpk. Wangkis Suwito",
   "mother": "Ibu Susi Dwi jayanti",
-  "photo": "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=600&q=80",
+  "photo": "images/khitan/rendy-profile.jpg",
   "eventDateDisplay": "Senin, 16 November 2026",
   "eventDateIso": "2026-11-16T10:00:00+07:00",
   "eventTime": "Pukul 10.00 WIB",
@@ -15,6 +15,11 @@
   "bank1Number": "082134966499",
   "bank1Holder": "Susi Dwi Jayanti (Ibu)",
   "physicalAddress": "Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon",
-  "audioUrl": "https://soundcloud.com/shb-bahri/maher-zain-x-harris-j-qalbi",
+  "audioUrl": "audio/nasheed.mp3",
+  "gallery": [
+    "images/khitan/rendy-galeri-1.jpg",
+    "images/khitan/rendy-galeri-2.jpg",
+    "images/khitan/rendy-galeri-3.jpg"
+  ],
   "theme": "cream"
 }

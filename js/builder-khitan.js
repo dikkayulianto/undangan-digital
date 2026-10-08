@@ -8,7 +8,7 @@ const defaultKhitanConfig = {
   childOrder: 'Putra Kedua dari pasangan:',
   father: 'Bpk. Wangkis Suwito',
   mother: 'Ibu Susi Dwi jayanti',
-  photo: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=600&q=80',
+  photo: 'images/khitan/rendy-profile.jpg',
   eventDateDisplay: 'Senin, 16 November 2026',
   eventDateIso: '2026-11-16T10:00',
   eventTime: 'Pukul 10.00 WIB',
@@ -19,11 +19,11 @@ const defaultKhitanConfig = {
   bank1Number: '082134966499',
   bank1Holder: 'Susi Dwi Jayanti (Ibu)',
   physicalAddress: 'Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon',
-  audioUrl: 'https://soundcloud.com/shb-bahri/maher-zain-x-harris-j-qalbi',
+  audioUrl: 'audio/nasheed.mp3',
   gallery: [
-    'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&w=800&q=80'
+    'images/khitan/rendy-galeri-1.jpg',
+    'images/khitan/rendy-galeri-2.jpg',
+    'images/khitan/rendy-galeri-3.jpg'
   ],
   theme: 'cream'
 };
@@ -130,7 +130,10 @@ function getKhitanConfig() {
   const saved = localStorage.getItem('khitan_config');
   if (saved) {
     try {
-      return Object.assign({}, defaultKhitanConfig, JSON.parse(saved));
+      const parsed = JSON.parse(saved);
+      if (parsed.photo && parsed.photo.includes('unsplash.com')) delete parsed.photo;
+      if (parsed.gallery && Array.isArray(parsed.gallery) && parsed.gallery.some(p => p.includes('unsplash.com'))) delete parsed.gallery;
+      return Object.assign({}, defaultKhitanConfig, parsed);
     } catch (e) {
       console.error('Error parsing khitan config', e);
     }
