@@ -631,12 +631,81 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Auto-sync local base64 images to permanent Cloud CDN
+  async function syncLocalImagesToCloud(cfg) {
+    let changed = false;
+    // 1. Sync child photo
+    if (cfg.photo && cfg.photo.startsWith('data:image/')) {
+      showToast('Mengunggah foto ananda ke Cloud CDN...');
+      try {
+        const cloudUrl = await uploadImageToServer(cfg.photo, 'foto-ananda.jpg');
+        if (cloudUrl && cloudUrl.startsWith('http')) {
+          cfg.photo = cloudUrl;
+          const photoInput = document.getElementById('childPhoto');
+          if (photoInput) photoInput.value = cloudUrl;
+          const photoPrev = document.getElementById('childPhotoPreview');
+          if (photoPrev) photoPrev.src = cloudUrl;
+          localStorage.setItem('khitan_child_photo', cloudUrl);
+          changed = true;
+        }
+      } catch (e) {}
+    }
+
+    // 2. Sync custom background
+    if (cfg.customBg && cfg.customBg.startsWith('data:image/')) {
+      showToast('Mengunggah background kustom ke Cloud CDN...');
+      try {
+        const cloudUrl = await uploadImageToServer(cfg.customBg, 'background-kustom.jpg');
+        if (cloudUrl && cloudUrl.startsWith('http')) {
+          cfg.customBg = cloudUrl;
+          const bgInput = document.getElementById('customBgInput');
+          if (bgInput) bgInput.value = cloudUrl;
+          changed = true;
+        }
+      } catch (e) {}
+    }
+
+    // 3. Sync gallery photos
+    if (cfg.gallery && Array.isArray(cfg.gallery)) {
+      for (let i = 0; i < cfg.gallery.length; i++) {
+        if (cfg.gallery[i] && cfg.gallery[i].startsWith('data:image/')) {
+          showToast(`Mengunggah foto galeri ${i + 1}/${cfg.gallery.length} ke Cloud CDN...`);
+          try {
+            const cloudUrl = await uploadImageToServer(cfg.gallery[i], `galeri-${i + 1}.jpg`);
+            if (cloudUrl && cloudUrl.startsWith('http')) {
+              cfg.gallery[i] = cloudUrl;
+              khitanGalleryPhotos[i] = cloudUrl;
+              changed = true;
+            }
+          } catch (e) {}
+        }
+      }
+      if (changed) renderKhitanGalleryGrid();
+    }
+
+    if (changed) {
+      saveKhitanConfig(cfg);
+    }
+    return cfg;
+  }
+
+  // Trigger auto-sync on load if any local base64 images exist
+  setTimeout(() => {
+    const cur = getKhitanConfig();
+    const hasLocal = (cur.photo && cur.photo.startsWith('data:image/')) ||
+                    (cur.customBg && cur.customBg.startsWith('data:image/')) ||
+                    (cur.gallery && cur.gallery.some(g => g && g.startsWith('data:image/')));
+    if (hasLocal) {
+      syncLocalImagesToCloud(cur);
+    }
+  }, 1200);
+
   // Form Submit
   const builderForm = document.getElementById('khitanBuilderForm');
-  builderForm.addEventListener('submit', (e) => {
+  builderForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const newConfig = {
+    let newConfig = {
       childNickname: document.getElementById('childNickname').value.trim(),
       childFullname: document.getElementById('childFullname').value.trim(),
       childOrder: document.getElementById('childOrder').value.trim(),
@@ -659,8 +728,10 @@ document.addEventListener('DOMContentLoaded', () => {
       theme: document.getElementById('selectedKhitanTheme')?.value || 'cream'
     };
 
+    newConfig = await syncLocalImagesToCloud(newConfig);
+
     if (saveKhitanConfig(newConfig)) {
-      showToast('Perubahan undangan khitanan berhasil disimpan!');
+      showToast('Perubahan undangan khitanan berhasil disimpan & online!');
     }
   });
 
