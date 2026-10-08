@@ -869,11 +869,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const brideNick = currentCfg.bride?.nickname || 'Sarah';
     const activeTheme = currentCfg.theme || 'champagne';
 
-    // Base URL resolution
-    let base = window.location.href.split('builder.html')[0];
-    if (!base.endsWith('/')) base += '/';
-    
-    let fullInvitationUrl = `${base}invitation.html?to=${encodeURIComponent(guestName)}`;
+    // Base URL resolution (clean domain root)
+    const baseOrigin = window.location.origin;
+    let fullInvitationUrl = `${baseOrigin}/invitation.html?to=${encodeURIComponent(guestName)}`;
     if (activeTheme !== 'champagne') {
       fullInvitationUrl += `&theme=${encodeURIComponent(activeTheme)}`;
     }
@@ -934,9 +932,7 @@ Salam hangat,
   if (btnCopyGeneralUrl) {
     btnCopyGeneralUrl.addEventListener('click', () => {
       const currentCfg = getConfig();
-      let base = window.location.href.split('builder.html')[0];
-      if (!base.endsWith('/')) base += '/';
-      let generalUrl = `${base}invitation.html`;
+      let generalUrl = `${window.location.origin}/invitation.html`;
       const activeTheme = currentCfg.theme || 'champagne';
       const params = [];
       if (activeTheme !== 'champagne') params.push(`theme=${encodeURIComponent(activeTheme)}`);

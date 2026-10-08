@@ -3,25 +3,24 @@
  */
 
 const defaultKhitanConfig = {
-  childNickname: 'Fadhil',
-  childFullname: 'Muhammad Fadhil Al-Fatih',
-  childOrder: 'Putra pertama dari pasangan:',
-  father: 'Bpk. Ahmad Fauzi',
-  mother: 'Ibu Nurul Hidayah',
+  childNickname: 'Rendy',
+  childFullname: 'Irendy Wijaya Saputra',
+  childOrder: 'Putra Kedua dari pasangan:',
+  father: 'Bpk. Wangkis Suwito',
+  mother: 'Ibu Susi Dwi jayanti',
   photo: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=600&q=80',
-  eventDateDisplay: 'Ahad, 15 November 2026',
-  eventDateIso: '2026-11-15T09:00',
-  eventTime: 'Pukul 09.00 - 13.00 WIB',
-  eventPlace: 'Kediaman Mempelai / Aula Al-Ikhlas',
-  eventAddress: 'Jl. Cempaka Putih Timur No. 28, Jakarta Pusat',
-  mapsUrl: 'https://maps.google.com/?q=Jakarta',
-  bank1Name: 'BCA',
-  bank1Number: '1234567890',
-  bank1Holder: 'Ahmad Fauzi (Ayah)',
-  physicalAddress: 'Jl. Cempaka Putih Timur No. 28, RT 02/RW 04, Cempaka Putih, Jakarta Pusat',
-  audioUrl: 'https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3',
+  eventDateDisplay: 'Senin, 16 November 2026',
+  eventDateIso: '2026-11-16T10:00',
+  eventTime: 'Pukul 10.00 WIB',
+  eventPlace: 'Rumah Hajat',
+  eventAddress: 'Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon',
+  mapsUrl: 'https://maps.app.goo.gl/FNjBDJMcNzKmvb6B7',
+  bank1Name: 'Dana',
+  bank1Number: '082134966499',
+  bank1Holder: 'Susi Dwi Jayanti (Ibu)',
+  physicalAddress: 'Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon',
+  audioUrl: 'https://soundcloud.com/shb-bahri/maher-zain-x-harris-j-qalbi',
   gallery: [
-    'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&w=800&q=80'
@@ -682,16 +681,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    const childName = currentCfg.childFullname || 'Muhammad Fadhil Al-Fatih';
-    const parents = `${currentCfg.father || 'Bpk. Ahmad Fauzi'} & ${currentCfg.mother || 'Ibu Nurul Hidayah'}`;
+    const childName = currentCfg.childFullname || 'Irendy Wijaya Saputra';
+    const parents = `${currentCfg.father || 'Bpk. Wangkis Suwito'} & ${currentCfg.mother || 'Ibu Susi Dwi jayanti'}`;
 
-    let base = window.location.href.split('builder-khitan.html')[0];
-    if (!base.endsWith('/')) base += '/';
-    let fullInvitationUrl = `${base}khitan.html?to=${encodeURIComponent(guestName)}`;
-    const urlPayload = encodeKhitanConfigForUrl(currentCfg);
-    if (urlPayload) {
-      fullInvitationUrl += `&d=${urlPayload}`;
-    }
+    // Base URL resolution (clean origin - avoids 404 folder nesting)
+    const baseOrigin = window.location.origin;
+    let fullInvitationUrl = `${baseOrigin}/khitan.html?to=${encodeURIComponent(guestName)}`;
 
     const waMessage = 
 `Kepada Yth.
@@ -761,13 +756,7 @@ Salam hormat,
         } catch (err) {}
       }
 
-      let base = window.location.href.split('builder-khitan.html')[0];
-      if (!base.endsWith('/')) base += '/';
-      let generalUrl = `${base}khitan.html`;
-      const urlPayload = encodeKhitanConfigForUrl(currentCfg);
-      if (urlPayload) {
-        generalUrl += `?d=${urlPayload}`;
-      }
+      const generalUrl = `${window.location.origin}/khitan.html`;
       navigator.clipboard.writeText(generalUrl).then(() => {
         showToast('Link undangan umum (siap share grup WA) berhasil disalin!');
       });
