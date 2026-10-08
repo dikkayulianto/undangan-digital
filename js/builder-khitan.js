@@ -419,22 +419,29 @@ document.addEventListener('DOMContentLoaded', () => {
       const files = Array.from(khitanGalleryFileInput.files);
       if (files.length === 0) return;
 
-      showToast(`Sedang memproses & mengompresi ${files.length} foto...`);
+      showToast(`Sedang memproses & mengunggah ${files.length} foto ke Cloud CDN...`);
 
       let successCount = 0;
-      for (const file of files) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
         try {
+          showToast(`Mengunggah foto ${i + 1}/${files.length} ke Cloud CDN...`);
           const dataUrl = await compressImage(file, 1000, 1000, 0.75);
-          khitanGalleryPhotos.push(dataUrl);
+          const cloudUrl = await uploadImageToServer(dataUrl, file.name);
+          const finalUrl = (cloudUrl && cloudUrl.startsWith('http')) ? cloudUrl : dataUrl;
+          khitanGalleryPhotos.push(finalUrl);
           successCount++;
         } catch (err) {
-          console.error('Error compressing gallery photo:', err);
+          console.error('Error uploading gallery photo:', err);
         }
       }
 
       khitanGalleryFileInput.value = '';
       renderKhitanGalleryGrid();
-      showToast(`${successCount} foto berhasil diunggah ke galeri khitan!`);
+      const cur = getKhitanConfig();
+      cur.gallery = khitanGalleryPhotos;
+      saveKhitanConfig(cur);
+      showToast(`${successCount} foto berhasil diunggah ke CDN & disimpan!`);
     });
   }
 

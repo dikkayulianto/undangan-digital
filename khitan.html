@@ -613,6 +613,9 @@
           document.getElementById('btnCopyAddress').setAttribute('onclick', `copyToClipboard('${cfg.physicalAddress.replace(/'/g, "\\'")}', 'Alamat')`);
         }
 
+        // Render Gallery Photos
+        renderKhitanGallery(cfg.gallery);
+
         // Active Theme & Custom Background
         const activeThemeKey = urlParams.get('theme') || cfg.theme || 'cream';
         applyKhitanTheme(activeThemeKey, cfg.customBg);
@@ -873,33 +876,36 @@
       }
 
       // Render Galeri Khitan
-      const kGallery = (config.gallery && Array.isArray(config.gallery) && config.gallery.length > 0)
-        ? config.gallery
-        : [
-            'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&w=800&q=80'
-          ];
+      function renderKhitanGallery(photos) {
+        const kGallery = (photos && Array.isArray(photos) && photos.length > 0)
+          ? photos
+          : [
+              'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80',
+              'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=80',
+              'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=80',
+              'https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&w=800&q=80'
+            ];
 
-      const kGrid = document.getElementById('khitanGalleryGrid');
-      if (kGrid && Array.isArray(kGallery) && kGallery.length > 0) {
-        kGrid.innerHTML = '';
-        kGallery.forEach((photoUrl, idx) => {
-          const isFull = (idx % 3 === 2);
-          const item = document.createElement('div');
-          item.className = `khitan-gallery-item cursor-pointer overflow-hidden rounded-2xl shadow-md group relative h-48 ${isFull ? 'col-span-2' : ''}`;
-          item.setAttribute('data-full', photoUrl);
-          item.innerHTML = `
-            <img src="${photoUrl}" alt="Khitan Gallery ${idx + 1}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-            <div class="absolute inset-0 bg-emerald-950/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
-              <i data-lucide="zoom-in" class="w-6 h-6 text-gold-300"></i>
-            </div>
-          `;
-          kGrid.appendChild(item);
-        });
-        if (window.lucide) lucide.createIcons();
+        const kGrid = document.getElementById('khitanGalleryGrid');
+        if (kGrid) {
+          kGrid.innerHTML = '';
+          kGallery.forEach((photoUrl, idx) => {
+            const isFull = (idx % 3 === 2);
+            const item = document.createElement('div');
+            item.className = `khitan-gallery-item cursor-pointer overflow-hidden rounded-2xl shadow-md group relative h-48 ${isFull ? 'col-span-2' : ''}`;
+            item.setAttribute('data-full', photoUrl);
+            item.innerHTML = `
+              <img src="${photoUrl}" alt="Khitan Gallery ${idx + 1}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+              <div class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
+                <i data-lucide="zoom-in" class="w-6 h-6 text-amber-200"></i>
+              </div>
+            `;
+            kGrid.appendChild(item);
+          });
+          if (window.lucide) lucide.createIcons();
+        }
       }
+      renderKhitanGallery(config.gallery);
 
       // Lightbox Khitan
       const kLightbox = document.getElementById('khitanLightbox');

@@ -50,17 +50,44 @@ export default async function handler(req, res) {
     fd.append('reqtype', 'fileupload');
     fd.append('fileToUpload', blob, uploadName);
 
-    const uploadRes = await fetch('https://catbox.moe/user/api.php', {
-      method: 'POST',
-      body: fd
-    });
+    // 1. Try Catbox.moe (Permanent Hosting)
+    try {
+      const uploadRes = await fetch('https://catbox.moe/user/api.php', {
+        method: 'POST',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        },
+        body: fd
+      });
 
-    const fileUrl = (await uploadRes.text()).trim();
-    if (fileUrl.startsWith('http')) {
-      return res.status(200).json({ success: true, url: fileUrl });
-    } else {
-      return res.status(500).json({ error: fileUrl || 'Gagal mengunggah gambar ke server' });
+      const fileUrl = (await uploadRes.text()).trim();
+      if (fileUrl.startsWith('http')) {
+        return res.status(200).json({ success: true, url: fileUrl });
+      }
+    } catch (catboxErr) {
+      console.warn('Catbox upload failed, trying fallback:', catboxErr);
     }
+
+    // 2. Fallback to Uguu.se
+    try {
+      const uguuFd = new FormData();
+      uguuFd.append('files[]', blob, uploadName);
+      const uguuRes = await fetch('https://uguu.se/upload', {
+        method: 'POST',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        },
+        body: uguuFd
+      });
+      const uguuData = await uguuRes.json();
+      if (uguuData && uguuData.success && uguuData.files && uguuData.files[0]?.url) {
+        return res.status(200).json({ success: true, url: uguuData.files[0].url });
+      }
+    } catch (uguuErr) {
+      console.warn('Uguu upload failed:', uguuErr);
+    }
+
+    return res.status(500).json({ error: 'Gagal mengunggah gambar ke cloud storage' });
   } catch (err) {
     console.error('Upload handler error:', err);
     return res.status(500).json({ error: err.message || 'Internal server error' });
