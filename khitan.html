@@ -597,6 +597,9 @@
           if (compact.pa) res.physicalAddress = compact.pa;
           if (compact.au) res.audioUrl = compact.au;
           if (compact.bg) res.customBg = compact.bg;
+          if (compact.g && Array.isArray(compact.g) && compact.g.length > 0) {
+            res.gallery = compact.g;
+          }
           return res;
         } catch(e) {
           console.error('Error decoding khitan config from URL:', e);
@@ -610,7 +613,7 @@
       const clientPhotoKey = clientParam ? `khitan_child_photo_${clientParam}` : 'khitan_child_photo';
 
       let config = defaultKhitanConfig;
-      const saved = localStorage.getItem(clientStorageKey);
+      const saved = localStorage.getItem(clientStorageKey) || localStorage.getItem('khitan_config_wangkis') || localStorage.getItem('khitan_config');
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -621,7 +624,7 @@
       }
 
       // Check direct photo key if available
-      const directChildPhoto = localStorage.getItem(clientPhotoKey);
+      const directChildPhoto = localStorage.getItem(clientPhotoKey) || localStorage.getItem('khitan_child_photo_wangkis') || localStorage.getItem('khitan_child_photo');
       if (directChildPhoto && directChildPhoto.trim() && !directChildPhoto.includes('unsplash.com')) {
         config.photo = directChildPhoto.trim();
       }

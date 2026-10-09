@@ -110,7 +110,7 @@ function encodeKhitanConfigForUrl(cfg) {
     o: cfg.childOrder || '',
     f: cfg.father || '',
     m: cfg.mother || '',
-    p: (cfg.photo && cfg.photo.startsWith('http')) ? cfg.photo : '',
+    p: (cfg.photo && !cfg.photo.startsWith('data:')) ? cfg.photo : '',
     d: cfg.eventDateDisplay || '',
     di: cfg.eventDateIso || '',
     t: cfg.eventTime || '',
@@ -125,7 +125,10 @@ function encodeKhitanConfigForUrl(cfg) {
     b2h: cfg.bank2Holder || '',
     pa: cfg.physicalAddress || '',
     au: cfg.audioUrl || '',
-    bg: (cfg.customBg && cfg.customBg.startsWith('http')) ? cfg.customBg : ''
+    bg: (cfg.customBg && !cfg.customBg.startsWith('data:')) ? cfg.customBg : '',
+    g: (Array.isArray(cfg.gallery) && cfg.gallery.length > 0) 
+      ? cfg.gallery.filter(u => u && !u.startsWith('data:')) 
+      : []
   };
   try {
     const jsonStr = JSON.stringify(compact);
@@ -140,7 +143,7 @@ function encodeKhitanConfigForUrl(cfg) {
 }
 
 function getKhitanConfig() {
-  const saved = localStorage.getItem(clientStorageKey);
+  const saved = localStorage.getItem(clientStorageKey) || localStorage.getItem('khitan_config_wangkis') || localStorage.getItem('khitan_config');
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
@@ -156,7 +159,15 @@ function getKhitanConfig() {
 
 function saveKhitanConfig(cfg) {
   try {
-    localStorage.setItem(clientStorageKey, JSON.stringify(cfg));
+    const str = JSON.stringify(cfg);
+    localStorage.setItem(clientStorageKey, str);
+    localStorage.setItem('khitan_config', str);
+    localStorage.setItem('khitan_config_wangkis', str);
+    localStorage.setItem('khitan_config_rendy', str);
+    if (cfg.photo && !cfg.photo.startsWith('data:')) {
+      localStorage.setItem('khitan_child_photo', cfg.photo);
+      localStorage.setItem('khitan_child_photo_wangkis', cfg.photo);
+    }
     return true;
   } catch (err) {
     console.error('Khitan storage error:', err);
