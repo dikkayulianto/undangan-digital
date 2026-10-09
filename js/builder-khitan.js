@@ -153,28 +153,42 @@ function encodeKhitanConfigForUrl(cfg) {
 
 function sanitizeKhitanConfig(cfg) {
   if (!cfg || typeof cfg !== 'object') return JSON.parse(JSON.stringify(defaultKhitanConfig));
+  const result = JSON.parse(JSON.stringify(defaultKhitanConfig));
+  
+  // Copy non-empty properties
+  for (const k of Object.keys(defaultKhitanConfig)) {
+    if (cfg[k] !== undefined && cfg[k] !== null && cfg[k] !== '') {
+      result[k] = cfg[k];
+    }
+  }
+
+  // Preserve custom background if present
+  if (cfg.customBg) result.customBg = cfg.customBg;
   
   // Stale Bank Check: Auto-migrate any BCA or old dummy number to official BRI Wangkis Suwito
-  if (cfg.bank1Name === 'BCA' || cfg.bank1Number === '5220304958' || !cfg.bank1Number) {
-    cfg.bank1Name = 'BRI';
-    cfg.bank1Number = '6062 0104 0268 531';
-    cfg.bank1Holder = 'Wangkis Suwito';
+  if (result.bank1Name === 'BCA' || result.bank1Number === '5220304958' || !result.bank1Number) {
+    result.bank1Name = 'BRI';
+    result.bank1Number = '6062 0104 0268 531';
+    result.bank1Holder = 'Wangkis Suwito';
   }
   // Stale Bank 2 Check: Ensure Dana 082134966499
-  if (!cfg.bank2Number || cfg.bank2Number === '081234567890') {
-    cfg.bank2Name = 'Dana';
-    cfg.bank2Number = '082134966499';
-    cfg.bank2Holder = 'Susi Dwi Jayanti (Ibu)';
+  if (!result.bank2Number || result.bank2Number === '081234567890') {
+    result.bank2Name = 'Dana';
+    result.bank2Number = '082134966499';
+    result.bank2Holder = 'Susi Dwi Jayanti (Ibu)';
   }
   // Remove unsplash photos
-  if (cfg.photo && cfg.photo.includes('unsplash.com')) {
-    cfg.photo = defaultKhitanConfig.photo;
+  if (result.photo && result.photo.includes('unsplash.com')) {
+    result.photo = defaultKhitanConfig.photo;
   }
-  // Gallery photo check: Ensure exactly the 3 latest photos if old photos detected
-  if (!Array.isArray(cfg.gallery) || cfg.gallery.length !== 3 || cfg.gallery.some(p => p.includes('unsplash.com') || p.includes('galeri-4') || p.includes('galeri-5') || p.includes('gallery-4') || p.includes('gallery-5'))) {
-    cfg.gallery = [...defaultKhitanConfig.gallery];
+  // Gallery photo check: Filter out stale photos 4 and 5 while preserving user's photos
+  if (Array.isArray(result.gallery)) {
+    result.gallery = result.gallery.filter(p => p && !p.includes('unsplash.com') && !p.includes('galeri-4') && !p.includes('galeri-5') && !p.includes('gallery-4') && !p.includes('gallery-5'));
   }
-  return cfg;
+  if (!Array.isArray(result.gallery) || result.gallery.length === 0) {
+    result.gallery = [...defaultKhitanConfig.gallery];
+  }
+  return result;
 }
 
 function getKhitanConfig() {
@@ -182,8 +196,7 @@ function getKhitanConfig() {
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-      const merged = Object.assign({}, defaultKhitanConfig, parsed);
-      const sanitized = sanitizeKhitanConfig(merged);
+      const sanitized = sanitizeKhitanConfig(parsed);
       const str = JSON.stringify(sanitized);
       localStorage.setItem(clientStorageKey, str);
       localStorage.setItem('khitan_config_wangkis', str);
@@ -279,11 +292,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Child & Parents
-  document.getElementById('childNickname').value = config.childNickname || '';
-  document.getElementById('childFullname').value = config.childFullname || '';
-  document.getElementById('childOrder').value = config.childOrder || '';
-  document.getElementById('fatherName').value = config.father || '';
-  document.getElementById('motherName').value = config.mother || '';
+  document.getElementById('childNickname').value = config.childNickname || defaultKhitanConfig.childNickname;
+  document.getElementById('childFullname').value = config.childFullname || defaultKhitanConfig.childFullname;
+  document.getElementById('childOrder').value = config.childOrder || defaultKhitanConfig.childOrder;
+  document.getElementById('fatherName').value = config.father || defaultKhitanConfig.father;
+  document.getElementById('motherName').value = config.mother || defaultKhitanConfig.mother;
 
   // Child Photo Setup
   const childPhotoInput = document.getElementById('childPhoto');
@@ -561,21 +574,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Event
-  document.getElementById('eventDateDisplay').value = config.eventDateDisplay || '';
-  document.getElementById('eventDateIso').value = config.eventDateIso || '';
-  document.getElementById('eventTime').value = config.eventTime || '';
-  document.getElementById('eventPlace').value = config.eventPlace || '';
-  document.getElementById('eventAddress').value = config.eventAddress || '';
-  document.getElementById('mapsUrl').value = config.mapsUrl || '';
+  document.getElementById('eventDateDisplay').value = config.eventDateDisplay || defaultKhitanConfig.eventDateDisplay;
+  document.getElementById('eventDateIso').value = config.eventDateIso || defaultKhitanConfig.eventDateIso;
+  document.getElementById('eventTime').value = config.eventTime || defaultKhitanConfig.eventTime;
+  document.getElementById('eventPlace').value = config.eventPlace || defaultKhitanConfig.eventPlace;
+  document.getElementById('eventAddress').value = config.eventAddress || defaultKhitanConfig.eventAddress;
+  document.getElementById('mapsUrl').value = config.mapsUrl || defaultKhitanConfig.mapsUrl;
 
   // Gift & Banks
-  document.getElementById('bank1Name').value = config.bank1Name || '';
-  document.getElementById('bank1Number').value = config.bank1Number || '';
-  document.getElementById('bank1Holder').value = config.bank1Holder || '';
-  if (document.getElementById('bank2Name')) document.getElementById('bank2Name').value = config.bank2Name || '';
-  if (document.getElementById('bank2Number')) document.getElementById('bank2Number').value = config.bank2Number || '';
-  if (document.getElementById('bank2Holder')) document.getElementById('bank2Holder').value = config.bank2Holder || '';
-  document.getElementById('physicalAddress').value = config.physicalAddress || '';
+  document.getElementById('bank1Name').value = config.bank1Name || defaultKhitanConfig.bank1Name;
+  document.getElementById('bank1Number').value = config.bank1Number || defaultKhitanConfig.bank1Number;
+  document.getElementById('bank1Holder').value = config.bank1Holder || defaultKhitanConfig.bank1Holder;
+  if (document.getElementById('bank2Name')) document.getElementById('bank2Name').value = config.bank2Name || defaultKhitanConfig.bank2Name;
+  if (document.getElementById('bank2Number')) document.getElementById('bank2Number').value = config.bank2Number || defaultKhitanConfig.bank2Number;
+  if (document.getElementById('bank2Holder')) document.getElementById('bank2Holder').value = config.bank2Holder || defaultKhitanConfig.bank2Holder;
+  document.getElementById('physicalAddress').value = config.physicalAddress || defaultKhitanConfig.physicalAddress;
 
   // Client Banner if ?client=...
   if (currentClient) {

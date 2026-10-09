@@ -606,24 +606,34 @@
       }
 
       function sanitizeKhitanConfig(cfg) {
-        if (!cfg || typeof cfg !== 'object') return defaultKhitanConfig;
-        if (cfg.bank1Name === 'BCA' || cfg.bank1Number === '5220304958' || !cfg.bank1Number) {
-          cfg.bank1Name = 'BRI';
-          cfg.bank1Number = '6062 0104 0268 531';
-          cfg.bank1Holder = 'Wangkis Suwito';
+        if (!cfg || typeof cfg !== 'object') return Object.assign({}, defaultKhitanConfig);
+        const result = Object.assign({}, defaultKhitanConfig);
+        for (const k of Object.keys(defaultKhitanConfig)) {
+          if (cfg[k] !== undefined && cfg[k] !== null && cfg[k] !== '') {
+            result[k] = cfg[k];
+          }
         }
-        if (!cfg.bank2Number || cfg.bank2Number === '081234567890') {
-          cfg.bank2Name = 'Dana';
-          cfg.bank2Number = '082134966499';
-          cfg.bank2Holder = 'Susi Dwi Jayanti (Ibu)';
+        if (cfg.customBg) result.customBg = cfg.customBg;
+        if (result.bank1Name === 'BCA' || result.bank1Number === '5220304958' || !result.bank1Number) {
+          result.bank1Name = 'BRI';
+          result.bank1Number = '6062 0104 0268 531';
+          result.bank1Holder = 'Wangkis Suwito';
         }
-        if (cfg.photo && cfg.photo.includes('unsplash.com')) {
-          cfg.photo = defaultKhitanConfig.photo;
+        if (!result.bank2Number || result.bank2Number === '081234567890') {
+          result.bank2Name = 'Dana';
+          result.bank2Number = '082134966499';
+          result.bank2Holder = 'Susi Dwi Jayanti (Ibu)';
         }
-        if (!Array.isArray(cfg.gallery) || cfg.gallery.length !== 3 || cfg.gallery.some(p => p.includes('unsplash.com') || p.includes('galeri-4') || p.includes('galeri-5') || p.includes('gallery-4') || p.includes('gallery-5'))) {
-          cfg.gallery = [...defaultKhitanConfig.gallery];
+        if (result.photo && result.photo.includes('unsplash.com')) {
+          result.photo = defaultKhitanConfig.photo;
         }
-        return cfg;
+        if (Array.isArray(result.gallery)) {
+          result.gallery = result.gallery.filter(p => p && !p.includes('unsplash.com') && !p.includes('galeri-4') && !p.includes('galeri-5') && !p.includes('gallery-4') && !p.includes('gallery-5'));
+        }
+        if (!Array.isArray(result.gallery) || result.gallery.length === 0) {
+          result.gallery = [...defaultKhitanConfig.gallery];
+        }
+        return result;
       }
 
       // Multi-Tenant Client Support
@@ -683,30 +693,36 @@
 
       // Populate Elements
       function populateElements(cfg) {
-        if (document.getElementById('desktopChildName')) document.getElementById('desktopChildName').textContent = cfg.childFullname;
-        if (document.getElementById('coverChildName')) document.getElementById('coverChildName').textContent = cfg.childFullname;
-        if (document.getElementById('childFullnameText')) document.getElementById('childFullnameText').textContent = cfg.childFullname;
-        if (document.getElementById('childOrderText')) document.getElementById('childOrderText').textContent = cfg.childOrder;
-        if (document.getElementById('parentsText')) document.getElementById('parentsText').textContent = `${cfg.father} & ${cfg.mother}`;
-        if (document.getElementById('footerFamilyName')) document.getElementById('footerFamilyName').textContent = `${cfg.father} & ${cfg.mother}`;
-        if (document.getElementById('coverChildPhoto') && cfg.photo) document.getElementById('coverChildPhoto').src = getFreshImageUrl(cfg.photo);
-        if (document.getElementById('childPhotoImg') && cfg.photo) document.getElementById('childPhotoImg').src = getFreshImageUrl(cfg.photo);
-        if (document.getElementById('coverDateText') && cfg.eventDateDisplay) document.getElementById('coverDateText').textContent = cfg.eventDateDisplay;
+        const fullChild = cfg.childFullname || defaultKhitanConfig.childFullname;
+        const father = cfg.father || defaultKhitanConfig.father;
+        const mother = cfg.mother || defaultKhitanConfig.mother;
+        const dateDisp = cfg.eventDateDisplay || defaultKhitanConfig.eventDateDisplay;
+        const photo = cfg.photo || defaultKhitanConfig.photo;
 
-        if (document.getElementById('desktopDateText')) document.getElementById('desktopDateText').textContent = `${cfg.eventDateDisplay} • Balapulang Kulon`;
-        if (document.getElementById('eventDateDisplayText')) document.getElementById('eventDateDisplayText').textContent = cfg.eventDateDisplay;
-        if (document.getElementById('eventTimeText')) document.getElementById('eventTimeText').textContent = cfg.eventTime;
-        if (document.getElementById('eventPlaceText')) document.getElementById('eventPlaceText').textContent = cfg.eventPlace;
-        if (document.getElementById('eventAddressText')) document.getElementById('eventAddressText').textContent = cfg.eventAddress;
-        if (document.getElementById('btnMapsLink') && cfg.mapsUrl) document.getElementById('btnMapsLink').href = cfg.mapsUrl;
+        if (document.getElementById('desktopChildName')) document.getElementById('desktopChildName').textContent = fullChild;
+        if (document.getElementById('coverChildName')) document.getElementById('coverChildName').textContent = fullChild;
+        if (document.getElementById('childFullnameText')) document.getElementById('childFullnameText').textContent = fullChild;
+        if (document.getElementById('childOrderText')) document.getElementById('childOrderText').textContent = cfg.childOrder || defaultKhitanConfig.childOrder;
+        if (document.getElementById('parentsText')) document.getElementById('parentsText').textContent = `${father} & ${mother}`;
+        if (document.getElementById('footerFamilyName')) document.getElementById('footerFamilyName').textContent = `${father} & ${mother}`;
+        if (document.getElementById('coverChildPhoto') && photo) document.getElementById('coverChildPhoto').src = getFreshImageUrl(photo);
+        if (document.getElementById('childPhotoImg') && photo) document.getElementById('childPhotoImg').src = getFreshImageUrl(photo);
+        if (document.getElementById('coverDateText')) document.getElementById('coverDateText').textContent = dateDisp;
+
+        if (document.getElementById('desktopDateText')) document.getElementById('desktopDateText').textContent = `${dateDisp} • Balapulang Kulon`;
+        if (document.getElementById('eventDateDisplayText')) document.getElementById('eventDateDisplayText').textContent = dateDisp;
+        if (document.getElementById('eventTimeText')) document.getElementById('eventTimeText').textContent = cfg.eventTime || defaultKhitanConfig.eventTime;
+        if (document.getElementById('eventPlaceText')) document.getElementById('eventPlaceText').textContent = cfg.eventPlace || defaultKhitanConfig.eventPlace;
+        if (document.getElementById('eventAddressText')) document.getElementById('eventAddressText').textContent = cfg.eventAddress || defaultKhitanConfig.eventAddress;
+        if (document.getElementById('btnMapsLink')) document.getElementById('btnMapsLink').href = cfg.mapsUrl || defaultKhitanConfig.mapsUrl;
 
         // Bank 1
-        if (document.getElementById('bank1NameText')) document.getElementById('bank1NameText').textContent = cfg.bank1Name || 'BRI';
-        if (document.getElementById('bank1NumberText')) document.getElementById('bank1NumberText').textContent = cfg.bank1Number || '6062 0104 0268 531';
-        if (document.getElementById('bank1HolderText')) document.getElementById('bank1HolderText').textContent = `a.n ${cfg.bank1Holder || 'Wangkis Suwito'}`;
+        if (document.getElementById('bank1NameText')) document.getElementById('bank1NameText').textContent = cfg.bank1Name || defaultKhitanConfig.bank1Name;
+        if (document.getElementById('bank1NumberText')) document.getElementById('bank1NumberText').textContent = cfg.bank1Number || defaultKhitanConfig.bank1Number;
+        if (document.getElementById('bank1HolderText')) document.getElementById('bank1HolderText').textContent = `a.n ${cfg.bank1Holder || defaultKhitanConfig.bank1Holder}`;
         if (document.getElementById('btnCopyBank1')) {
-          const rawNo = (cfg.bank1Number || '606201040268531').replace(/\s+/g, '');
-          document.getElementById('btnCopyBank1').setAttribute('onclick', `copyToClipboard('${rawNo}', '${cfg.bank1Name || 'BRI'}')`);
+          const rawNo = (cfg.bank1Number || defaultKhitanConfig.bank1Number).replace(/\s+/g, '');
+          document.getElementById('btnCopyBank1').setAttribute('onclick', `copyToClipboard('${rawNo}', '${cfg.bank1Name || defaultKhitanConfig.bank1Name}')`);
         }
 
         // Bank 2 (DANA / E-Wallet)
