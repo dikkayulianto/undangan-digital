@@ -148,7 +148,9 @@
 
         const accounts = getAccounts();
         const found = accounts.find(a => 
-          a.username.toLowerCase() === username.toLowerCase().trim() && 
+          (a.username.toLowerCase() === username.toLowerCase().trim() || 
+           (a.username.toLowerCase() === 'rendy' && username.toLowerCase().trim() === 'wangkis') ||
+           (a.username.toLowerCase() === 'wangkis' && username.toLowerCase().trim() === 'rendy')) && 
           a.password === password.trim()
         );
 
