@@ -4,7 +4,7 @@
   "childOrder": "Putra Kedua dari pasangan:",
   "father": "Bpk. Wangkis Suwito",
   "mother": "Ibu Susi Dwi jayanti",
-  "photo": "images/khitan/rendy-profile.jpg?v=20261009b",
+  "photo": "images/khitan/rendy-profile.jpg?v=20261009c",
   "eventDateDisplay": "Senin, 16 November 2026",
   "eventDateIso": "2026-11-16T10:00:00+07:00",
   "eventTime": "Pukul 10.00 WIB",
@@ -20,11 +20,9 @@
   "physicalAddress": "Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon",
   "audioUrl": "audio/qalbi.mp3",
   "gallery": [
-    "images/khitan/rendy-galeri-1.jpg?v=20261009b",
-    "images/khitan/rendy-galeri-2.jpg?v=20261009b",
-    "images/khitan/rendy-galeri-3.jpg?v=20261009b",
-    "images/khitan/rendy-galeri-4.jpg?v=20261009b",
-    "images/khitan/rendy-galeri-5.jpg?v=20261009b"
+    "images/khitan/rendy-galeri-1.jpg?v=20261009c",
+    "images/khitan/rendy-galeri-2.jpg?v=20261009c",
+    "images/khitan/rendy-galeri-3.jpg?v=20261009c"
   ],
   "theme": "cream"
 }

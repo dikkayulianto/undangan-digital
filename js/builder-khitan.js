@@ -29,11 +29,9 @@ const defaultKhitanConfig = {
   physicalAddress: 'Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon',
   audioUrl: 'audio/qalbi.mp3',
   gallery: [
-    'images/khitan/rendy-galeri-1.jpg?v=20261009b',
-    'images/khitan/rendy-galeri-2.jpg?v=20261009b',
-    'images/khitan/rendy-galeri-3.jpg?v=20261009b',
-    'images/khitan/rendy-galeri-4.jpg?v=20261009b',
-    'images/khitan/rendy-galeri-5.jpg?v=20261009b'
+    'images/khitan/rendy-galeri-1.jpg?v=20261009c',
+    'images/khitan/rendy-galeri-2.jpg?v=20261009c',
+    'images/khitan/rendy-galeri-3.jpg?v=20261009c'
   ],
   theme: 'cream'
 };
