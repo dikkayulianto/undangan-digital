@@ -1071,17 +1071,15 @@
 
       // Render Galeri Khitan
       function renderKhitanGallery(photos) {
-        const filtered = (photos && Array.isArray(photos))
-          ? photos.filter(p => p && typeof p === 'string' && !p.includes('unsplash.com'))
+        let filtered = (photos && Array.isArray(photos))
+          ? photos.filter(p => p && typeof p === 'string' && !p.includes('unsplash.com') && !p.includes('galeri-4') && !p.includes('galeri-5') && !p.includes('gallery-4') && !p.includes('gallery-5'))
           : [];
         const kGallery = (filtered.length > 0)
           ? filtered
           : [
-              'images/khitan/rendy-galeri-1.jpg',
-              'images/khitan/rendy-galeri-2.jpg',
-              'images/khitan/rendy-galeri-3.jpg',
-              'images/khitan/rendy-galeri-4.jpg',
-              'images/khitan/rendy-galeri-5.jpg'
+              'images/khitan/rendy-galeri-1.jpg?v=20261009c',
+              'images/khitan/rendy-galeri-2.jpg?v=20261009c',
+              'images/khitan/rendy-galeri-3.jpg?v=20261009c'
             ];
 
         const kGrid = document.getElementById('khitanGalleryGrid');

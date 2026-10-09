@@ -99,43 +99,54 @@ async function uploadImageToServer(dataUrl, filename) {
   return dataUrl;
 }
 
-// Encode config into compact URL parameter so guests can view on any device
+// Encode config into compact URL parameter so guests can view on any device (diff-based for minimal link length)
 function encodeKhitanConfigForUrl(cfg) {
-  const compact = {
-    th: cfg.theme || 'cream',
-    nn: cfg.childNickname || '',
-    fn: cfg.childFullname || '',
-    o: cfg.childOrder || '',
-    f: cfg.father || '',
-    m: cfg.mother || '',
-    p: (cfg.photo && !cfg.photo.startsWith('data:')) ? cfg.photo : '',
-    d: cfg.eventDateDisplay || '',
-    di: cfg.eventDateIso || '',
-    t: cfg.eventTime || '',
-    pl: cfg.eventPlace || '',
-    a: cfg.eventAddress || '',
-    mu: cfg.mapsUrl || '',
-    b1n: cfg.bank1Name || '',
-    b1no: cfg.bank1Number || '',
-    b1h: cfg.bank1Holder || '',
-    b2n: cfg.bank2Name || '',
-    b2no: cfg.bank2Number || '',
-    b2h: cfg.bank2Holder || '',
-    pa: cfg.physicalAddress || '',
-    au: cfg.audioUrl || '',
-    bg: (cfg.customBg && !cfg.customBg.startsWith('data:')) ? cfg.customBg : '',
-    g: (Array.isArray(cfg.gallery) && cfg.gallery.length > 0) 
-      ? cfg.gallery.filter(u => u && !u.startsWith('data:')) 
-      : []
-  };
+  if (!cfg || typeof cfg !== 'object') return '';
+  const diff = {};
+  if (cfg.childNickname && cfg.childNickname !== defaultKhitanConfig.childNickname) diff.nn = cfg.childNickname;
+  if (cfg.childFullname && cfg.childFullname !== defaultKhitanConfig.childFullname) diff.fn = cfg.childFullname;
+  if (cfg.childOrder && cfg.childOrder !== defaultKhitanConfig.childOrder) diff.o = cfg.childOrder;
+  if (cfg.father && cfg.father !== defaultKhitanConfig.father) diff.f = cfg.father;
+  if (cfg.mother && cfg.mother !== defaultKhitanConfig.mother) diff.m = cfg.mother;
+  if (cfg.photo && cfg.photo !== defaultKhitanConfig.photo && !cfg.photo.startsWith('data:')) diff.p = cfg.photo;
+  if (cfg.eventDateDisplay && cfg.eventDateDisplay !== defaultKhitanConfig.eventDateDisplay) diff.d = cfg.eventDateDisplay;
+  if (cfg.eventDateIso && cfg.eventDateIso !== defaultKhitanConfig.eventDateIso) diff.di = cfg.eventDateIso;
+  if (cfg.eventTime && cfg.eventTime !== defaultKhitanConfig.eventTime) diff.t = cfg.eventTime;
+  if (cfg.eventPlace && cfg.eventPlace !== defaultKhitanConfig.eventPlace) diff.pl = cfg.eventPlace;
+  if (cfg.eventAddress && cfg.eventAddress !== defaultKhitanConfig.eventAddress) diff.a = cfg.eventAddress;
+  if (cfg.mapsUrl && cfg.mapsUrl !== defaultKhitanConfig.mapsUrl) diff.mu = cfg.mapsUrl;
+  if (cfg.bank1Name && cfg.bank1Name !== defaultKhitanConfig.bank1Name) diff.b1n = cfg.bank1Name;
+  if (cfg.bank1Number && cfg.bank1Number !== defaultKhitanConfig.bank1Number) diff.b1no = cfg.bank1Number;
+  if (cfg.bank1Holder && cfg.bank1Holder !== defaultKhitanConfig.bank1Holder) diff.b1h = cfg.bank1Holder;
+  if (cfg.bank2Name && cfg.bank2Name !== defaultKhitanConfig.bank2Name) diff.b2n = cfg.bank2Name;
+  if (cfg.bank2Number && cfg.bank2Number !== defaultKhitanConfig.bank2Number) diff.b2no = cfg.bank2Number;
+  if (cfg.bank2Holder && cfg.bank2Holder !== defaultKhitanConfig.bank2Holder) diff.b2h = cfg.bank2Holder;
+  if (cfg.physicalAddress && cfg.physicalAddress !== defaultKhitanConfig.physicalAddress) diff.pa = cfg.physicalAddress;
+  if (cfg.audioUrl && cfg.audioUrl !== defaultKhitanConfig.audioUrl) diff.au = cfg.audioUrl;
+  if (cfg.customBg && !cfg.customBg.startsWith('data:')) diff.bg = cfg.customBg;
+  if (cfg.theme && cfg.theme !== defaultKhitanConfig.theme) diff.th = cfg.theme;
+
+  // Gallery: include only if different from default gallery
+  if (Array.isArray(cfg.gallery)) {
+    const cleanGallery = cfg.gallery.filter(u => u && !u.startsWith('data:'));
+    const isSame = cleanGallery.length === defaultKhitanConfig.gallery.length &&
+      cleanGallery.every((url, i) => url === defaultKhitanConfig.gallery[i]);
+    if (!isSame) {
+      diff.g = cleanGallery;
+    }
+  }
+
+  // If nothing changed from default, no diff payload needed!
+  if (Object.keys(diff).length === 0) return '';
+
   try {
-    const jsonStr = JSON.stringify(compact);
+    const jsonStr = JSON.stringify(diff);
     return btoa(unescape(encodeURIComponent(jsonStr)))
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
       .replace(/=+$/, '');
   } catch(e) {
-    console.error('Error encoding khitan config:', e);
+    console.error('Error encoding khitan config diff:', e);
     return '';
   }
 }
@@ -405,9 +416,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ================= GALLERY KHITAN MANAGEMENT =================
-  let khitanGalleryPhotos = (config.gallery && Array.isArray(config.gallery) && config.gallery.length > 0)
+  let initialGallery = (config.gallery && Array.isArray(config.gallery) && config.gallery.length > 0)
     ? [...config.gallery]
     : [...defaultKhitanConfig.gallery];
+
+  // Auto clean stale outdoor tea plantation photos (photos 4 & 5) from localStorage
+  if (initialGallery.length > 3) {
+    initialGallery = initialGallery.filter(p => !p.includes('galeri-4') && !p.includes('galeri-5') && !p.includes('gallery-4') && !p.includes('gallery-5'));
+    if (initialGallery.length === 0) initialGallery = [...defaultKhitanConfig.gallery];
+    config.gallery = [...initialGallery];
+    saveKhitanConfig(config);
+  }
+  let khitanGalleryPhotos = initialGallery;
 
   const khitanGalleryPreviewGrid = document.getElementById('khitanGalleryPreviewGrid');
   const khitanGalleryCountBadge = document.getElementById('khitanGalleryCountBadge');
@@ -454,14 +474,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (window.lucide) lucide.createIcons();
 
-    // Bind delete buttons
+    // Bind delete buttons with instant local save
     khitanGalleryPreviewGrid.querySelectorAll('.btn-delete-photo').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const delIdx = parseInt(btn.getAttribute('data-idx'), 10);
         khitanGalleryPhotos.splice(delIdx, 1);
         renderKhitanGalleryGrid();
-        showToast('Foto galeri khitan berhasil dihapus.');
+        const cur = getKhitanConfig();
+        cur.gallery = [...khitanGalleryPhotos];
+        saveKhitanConfig(cur);
+        updateViewInviteLink(cur);
+        showToast('Foto galeri khitan berhasil dihapus & tersimpan.');
       });
     });
   }
@@ -495,8 +519,9 @@ document.addEventListener('DOMContentLoaded', () => {
       khitanGalleryFileInput.value = '';
       renderKhitanGalleryGrid();
       const cur = getKhitanConfig();
-      cur.gallery = khitanGalleryPhotos;
+      cur.gallery = [...khitanGalleryPhotos];
       saveKhitanConfig(cur);
+      updateViewInviteLink(cur);
       showToast(`${successCount} foto berhasil diunggah ke CDN & disimpan!`);
     });
   }
@@ -512,6 +537,10 @@ document.addEventListener('DOMContentLoaded', () => {
       khitanGalleryPhotos.push(url);
       khitanGalleryUrlInput.value = '';
       renderKhitanGalleryGrid();
+      const cur = getKhitanConfig();
+      cur.gallery = [...khitanGalleryPhotos];
+      saveKhitanConfig(cur);
+      updateViewInviteLink(cur);
       showToast('Foto dari link berhasil ditambahkan ke galeri!');
     });
   }
@@ -522,6 +551,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (confirm('Yakin ingin menghapus seluruh foto galeri khitan?')) {
         khitanGalleryPhotos = [];
         renderKhitanGalleryGrid();
+        const cur = getKhitanConfig();
+        cur.gallery = [];
+        saveKhitanConfig(cur);
+        updateViewInviteLink(cur);
         showToast('Semua foto galeri telah dihapus.');
       }
     });
@@ -578,9 +611,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (viewInviteLink) {
       let href = 'khitan.html';
       const q = [];
-      if (cfg && cfg.cloudId) {
-        q.push(`c=${encodeURIComponent(cfg.cloudId)}`);
-      }
+      const encodedPayload = encodeKhitanConfigForUrl(cfg);
+      if (encodedPayload) q.push(`d=${encodedPayload}`);
       const isCustomClient = currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy';
       if (isCustomClient) {
         q.push(`client=${encodeURIComponent(currentClient)}`);
@@ -860,7 +892,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Form Submit
   const builderForm = document.getElementById('khitanBuilderForm');
-  builderForm.addEventListener('submit', async (e) => {
+  builderForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     let newConfig = {
@@ -870,7 +902,7 @@ document.addEventListener('DOMContentLoaded', () => {
       father: document.getElementById('fatherName').value.trim(),
       mother: document.getElementById('motherName').value.trim(),
       photo: document.getElementById('childPhoto').value.trim(),
-      gallery: khitanGalleryPhotos,
+      gallery: [...khitanGalleryPhotos],
       eventDateDisplay: document.getElementById('eventDateDisplay').value.trim(),
       eventDateIso: document.getElementById('eventDateIso').value.trim(),
       eventTime: document.getElementById('eventTime').value.trim(),
@@ -889,16 +921,18 @@ document.addEventListener('DOMContentLoaded', () => {
       theme: document.getElementById('selectedKhitanTheme')?.value || 'cream'
     };
 
-    newConfig = await syncLocalImagesToCloud(newConfig);
+    // 1. Simpan LANGSUNG ke database lokal secara instan (tidak tergantung koneksi jaringan)
+    saveKhitanConfig(newConfig);
+    updateViewInviteLink(newConfig);
+    showToast('Perubahan undangan khitanan berhasil disimpan!');
 
-    const activeClient = currentClient || 'wangkis';
-    const cid = await syncConfigToCloud(activeClient, newConfig);
-    if (cid) newConfig.cloudId = cid;
-
-    if (saveKhitanConfig(newConfig)) {
-      updateViewInviteLink(newConfig);
-      showToast('Perubahan undangan khitanan berhasil disimpan & online!');
-    }
+    // 2. Background sync non-blocking jika ada gambar lokal
+    syncLocalImagesToCloud(newConfig).then(updated => {
+      if (updated) {
+        saveKhitanConfig(updated);
+        updateViewInviteLink(updated);
+      }
+    }).catch(() => {});
   });
 
   // Reset
@@ -970,13 +1004,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Base URL resolution (clean origin - avoids 404 folder nesting)
     const baseOrigin = window.location.origin;
     let fullInvitationUrl = `${baseOrigin}/khitan.html?to=${encodeURIComponent(guestName)}`;
-    const activeClient = currentClient || 'wangkis';
-    let cloudId = currentCfg.cloudId;
-    if (!cloudId) {
-      cloudId = await syncConfigToCloud(activeClient, currentCfg);
-    }
-    if (cloudId) {
-      fullInvitationUrl += `&c=${encodeURIComponent(cloudId)}`;
+    const encodedPayload = encodeKhitanConfigForUrl(currentCfg);
+    if (encodedPayload) {
+      fullInvitationUrl += `&d=${encodedPayload}`;
     }
     const isCustomClient = currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy';
     if (isCustomClient) {
@@ -1056,12 +1086,8 @@ Salam hormat,
 
       let generalUrl = `${window.location.origin}/khitan.html`;
       const queryParts = [];
-      const activeClient = currentClient || 'wangkis';
-      let cloudId = currentCfg.cloudId;
-      if (!cloudId) {
-        cloudId = await syncConfigToCloud(activeClient, currentCfg);
-      }
-      if (cloudId) queryParts.push(`c=${encodeURIComponent(cloudId)}`);
+      const encodedPayload = encodeKhitanConfigForUrl(currentCfg);
+      if (encodedPayload) queryParts.push(`d=${encodedPayload}`);
       const isCustomClient = currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy';
       if (isCustomClient) {
         queryParts.push(`client=${encodeURIComponent(currentClient)}`);
