@@ -20,7 +20,7 @@ const defaultKhitanConfig = {
   eventPlace: 'Rumah Hajat',
   eventAddress: 'Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon',
   mapsUrl: 'https://maps.app.goo.gl/FNjBDJMcNzKmvb6B7',
-  bank1Name: 'BCA',
+  bank1Name: 'BRI',
   bank1Number: '1234567890',
   bank1Holder: 'Wangkis Suwito (Ayah)',
   bank2Name: 'Dana',
@@ -510,12 +510,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const clientBannerName = document.getElementById('clientBannerName');
     if (clientBanner) clientBanner.classList.remove('hidden');
     if (clientBannerName) clientBannerName.textContent = currentClient;
+  }
 
-    const viewInviteLink = document.querySelector('header a[href="khitan.html"]');
+  function updateViewInviteLink(cfg) {
+    const viewInviteLink = document.querySelector('header a[href*="khitan.html"]');
     if (viewInviteLink) {
-      viewInviteLink.href = `khitan.html?client=${encodeURIComponent(currentClient)}`;
+      const encodedPayload = encodeKhitanConfigForUrl(cfg);
+      let href = 'khitan.html?';
+      if (currentClient) href += `client=${encodeURIComponent(currentClient)}&`;
+      if (cfg.theme && cfg.theme !== 'cream') href += `theme=${encodeURIComponent(cfg.theme)}&`;
+      if (encodedPayload) href += `d=${encodedPayload}`;
+      viewInviteLink.href = href.replace(/[?&]$/, '');
     }
   }
+
+  updateViewInviteLink(config);
 
   // Audio Handler (YouTube, SoundCloud & MP3 Preview)
   const audioUrlInput = document.getElementById('audioUrl');
@@ -814,6 +823,7 @@ document.addEventListener('DOMContentLoaded', () => {
     newConfig = await syncLocalImagesToCloud(newConfig);
 
     if (saveKhitanConfig(newConfig)) {
+      updateViewInviteLink(newConfig);
       showToast('Perubahan undangan khitanan berhasil disimpan & online!');
     }
   });
@@ -893,6 +903,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentCfg.theme && currentCfg.theme !== 'cream') {
       fullInvitationUrl += `&theme=${encodeURIComponent(currentCfg.theme)}`;
     }
+    const encodedPayload = encodeKhitanConfigForUrl(currentCfg);
+    if (encodedPayload) {
+      fullInvitationUrl += `&d=${encodedPayload}`;
+    }
 
     const waMessage = 
 `Kepada Yth.
@@ -966,6 +980,8 @@ Salam hormat,
       const queryParts = [];
       if (currentClient) queryParts.push(`client=${encodeURIComponent(currentClient)}`);
       if (currentCfg.theme && currentCfg.theme !== 'cream') queryParts.push(`theme=${encodeURIComponent(currentCfg.theme)}`);
+      const encodedPayload = encodeKhitanConfigForUrl(currentCfg);
+      if (encodedPayload) queryParts.push(`d=${encodedPayload}`);
       if (queryParts.length > 0) generalUrl += `?${queryParts.join('&')}`;
 
       navigator.clipboard.writeText(generalUrl).then(() => {

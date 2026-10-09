@@ -154,7 +154,7 @@
       <div class="max-w-xl text-center space-y-6" data-aos="fade-up">
         <span class="text-xs uppercase tracking-[0.35em] text-amber-800 font-bold">Tasyakuran Walimatul Khitan</span>
         <h1 id="desktopChildName" class="text-5xl xl:text-6xl font-serif tracking-wide font-bold text-stone-900">Irendy Wijaya Saputra</h1>
-        <p id="desktopDateText" class="text-amber-900 font-medium text-sm tracking-widest uppercase">Senin, 16 November 2026 &bull; Balapulang Kulon</p>
+        <p id="desktopDateText" class="text-amber-950 font-serif font-bold text-base xl:text-lg tracking-widest uppercase">Senin, 16 November 2026 &bull; Balapulang Kulon</p>
         <div class="w-16 h-[2px] bg-amber-600/50 mx-auto my-6"></div>
         <p class="font-arabic text-2xl text-amber-900 leading-loose">
           بَارَكَ اللهُ لَكَ فِي الْمَوْهُوْبِ لَكَ وَشَكَرْتَ الْوَاهِبَ وَبَلَغَ أَشُدَّهُ وَرُزِقْتَ بِرَّهُ
@@ -179,13 +179,13 @@
         </div>
 
         <!-- Center Child Photo Frame -->
-        <div class="space-y-2 my-auto py-2 shrink-0">
-          <div class="w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-full border-4 border-white p-1 shadow-2xl bg-amber-100/50">
-            <img id="coverChildPhoto" src="images/khitan/rendy-profile.jpg" 
+        <div class="space-y-3 my-auto py-2 shrink-0">
+          <div class="w-28 h-28 sm:w-36 sm:h-36 mx-auto rounded-full border-4 border-white p-1 shadow-2xl bg-amber-100/50">
+            <img id="coverChildPhoto" src="images/khitan/rendy-profile.jpg?v=20261009b" 
                  alt="Foto Anak" 
                  class="w-full h-full object-cover rounded-full">
           </div>
-          <p id="coverDateText" class="text-amber-900 text-[11px] sm:text-xs font-serif tracking-widest uppercase font-semibold">16 &bull; 11 &bull; 2026</p>
+          <p id="coverDateText" class="text-amber-950 font-serif text-base sm:text-lg md:text-xl font-bold tracking-[0.2em] uppercase drop-shadow-xs">Senin, 16 November 2026</p>
         </div>
 
         <!-- Bottom Guest Card & Buka Undangan Button -->
@@ -313,8 +313,8 @@
             </div>
             <div class="space-y-1">
               <h3 class="text-xl font-serif font-bold text-stone-900">Tasyakuran &amp; Ramah Tamah</h3>
-              <p id="eventDateDisplayText" class="text-xs text-amber-800 font-semibold">Senin, 16 November 2026</p>
-              <p id="eventTimeText" class="text-xs text-stone-500">Pukul 10.00 WIB</p>
+              <p id="eventDateDisplayText" class="text-base font-serif font-bold text-amber-900 tracking-wide">Senin, 16 November 2026</p>
+              <p id="eventTimeText" class="text-sm text-stone-600 font-medium">Pukul 10.00 WIB</p>
             </div>
             <div class="text-xs text-stone-600 border-t border-amber-100 pt-3 space-y-0.5">
               <p id="eventPlaceText" class="font-bold text-stone-800">Rumah Hajat</p>
@@ -360,7 +360,7 @@
           <!-- Card Rekening 1 (Metallic Gold / Warm Bronze) -->
           <div id="bank1Container" class="bg-gradient-to-br from-[#8c6735] via-[#a88247] to-[#735022] rounded-2xl p-5 text-white shadow-xl space-y-4 relative overflow-hidden border border-amber-300/30">
             <div class="flex items-center justify-between">
-              <span id="bank1NameText" class="font-bold text-lg tracking-wider text-amber-200">BCA</span>
+              <span id="bank1NameText" class="font-bold text-lg tracking-wider text-amber-200">BRI</span>
               <i data-lucide="credit-card" class="w-5 h-5 text-amber-300"></i>
             </div>
             <div class="space-y-1">
@@ -370,9 +370,9 @@
               </div>
               <p id="bank1HolderText" class="text-xs text-amber-100 font-medium">a.n Wangkis Suwito (Ayah)</p>
             </div>
-            <button id="btnCopyBank1" onclick="copyToClipboard('1234567890', 'BCA')" class="w-full py-2 px-3 rounded-lg bg-white/15 hover:bg-white/25 border border-white/30 text-xs font-medium flex items-center justify-center gap-2 transition cursor-pointer">
+            <button id="btnCopyBank1" onclick="copyToClipboard('1234567890', 'BRI')" class="w-full py-2 px-3 rounded-lg bg-white/15 hover:bg-white/25 border border-white/30 text-xs font-medium flex items-center justify-center gap-2 transition cursor-pointer">
               <i data-lucide="copy" class="w-3.5 h-3.5 text-amber-200"></i>
-              <span>Salin No. Rekening</span>
+              <span>Salin No. Rekening BRI</span>
             </button>
           </div>
 
@@ -550,7 +550,7 @@
         eventPlace: 'Rumah Hajat',
         eventAddress: 'Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon',
         mapsUrl: 'https://maps.app.goo.gl/FNjBDJMcNzKmvb6B7',
-        bank1Name: 'BCA',
+        bank1Name: 'BRI',
         bank1Number: '1234567890',
         bank1Holder: 'Wangkis Suwito (Ayah)',
         bank2Name: 'Dana',
@@ -659,11 +659,11 @@
         if (document.getElementById('btnMapsLink') && cfg.mapsUrl) document.getElementById('btnMapsLink').href = cfg.mapsUrl;
 
         // Bank 1
-        if (document.getElementById('bank1NameText')) document.getElementById('bank1NameText').textContent = cfg.bank1Name || 'BCA';
+        if (document.getElementById('bank1NameText')) document.getElementById('bank1NameText').textContent = cfg.bank1Name || 'BRI';
         if (document.getElementById('bank1NumberText')) document.getElementById('bank1NumberText').textContent = cfg.bank1Number || '1234567890';
-        if (document.getElementById('bank1HolderText')) document.getElementById('bank1HolderText').textContent = `a.n ${cfg.bank1Holder || ''}`;
+        if (document.getElementById('bank1HolderText')) document.getElementById('bank1HolderText').textContent = `a.n ${cfg.bank1Holder || 'Wangkis Suwito (Ayah)'}`;
         if (document.getElementById('btnCopyBank1')) {
-          document.getElementById('btnCopyBank1').setAttribute('onclick', `copyToClipboard('${cfg.bank1Number || '1234567890'}', '${cfg.bank1Name || 'BCA'}')`);
+          document.getElementById('btnCopyBank1').setAttribute('onclick', `copyToClipboard('${cfg.bank1Number || '1234567890'}', '${cfg.bank1Name || 'BRI'}')`);
         }
 
         // Bank 2 (DANA / E-Wallet)
