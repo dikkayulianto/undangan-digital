@@ -640,6 +640,23 @@
         }
       }
 
+      // Short Cloud Config ID (?c=...)
+      const cParam = urlParams.get('c');
+      if (cParam) {
+        fetch(`https://files.catbox.moe/${encodeURIComponent(cParam)}.json`)
+          .then(res => res.json())
+          .then(cloudCfg => {
+            if (cloudCfg && typeof cloudCfg === 'object') {
+              config = Object.assign({}, defaultKhitanConfig, cloudCfg);
+              try {
+                localStorage.setItem(clientStorageKey, JSON.stringify(config));
+              } catch(e) {}
+              populateElements(config);
+            }
+          })
+          .catch(() => {});
+      }
+
       // Populate Elements
       function populateElements(cfg) {
         if (document.getElementById('desktopChildName')) document.getElementById('desktopChildName').textContent = cfg.childFullname;

@@ -521,15 +521,42 @@ document.addEventListener('DOMContentLoaded', () => {
     if (clientBannerName) clientBannerName.textContent = currentClient;
   }
 
+  async function syncConfigToCloud(client, cfg) {
+    try {
+      const res = await fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client, configData: cfg })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.cloudId) {
+          cfg.cloudId = data.cloudId;
+          saveKhitanConfig(cfg);
+          return data.cloudId;
+        }
+      }
+    } catch (e) {
+      console.warn('Sync to cloud error:', e);
+    }
+    return cfg.cloudId || '';
+  }
+
   function updateViewInviteLink(cfg) {
     const viewInviteLink = document.querySelector('header a[href*="khitan.html"]');
     if (viewInviteLink) {
-      const encodedPayload = encodeKhitanConfigForUrl(cfg);
-      let href = 'khitan.html?';
-      if (currentClient) href += `client=${encodeURIComponent(currentClient)}&`;
-      if (cfg.theme && cfg.theme !== 'cream') href += `theme=${encodeURIComponent(cfg.theme)}&`;
-      if (encodedPayload) href += `d=${encodedPayload}`;
-      viewInviteLink.href = href.replace(/[?&]$/, '');
+      let href = 'khitan.html';
+      const q = [];
+      const isCustomClient = currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy';
+      if (isCustomClient) {
+        q.push(`client=${encodeURIComponent(currentClient)}`);
+        if (cfg && cfg.cloudId) q.push(`c=${encodeURIComponent(cfg.cloudId)}`);
+      }
+      if (cfg && cfg.theme && cfg.theme !== 'cream') {
+        q.push(`theme=${encodeURIComponent(cfg.theme)}`);
+      }
+      if (q.length > 0) href += `?${q.join('&')}`;
+      viewInviteLink.href = href;
     }
   }
 
@@ -831,6 +858,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     newConfig = await syncLocalImagesToCloud(newConfig);
 
+    if (currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy') {
+      const cid = await syncConfigToCloud(currentClient, newConfig);
+      if (cid) newConfig.cloudId = cid;
+    }
+
     if (saveKhitanConfig(newConfig)) {
       updateViewInviteLink(newConfig);
       showToast('Perubahan undangan khitanan berhasil disimpan & online!');
@@ -906,15 +938,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Base URL resolution (clean origin - avoids 404 folder nesting)
     const baseOrigin = window.location.origin;
     let fullInvitationUrl = `${baseOrigin}/khitan.html?to=${encodeURIComponent(guestName)}`;
-    if (currentClient) {
+    const isCustomClient = currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy';
+    if (isCustomClient) {
       fullInvitationUrl += `&client=${encodeURIComponent(currentClient)}`;
+      let cloudId = currentCfg.cloudId;
+      if (!cloudId) {
+        cloudId = await syncConfigToCloud(currentClient, currentCfg);
+      }
+      if (cloudId) {
+        fullInvitationUrl += `&c=${encodeURIComponent(cloudId)}`;
+      }
     }
     if (currentCfg.theme && currentCfg.theme !== 'cream') {
       fullInvitationUrl += `&theme=${encodeURIComponent(currentCfg.theme)}`;
-    }
-    const encodedPayload = encodeKhitanConfigForUrl(currentCfg);
-    if (encodedPayload) {
-      fullInvitationUrl += `&d=${encodedPayload}`;
     }
 
     const waMessage = 
@@ -987,10 +1023,16 @@ Salam hormat,
 
       let generalUrl = `${window.location.origin}/khitan.html`;
       const queryParts = [];
-      if (currentClient) queryParts.push(`client=${encodeURIComponent(currentClient)}`);
+      const isCustomClient = currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy';
+      if (isCustomClient) {
+        queryParts.push(`client=${encodeURIComponent(currentClient)}`);
+        let cloudId = currentCfg.cloudId;
+        if (!cloudId) {
+          cloudId = await syncConfigToCloud(currentClient, currentCfg);
+        }
+        if (cloudId) queryParts.push(`c=${encodeURIComponent(cloudId)}`);
+      }
       if (currentCfg.theme && currentCfg.theme !== 'cream') queryParts.push(`theme=${encodeURIComponent(currentCfg.theme)}`);
-      const encodedPayload = encodeKhitanConfigForUrl(currentCfg);
-      if (encodedPayload) queryParts.push(`d=${encodedPayload}`);
       if (queryParts.length > 0) generalUrl += `?${queryParts.join('&')}`;
 
       navigator.clipboard.writeText(generalUrl).then(() => {
