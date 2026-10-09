@@ -1,0 +1,38 @@
+# ==========================================
+# Apache / cPanel Configuration
+# Website Undangan Digital
+# ==========================================
+
+RewriteEngine On
+
+# 1. Otomatis Alihkan ke HTTPS (SSL)
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# 2. Hapus ekstensi .html dari URL (Clean URLs)
+# Contoh: domain.com/khitan.html diarahkan ke domain.com/khitan
+RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
+RewriteRule ^ /%1 [NC,L,R=301]
+
+# 3. Baca file .html meskipun pengunjung tidak mengetik .html
+# Contoh: pengunjung membuka domain.com/khitan -> server membaca khitan.html
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html [NC,L]
+
+# 4. Gzip & Deflate Compression (Mempercepat loading web)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# 5. Cache Control untuk Gambar & Aset Statis
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpg "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/gif "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
+</IfModule>
