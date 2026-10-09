@@ -153,12 +153,16 @@
       </nav>
 
       <!-- CTA Buttons -->
-      <div class="hidden sm:flex items-center gap-2.5">
-        <a href="dashboard.html" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-stone-300 hover:border-amber-600 bg-white hover:bg-amber-50/50 text-stone-700 hover:text-amber-900 text-xs font-semibold shadow-xs transition">
-          <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-amber-700"></i>
-          <span>Dashboard Saya</span>
+      <div class="hidden sm:flex items-center gap-2">
+        <a href="login.html" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-stone-300 hover:border-amber-600 bg-white hover:bg-amber-50 text-stone-700 hover:text-amber-900 text-xs font-semibold shadow-xs transition">
+          <i data-lucide="user" class="w-3.5 h-3.5 text-amber-700"></i>
+          <span>Login User</span>
         </a>
-        <button type="button" class="btn-open-category-modal inline-flex items-center gap-2 text-xs font-bold text-white bg-amber-800 hover:bg-amber-900 px-5 py-2.5 rounded-full shadow-lg shadow-amber-900/15 transition transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
+        <a href="admin-login.html" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-700 bg-slate-900 hover:bg-slate-800 text-amber-300 hover:text-amber-200 text-xs font-semibold shadow-xs transition">
+          <i data-lucide="shield" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>Login Admin</span>
+        </a>
+        <button type="button" class="btn-open-category-modal inline-flex items-center gap-2 text-xs font-bold text-white bg-amber-800 hover:bg-amber-900 px-4 py-2 rounded-full shadow-lg shadow-amber-900/15 transition transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-gold-300"></i>
           <span>Buat Undangan</span>
         </button>
@@ -172,10 +176,16 @@
 
     <!-- Mobile Menu Dropdown -->
     <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-stone-200 px-6 py-5 space-y-3 shadow-lg">
-      <a href="dashboard.html" class="block text-sm font-bold text-amber-800 py-1.5 flex items-center gap-2">
-        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-        <span>Dashboard Pengguna</span>
-      </a>
+      <div class="grid grid-cols-2 gap-2 pb-2 border-b border-stone-100">
+        <a href="login.html" class="w-full text-center py-2.5 rounded-xl border border-stone-300 bg-white hover:bg-amber-50 text-stone-800 text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition">
+          <i data-lucide="user" class="w-4 h-4 text-amber-700"></i>
+          <span>Login User</span>
+        </a>
+        <a href="admin-login.html" class="w-full text-center py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-amber-300 text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition">
+          <i data-lucide="shield" class="w-4 h-4 text-amber-400"></i>
+          <span>Login Admin</span>
+        </a>
+      </div>
       <a href="#fitur" class="block text-sm font-medium text-stone-700 py-1.5">Fitur</a>
       <a href="#demo" class="block text-sm font-medium text-stone-700 py-1.5 flex items-center gap-2">
         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
@@ -185,10 +195,6 @@
       <a href="#pricing" class="block text-sm font-medium text-stone-700 py-1.5">Harga Paket</a>
       <a href="#faq" class="block text-sm font-medium text-stone-700 py-1.5">FAQ</a>
       <div class="pt-3 border-t border-stone-100 flex flex-col gap-2">
-        <a href="dashboard.html" class="w-full text-center py-2.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-900 text-xs font-bold shadow-xs flex items-center justify-center gap-2 transition">
-          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-          <span>Buka Dashboard Pengguna</span>
-        </a>
         <button type="button" class="btn-open-category-modal w-full text-center py-2.5 rounded-xl bg-amber-800 hover:bg-amber-900 text-white text-xs font-bold shadow flex items-center justify-center gap-2 transition cursor-pointer">
           <i data-lucide="sparkles" class="w-4 h-4 text-gold-300"></i>
           <span>Buat Undangan (Nikah / Khitan)</span>
@@ -1017,8 +1023,8 @@
           <a href="khitan.html" target="_blank" class="hover:text-emerald-400 transition">Demo Khitanan</a>
           <a href="builder.html" class="hover:text-amber-400 transition">Editor Pernikahan</a>
           <a href="builder-khitan.html" class="hover:text-emerald-400 transition">Editor Khitanan</a>
-          <a href="login.html" class="text-amber-400 hover:text-amber-300 font-semibold transition">Login Pembeli</a>
-          <a href="admin-login.html" class="text-emerald-400 hover:text-emerald-300 font-semibold transition">Portal Admin</a>
+          <a href="login.html" class="text-amber-400 hover:text-amber-300 font-semibold transition">Login User</a>
+          <a href="admin-login.html" class="text-emerald-400 hover:text-emerald-300 font-semibold transition">Login Admin</a>
         </div>
 
       </div>
