@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Admin - Manajemen Akun Pembeli | Inveet.id</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            admin: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              800: '#1e293b',
+              900: '#0f172a'
+            },
+            gold: {
+              400: '#e5be70',
+              500: '#cfa243'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen antialiased flex flex-col selection:bg-amber-500 selection:text-black">
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="adminToast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none -translate-y-4 transition-all duration-300">
+    <div class="bg-slate-900 text-amber-300 px-6 py-3 rounded-full shadow-2xl border border-amber-500/40 flex items-center gap-2.5 text-sm font-medium">
+      <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
+      <span id="adminToastMsg">Berhasil disimpan!</span>
+    </div>
+  </div>
+
+  <!-- MODAL: KREDENSIAL SIAP KIRIM WA -->
+  <div id="waModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 transition-all duration-300">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative space-y-5">
+      <button id="btnCloseWaModal" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <div class="space-y-1">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold uppercase tracking-wider">
+          <i data-lucide="check" class="w-3 h-3"></i> Akun Pembeli Berhasil Dibuat
+        </div>
+        <h3 class="text-xl font-bold text-white">Kirim Info Akun ke Pembeli</h3>
+        <p class="text-xs text-slate-400">Kirim format pesan WhatsApp berikut agar pembeli dapat langsung login dan mengisi data undangannya.</p>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 mb-1">Teks Pesan WhatsApp:</label>
+        <textarea id="waModalText" rows="9" readonly class="w-full p-3.5 rounded-xl border border-slate-700 bg-slate-950 font-mono text-xs text-slate-200 outline-none resize-none leading-relaxed"></textarea>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-2.5 pt-2">
+        <button type="button" id="btnCopyWaModal" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs border border-slate-700 flex items-center justify-center gap-2 transition">
+          <i data-lucide="copy" class="w-4 h-4 text-amber-400"></i>
+          <span>Salin Teks WhatsApp</span>
+        </button>
+        <a id="btnOpenWaModal" href="#" target="_blank" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg flex items-center justify-center gap-2 transition">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span>Kirim Langsung di WA</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR / HEADER -->
+  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 text-slate-950 font-bold flex items-center justify-center shadow">
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-base font-bold tracking-tight text-white leading-none">inveet<span class="text-amber-400">.id</span></span>
+            <span class="px-2 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-[10px] font-bold uppercase tracking-wider">Admin Portal</span>
+          </div>
+          <span class="text-[10px] text-slate-400">Pusat Pembuatan Akun &amp; Multi-Undangan</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 text-xs transition">
+          <i data-lucide="home" class="w-3.5 h-3.5"></i>
+          <span>Lihat Website</span>
+        </a>
+        <button type="button" id="btnLogoutAdmin" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-semibold transition cursor-pointer">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span>Keluar</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN BODY -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1 w-full">
+
+    <!-- METRICS OVERVIEW -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-1 relative overflow-hidden">
+        <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Total Akun Pembeli</span>
+        <div class="text-2xl font-extrabold text-white" id="statTotalClients">0</div>
+        <div class="text-[11px] text-emerald-400 flex items-center gap-1">
+          <i data-lucide="users" class="w-3 h-3"></i> <span>Multi-Tenant Aktif</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-1 relative overflow-hidden">
+        <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Undangan Khitanan</span>
+        <div class="text-2xl font-extrabold text-amber-400" id="statKhitanCount">0</div>
+        <div class="text-[11px] text-slate-400 flex items-center gap-1">
+          <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i> <span>Walimatul Khitan</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-1 relative overflow-hidden">
+        <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Undangan Pernikahan</span>
+        <div class="text-2xl font-extrabold text-pink-400" id="statNikahCount">0</div>
+        <div class="text-[11px] text-slate-400 flex items-center gap-1">
+          <i data-lucide="heart" class="w-3 h-3 text-pink-400"></i> <span>Wedding Online</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-1 relative overflow-hidden">
+        <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Status Server</span>
+        <div class="text-2xl font-extrabold text-emerald-400">100% OK</div>
+        <div class="text-[11px] text-slate-400 flex items-center gap-1">
+          <i data-lucide="cloud-check" class="w-3 h-3 text-emerald-400"></i> <span>Statis &amp; Cepat</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CREATE CLIENT ACCOUNT FORM -->
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden">
+      <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-[10px] font-bold uppercase tracking-wider mb-1">
+            <i data-lucide="user-plus" class="w-3 h-3"></i> Formulir Akun Pembeli
+          </div>
+          <h2 class="text-xl font-bold text-white">Buat Akun Pembeli Baru (Klien Undangan)</h2>
+          <p class="text-xs text-slate-400">Setiap pembeli akan memiliki akun sendiri dan halaman editor undangan mandiri yang terisolasi.</p>
+        </div>
+        <button type="button" id="btnResetSampleData" class="text-xs text-slate-400 hover:text-amber-400 transition underline self-start sm:self-auto cursor-pointer">
+          Muat Akun Contoh Bawaan
+        </button>
+      </div>
+
+      <form id="createClientForm" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Nama Pembeli -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Pembeli / Keluarga</label>
+            <input type="text" id="clientNameInput" required placeholder="Contoh: Bpk. Hendra &amp; Ibu Nur" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 text-white text-xs focus:ring-2 focus:ring-amber-500 outline-none">
+          </div>
+
+          <!-- Username / ID Klien -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-semibold text-slate-300">Username / ID Klien</label>
+              <span class="text-[10px] text-slate-400">Sebagai tautan URL</span>
+            </div>
+            <div class="relative">
+              <input type="text" id="clientUsernameInput" required placeholder="contoh: fadhil" class="w-full pl-3.5 pr-20 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 text-white text-xs font-mono focus:ring-2 focus:ring-amber-500 outline-none">
+              <span id="slugPreview" class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-amber-400/80 font-mono"></span>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-semibold text-slate-300">Kata Sandi Login</label>
+              <button type="button" id="btnGenPassword" class="text-[10px] text-amber-400 hover:underline">Acak Sandi</button>
+            </div>
+            <input type="text" id="clientPasswordInput" required value="123456" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 text-white text-xs font-mono focus:ring-2 focus:ring-amber-500 outline-none">
+          </div>
+
+          <!-- Jenis Undangan -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Jenis Undangan</label>
+            <select id="clientTypeSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 text-white text-xs focus:ring-2 focus:ring-amber-500 outline-none">
+              <option value="khitan">Walimatul Khitan (Khitanan Anak)</option>
+              <option value="nikah">Undangan Pernikahan (Wedding)</option>
+            </select>
+          </div>
+
+          <!-- No WA Pembeli -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Nomor WhatsApp Pembeli</label>
+            <input type="tel" id="clientPhoneInput" placeholder="081234567890" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 text-white text-xs focus:ring-2 focus:ring-amber-500 outline-none">
+          </div>
+
+          <!-- Paket Layanan -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Paket Layanan</label>
+            <select id="clientTierSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 text-white text-xs focus:ring-2 focus:ring-amber-500 outline-none">
+              <option value="Paket Sapphire VIP">Paket Sapphire VIP (Lengkap &amp; Musik)</option>
+              <option value="Paket Gold Eksklusif">Paket Gold Eksklusif</option>
+              <option value="Paket Basic Hemat">Paket Basic Hemat</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end">
+          <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs shadow-lg transition flex items-center justify-center gap-2 cursor-pointer">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>Buat Akun &amp; Siapkan Undangan Klien</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- CLIENT ACCOUNTS TABLE -->
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-4 shadow-xl">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-4">
+        <div>
+          <h3 class="text-lg font-bold text-white">Daftar Akun Pembeli &amp; Undangan Aktif</h3>
+          <p class="text-xs text-slate-400">Kelola kredensial pembeli, buka editor, atau bagikan pesan aktivasi via WhatsApp.</p>
+        </div>
+        
+        <!-- Filter Tabs -->
+        <div class="flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700">
+          <button type="button" class="filter-btn active px-3 py-1 rounded-lg text-xs font-semibold text-white bg-slate-700 transition" data-filter="all">Semua (<span id="countAll">0</span>)</button>
+          <button type="button" class="filter-btn px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition" data-filter="khitan">Khitan (<span id="countKhitan">0</span>)</button>
+          <button type="button" class="filter-btn px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition" data-filter="nikah">Nikah (<span id="countNikah">0</span>)</button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-800 text-slate-400 uppercase tracking-wider text-[10px]">
+              <th class="py-3 px-3">Klien &amp; WhatsApp</th>
+              <th class="py-3 px-3">Akun Login</th>
+              <th class="py-3 px-3">Kategori</th>
+              <th class="py-3 px-3">Paket</th>
+              <th class="py-3 px-3 text-right">Aksi &amp; Akses Undangan</th>
+            </tr>
+          </thead>
+          <tbody id="clientsTableBody" class="divide-y divide-slate-800/60 text-slate-200">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p>&copy; 2026 inveet.id &bull; Platform Undangan Digital Indonesia (Admin Master).</p>
+      <div class="flex items-center gap-4 text-slate-400">
+        <a href="login.html" class="hover:text-white transition">Halaman Login Pembeli</a>
+        <a href="builder-khitan.html" class="hover:text-white transition">Editor Khitan</a>
+        <a href="builder.html" class="hover:text-white transition">Editor Nikah</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT ADMIN ENGINE -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+
+      // Check Admin Auth
+      const isLogged = sessionStorage.getItem('inveet_admin_session') || localStorage.getItem('inveet_admin_session');
+      if (!isLogged) {
+        window.location.href = 'admin-login.html';
+        return;
+      }
+
+      // Logout Admin
+      document.getElementById('btnLogoutAdmin').addEventListener('click', () => {
+        sessionStorage.removeItem('inveet_admin_session');
+        localStorage.removeItem('inveet_admin_session');
+        window.location.href = 'admin-login.html';
+      });
+
+      // Default Sample Accounts
+      const initialAccounts = [
+        {
+          id: 'client-rendy',
+          username: 'rendy',
+          password: 'password123',
+          name: 'Bpk. Wangkis Suwito & Ibu Susi (Irendy)',
+          type: 'khitan',
+          phone: '082134966499',
+          tier: 'Paket Sapphire VIP',
+          createdAt: '2026-10-09'
+        },
+        {
+          id: 'client-fadhil',
+          username: 'fadhil',
+          password: 'password123',
+          name: 'Bpk. Hendra Gunawan & Ibu Nur (Fadhil)',
+          type: 'khitan',
+          phone: '081234567890',
+          tier: 'Paket Sapphire VIP',
+          createdAt: '2026-10-09'
+        },
+        {
+          id: 'client-dimas-sarah',
+          username: 'dimas-sarah',
+          password: 'password123',
+          name: 'Dimas Pratama & Sarah Azhari',
+          type: 'nikah',
+          phone: '081987654321',
+          tier: 'Paket Sapphire VIP',
+          createdAt: '2026-10-09'
+        }
+      ];
+
+      function getAccounts() {
+        try {
+          const saved = localStorage.getItem('inveet_client_accounts');
+          if (saved) return JSON.parse(saved);
+        } catch(e) {}
+        localStorage.setItem('inveet_client_accounts', JSON.stringify(initialAccounts));
+        return initialAccounts;
+      }
+
+      function saveAccounts(accs) {
+        localStorage.setItem('inveet_client_accounts', JSON.stringify(accs));
+        renderTable();
+      }
+
+      // Toast
+      function showAdminToast(msg) {
+        const toast = document.getElementById('adminToast');
+        const toastMsg = document.getElementById('adminToastMsg');
+        if (toast && toastMsg) {
+          toastMsg.textContent = msg;
+          toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-4');
+          toast.classList.add('opacity-100', 'translate-y-0');
+          setTimeout(() => {
+            toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-4');
+            toast.classList.remove('opacity-100', 'translate-y-0');
+          }, 3200);
+        }
+      }
+
+      // Generate Random Password
+      document.getElementById('btnGenPassword').addEventListener('click', () => {
+        const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
+        let pass = '';
+        for (let i = 0; i < 6; i++) {
+          pass += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        document.getElementById('clientPasswordInput').value = pass;
+      });
+
+      // Sanitize username
+      const usernameInput = document.getElementById('clientUsernameInput');
+      const slugPreview = document.getElementById('slugPreview');
+      usernameInput.addEventListener('input', () => {
+        const sanitized = usernameInput.value.toLowerCase().replace(/[^a-z0-9-_]/g, '-').replace(/-+/g, '-');
+        usernameInput.value = sanitized;
+        slugPreview.textContent = sanitized ? `?client=${sanitized}` : '';
+      });
+
+      // Filter handling
+      let activeFilter = 'all';
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => {
+            b.classList.remove('active', 'bg-slate-700', 'text-white');
+            b.classList.add('text-slate-400');
+          });
+          btn.classList.add('active', 'bg-slate-700', 'text-white');
+          btn.classList.remove('text-slate-400');
+          activeFilter = btn.getAttribute('data-filter');
+          renderTable();
+        });
+      });
+
+      // Base origin
+      const origin = window.location.origin;
+
+      // Render Table
+      function renderTable() {
+        const accounts = getAccounts();
+        const tbody = document.getElementById('clientsTableBody');
+        tbody.innerHTML = '';
+
+        // Update stats
+        const total = accounts.length;
+        const khitanCount = accounts.filter(a => a.type === 'khitan').length;
+        const nikahCount = accounts.filter(a => a.type === 'nikah').length;
+
+        document.getElementById('statTotalClients').textContent = total;
+        document.getElementById('statKhitanCount').textContent = khitanCount;
+        document.getElementById('statNikahCount').textContent = nikahCount;
+        document.getElementById('countAll').textContent = total;
+        document.getElementById('countKhitan').textContent = khitanCount;
+        document.getElementById('countNikah').textContent = nikahCount;
+
+        const filtered = accounts.filter(acc => {
+          if (activeFilter === 'all') return true;
+          return acc.type === activeFilter;
+        });
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500">Belum ada akun pembeli untuk kategori ini.</td></tr>`;
+          return;
+        }
+
+        filtered.forEach(acc => {
+          const isKhitan = acc.type === 'khitan';
+          const editorUrl = isKhitan 
+            ? `${origin}/builder-khitan.html?client=${encodeURIComponent(acc.username)}`
+            : `${origin}/builder.html?client=${encodeURIComponent(acc.username)}`;
+          const inviteUrl = isKhitan
+            ? `${origin}/khitan.html?client=${encodeURIComponent(acc.username)}`
+            : `${origin}/invitation.html?client=${encodeURIComponent(acc.username)}`;
+          const loginUrl = `${origin}/login.html`;
+
+          const row = document.createElement('tr');
+          row.className = 'hover:bg-slate-800/40 transition';
+          row.innerHTML = `
+            <td class="py-4 px-3">
+              <div class="font-bold text-white text-xs">${acc.name}</div>
+              <div class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+                <i data-lucide="phone" class="w-3 h-3 text-emerald-400"></i>
+                <span>${acc.phone || '-'}</span>
+              </div>
+            </td>
+            <td class="py-4 px-3">
+              <div class="flex items-center gap-1.5 font-mono text-[11px]">
+                <span class="text-amber-300 font-semibold">${acc.username}</span>
+                <span class="text-slate-500">/</span>
+                <span class="text-slate-300">${acc.password}</span>
+              </div>
+              <button type="button" class="btn-copy-cred text-[10px] text-slate-400 hover:text-white underline mt-0.5" data-user="${acc.username}" data-pass="${acc.password}">
+                Salin Info Login
+              </button>
+            </td>
+            <td class="py-4 px-3">
+              ${isKhitan 
+                ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-semibold text-[10px]"><i data-lucide="sparkles" class="w-2.5 h-2.5"></i> Khitanan</span>'
+                : '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-300 font-semibold text-[10px]"><i data-lucide="heart" class="w-2.5 h-2.5"></i> Pernikahan</span>'
+              }
+            </td>
+            <td class="py-4 px-3 text-slate-400 text-[11px]">
+              ${acc.tier}
+            </td>
+            <td class="py-4 px-3 text-right">
+              <div class="flex items-center justify-end gap-1.5 flex-wrap">
+                <a href="${editorUrl}" target="_blank" class="px-2.5 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 font-semibold text-[11px] transition inline-flex items-center gap-1" title="Buka Editor Klien">
+                  <i data-lucide="sliders" class="w-3 h-3"></i>
+                  <span>Editor</span>
+                </a>
+                <a href="${inviteUrl}" target="_blank" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] transition inline-flex items-center gap-1" title="Lihat Undangan Klien">
+                  <i data-lucide="external-link" class="w-3 h-3"></i>
+                  <span>Lihat</span>
+                </a>
+                <button type="button" class="btn-share-wa px-2.5 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 text-[11px] font-semibold transition inline-flex items-center gap-1" data-id="${acc.id}" title="Kirim Detail Akun ke WhatsApp">
+                  <i data-lucide="send" class="w-3 h-3 text-emerald-400"></i>
+                  <span>Kirim WA</span>
+                </button>
+                <button type="button" class="btn-delete-acc w-7 h-7 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 transition flex items-center justify-center cursor-pointer" data-id="${acc.id}" title="Hapus Akun">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+
+        if (window.lucide) lucide.createIcons();
+
+        // Bind Copy Creds
+        document.querySelectorAll('.btn-copy-cred').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const u = btn.getAttribute('data-user');
+            const p = btn.getAttribute('data-pass');
+            navigator.clipboard.writeText(`Username: ${u}\nPassword: ${p}`).then(() => {
+              showAdminToast('Username & Password berhasil disalin!');
+            });
+          });
+        });
+
+        // Bind Share WA
+        document.querySelectorAll('.btn-share-wa').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const accId = btn.getAttribute('data-id');
+            const acc = accounts.find(a => a.id === accId);
+            if (acc) openWaModalForAccount(acc);
+          });
+        });
+
+        // Bind Delete
+        document.querySelectorAll('.btn-delete-acc').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const accId = btn.getAttribute('data-id');
+            const acc = accounts.find(a => a.id === accId);
+            if (acc && confirm(`Hapus akun pembeli "${acc.name}" (${acc.username})?`)) {
+              const updated = accounts.filter(a => a.id !== accId);
+              // Clean client storage
+              localStorage.removeItem(`khitan_config_${acc.username}`);
+              localStorage.removeItem(`khitan_child_photo_${acc.username}`);
+              saveAccounts(updated);
+              showAdminToast('Akun pembeli berhasil dihapus.');
+            }
+          });
+        });
+      }
+
+      // WA Modal Handler
+      const waModal = document.getElementById('waModal');
+      const waModalText = document.getElementById('waModalText');
+      const btnCloseWaModal = document.getElementById('btnCloseWaModal');
+      const btnCopyWaModal = document.getElementById('btnCopyWaModal');
+      const btnOpenWaModal = document.getElementById('btnOpenWaModal');
+
+      function openWaModalForAccount(acc) {
+        const isKhitan = acc.type === 'khitan';
+        const typeLabel = isKhitan ? 'Tasyakuran Walimatul Khitan' : 'Undangan Pernikahan';
+        const loginUrl = `${origin}/login.html`;
+        const inviteUrl = isKhitan 
+          ? `${origin}/khitan.html?client=${encodeURIComponent(acc.username)}`
+          : `${origin}/invitation.html?client=${encodeURIComponent(acc.username)}`;
+
+        const waText = 
+`Halo Kak *${acc.name}*,
+
+Selamat! Akun undangan digital *${typeLabel}* Anda di *inveet.id* telah aktif dan siap digunakan.
+
+Berikut detail akun Anda untuk mengisi data acara & foto:
+🌐 *Link Login:* ${loginUrl}
+👤 *Username:* ${acc.username}
+🔑 *Password:* ${acc.password}
+
+Tautan Undangan Anda (langsung online):
+🔗 ${inviteUrl}
+
+Langkah mudah:
+1. Klik link login di atas dan masukkan username serta password.
+2. Lengkapi nama, tanggal, lokasi acara, dan unggah foto galeri terbaik Anda.
+3. Klik "Simpan Perubahan" dan bagikan tautan undangan ke para tamu!
+
+Jika butuh bantuan teknis, silakan hubungi kami kembali. Terima kasih!
+_Tim Inveet.id Digital Invitation_`;
+
+        waModalText.value = waText;
+        waModal.classList.remove('hidden');
+
+        // Setup WhatsApp link
+        let phoneClean = (acc.phone || '').replace(/[^0-9]/g, '');
+        if (phoneClean.startsWith('0')) phoneClean = '62' + phoneClean.slice(1);
+        btnOpenWaModal.href = phoneClean 
+          ? `https://api.whatsapp.com/send?phone=${phoneClean}&text=${encodeURIComponent(waText)}`
+          : `https://api.whatsapp.com/send?text=${encodeURIComponent(waText)}`;
+      }
+
+      btnCloseWaModal.addEventListener('click', () => waModal.classList.add('hidden'));
+      waModal.addEventListener('click', (e) => {
+        if (e.target === waModal) waModal.classList.add('hidden');
+      });
+
+      btnCopyWaModal.addEventListener('click', () => {
+        navigator.clipboard.writeText(waModalText.value).then(() => {
+          showAdminToast('Teks WhatsApp berhasil disalin!');
+        });
+      });
+
+      // Handle Form Submit: Create New Account
+      document.getElementById('createClientForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('clientNameInput').value.trim();
+        const username = document.getElementById('clientUsernameInput').value.trim();
+        const password = document.getElementById('clientPasswordInput').value.trim();
+        const type = document.getElementById('clientTypeSelect').value;
+        const phone = document.getElementById('clientPhoneInput').value.trim();
+        const tier = document.getElementById('clientTierSelect').value;
+
+        if (!name || !username || !password) {
+          alert('Mohon lengkapi Nama, Username, dan Password.');
+          return;
+        }
+
+        const accounts = getAccounts();
+        if (accounts.some(a => a.username.toLowerCase() === username.toLowerCase())) {
+          alert(`Username "${username}" sudah digunakan. Silakan gunakan username lain.`);
+          return;
+        }
+
+        const newAcc = {
+          id: `client-${Date.now()}`,
+          username: username,
+          password: password,
+          name: name,
+          type: type,
+          phone: phone,
+          tier: tier,
+          createdAt: new Date().toISOString().split('T')[0]
+        };
+
+        // Initialize template config for this client if Khitan
+        if (type === 'khitan') {
+          const freshConfig = {
+            childNickname: username.charAt(0).toUpperCase() + username.slice(1),
+            childFullname: name,
+            childOrder: 'Putra Tercinta dari:',
+            father: name,
+            mother: 'Keluarga Besar',
+            photo: 'images/khitan/rendy-profile.jpg?v=20261009b',
+            eventDateDisplay: 'Senin, 16 November 2026',
+            eventDateIso: '2026-11-16T10:00',
+            eventTime: 'Pukul 10.00 WIB',
+            eventPlace: 'Kediaman / Rumah Hajat',
+            eventAddress: 'Jl. Bahagia No. 10',
+            mapsUrl: 'https://maps.google.com',
+            bank1Name: 'BCA',
+            bank1Number: '1234567890',
+            bank1Holder: name,
+            bank2Name: 'Dana',
+            bank2Number: phone || '082134966499',
+            bank2Holder: name,
+            physicalAddress: 'Jl. Bahagia No. 10',
+            audioUrl: 'audio/qalbi.mp3',
+            gallery: [
+              'images/khitan/rendy-galeri-1.jpg?v=20261009b',
+              'images/khitan/rendy-galeri-2.jpg?v=20261009b',
+              'images/khitan/rendy-galeri-3.jpg?v=20261009b'
+            ],
+            theme: 'cream'
+          };
+          localStorage.setItem(`khitan_config_${username}`, JSON.stringify(freshConfig));
+        }
+
+        accounts.unshift(newAcc);
+        saveAccounts(accounts);
+
+        // Reset form
+        document.getElementById('clientNameInput').value = '';
+        document.getElementById('clientUsernameInput').value = '';
+        document.getElementById('clientPasswordInput').value = '123456';
+        document.getElementById('clientPhoneInput').value = '';
+        slugPreview.textContent = '';
+
+        showAdminToast(`Akun pembeli "${name}" berhasil dibuat!`);
+        openWaModalForAccount(newAcc);
+      });
+
+      // Reset to samples
+      document.getElementById('btnResetSampleData').addEventListener('click', () => {
+        if (confirm('Muat ulang akun contoh bawaan (Rendy, Fadhil, Dimas & Sarah)?')) {
+          saveAccounts(initialAccounts);
+          showAdminToast('Akun contoh berhasil dimuat.');
+        }
+      });
+
+      // Initial render
+      renderTable();
+    });
+  </script>
+</body>
+</html>

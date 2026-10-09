@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Masuk ke Akun - Inveet.id</title>
+  <title>Masuk ke Undangan Anda - Inveet.id</title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -39,54 +39,71 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-stone-100 text-stone-800 font-sans min-h-screen flex items-center justify-center p-4">
+<body class="bg-stone-100 text-stone-800 font-sans min-h-screen flex items-center justify-center p-4 antialiased">
 
-  <div class="max-w-md w-full bg-white rounded-3xl p-8 shadow-xl border border-stone-200 space-y-6">
+  <div class="max-w-md w-full bg-white rounded-3xl p-8 shadow-2xl border border-stone-200 space-y-6 relative">
     
     <!-- Logo & Header -->
     <div class="text-center space-y-2">
-      <a href="index.html" class="inline-flex items-center gap-2 mb-2">
+      <a href="index.html" class="inline-flex items-center gap-2 mb-1">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-700 to-stone-900 text-gold-300 font-serif font-bold text-xl flex items-center justify-center shadow">
           I
         </div>
         <span class="text-2xl font-bold tracking-tight text-stone-900">inveet<span class="text-amber-600">.id</span></span>
       </a>
-      <h1 class="text-xl font-bold text-stone-900">Masuk ke Dashboard</h1>
-      <p class="text-xs text-stone-500">Kelola dan pantau seluruh undangan digital Anda.</p>
+      <h1 class="text-xl font-bold text-stone-900">Masuk ke Undangan Anda</h1>
+      <p class="text-xs text-stone-500">Kelola foto, data tasyakuran, musik, dan daftar tamu undangan Anda.</p>
     </div>
 
-    <!-- ONE-CLICK DEMO LOGIN BUTTON (Highlighted) -->
-    <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-gold-50/70 border-2 border-amber-300 space-y-2">
+    <!-- QUICK PRESET BUYER ACCOUNTS (For Easy Testing) -->
+    <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-2.5">
       <div class="flex items-center justify-between">
-        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full">
-          Demo Pengguna Tersedia
+        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full">
+          Coba Akun Pembeli Siap Pakai
         </span>
-        <span class="text-[11px] font-bold text-emerald-700 flex items-center gap-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Siap Pakai
-        </span>
+        <span class="text-[10px] text-amber-700 font-medium">Klik untuk login:</span>
       </div>
-      <p class="text-xs text-stone-600 leading-relaxed">
-        Masuk sebagai <strong>Rizky Pratama</strong> (Paket Sapphire VIP) untuk langsung mencoba dashboard &amp; membuat undangan.
-      </p>
-      <button type="button" id="btnAutoLoginDemo" class="w-full py-2.5 rounded-xl bg-amber-800 hover:bg-amber-900 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
-        <i data-lucide="zap" class="w-4 h-4 text-gold-300"></i>
-        <span>Login Cepat Akun Demo (1-Klik)</span>
-      </button>
+      
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <button type="button" class="btn-demo-client p-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-stone-200 hover:border-emerald-400 text-left transition cursor-pointer"
+                data-user="rendy" data-pass="password123">
+          <div class="font-bold text-stone-900 flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Rendy</span>
+          </div>
+          <div class="text-[10px] text-stone-500">Walimatul Khitan</div>
+        </button>
+
+        <button type="button" class="btn-demo-client p-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-stone-200 hover:border-emerald-400 text-left transition cursor-pointer"
+                data-user="fadhil" data-pass="password123">
+          <div class="font-bold text-stone-900 flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Fadhil</span>
+          </div>
+          <div class="text-[10px] text-stone-500">Khitanan Akun Lain</div>
+        </button>
+      </div>
     </div>
 
     <div class="relative flex py-1 items-center">
       <div class="flex-grow border-t border-stone-200"></div>
-      <span class="flex-shrink mx-4 text-stone-400 text-[11px] uppercase tracking-wider">Atau Masuk Biasa</span>
+      <span class="flex-shrink mx-4 text-stone-400 text-[11px] uppercase tracking-wider">Atau Masuk dengan Akun Anda</span>
       <div class="flex-grow border-t border-stone-200"></div>
     </div>
 
-    <!-- Regular Form -->
-    <form id="loginForm" class="space-y-4">
+    <!-- Error Alert -->
+    <div id="loginError" class="hidden p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+      <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 text-red-600"></i>
+      <span id="loginErrorText">Username atau kata sandi tidak sesuai.</span>
+    </div>
+
+    <!-- Buyer Login Form -->
+    <form id="buyerLoginForm" class="space-y-4">
       <div>
-        <label class="block text-xs font-semibold text-stone-700 mb-1">Email Terdaftar</label>
+        <label class="block text-xs font-semibold text-stone-700 mb-1">Username / ID Klien Pembeli</label>
         <div class="relative">
-          <i data-lucide="mail" class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input type="email" id="emailInput" value="rizky.pratama@gmail.com" required class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none bg-stone-50/50">
+          <i data-lucide="user" class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+          <input type="text" id="buyerUsername" required placeholder="contoh: rendy atau fadhil" class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none bg-stone-50/50">
         </div>
       </div>
 
@@ -94,28 +111,27 @@
         <label class="block text-xs font-semibold text-stone-700 mb-1">Kata Sandi</label>
         <div class="relative">
           <i data-lucide="lock" class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input type="password" id="passwordInput" value="password123" required class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none bg-stone-50/50">
+          <input type="password" id="buyerPassword" required placeholder="Masukkan kata sandi..." class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-600 outline-none bg-stone-50/50">
         </div>
       </div>
 
-      <div class="flex items-center justify-between text-xs">
-        <label class="flex items-center gap-2 text-stone-600 cursor-pointer">
-          <input type="checkbox" checked class="rounded text-amber-800 focus:ring-amber-600">
-          <span>Ingat saya</span>
-        </label>
-        <a href="#" class="text-amber-800 hover:underline">Lupa sandi?</a>
-      </div>
-
-      <button type="submit" class="w-full py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs shadow transition flex items-center justify-center gap-2 cursor-pointer">
+      <button type="submit" class="w-full py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
         <i data-lucide="log-in" class="w-4 h-4"></i>
-        <span>Masuk ke Dashboard</span>
+        <span>Masuk ke Editor Undangan</span>
       </button>
     </form>
 
-    <div class="text-center pt-2 border-t border-stone-100 text-xs text-stone-500">
-      <a href="index.html" class="inline-flex items-center gap-1.5 text-stone-600 hover:text-stone-900 font-semibold transition">
+    <!-- Bottom Actions -->
+    <div class="pt-4 border-t border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+      <a href="index.html" class="inline-flex items-center gap-1.5 text-stone-500 hover:text-stone-900 transition">
         <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-        <span>Kembali ke Beranda Website</span>
+        <span>Beranda Web</span>
+      </a>
+
+      <!-- LINK TO DEDICATED ADMIN PORTAL -->
+      <a href="admin-login.html" class="inline-flex items-center gap-1.5 text-amber-800 hover:text-amber-950 font-bold bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-xl border border-amber-300/60 transition">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-700"></i>
+        <span>Portal Admin Inveet &rarr;</span>
       </a>
     </div>
   </div>
@@ -124,27 +140,87 @@
     document.addEventListener('DOMContentLoaded', () => {
       if (window.lucide) lucide.createIcons();
 
-      function doLogin(name, email) {
-        const userObj = {
-          name: name || 'Rizky Pratama',
-          email: email || 'rizky.pratama@gmail.com',
+      // Sample Accounts Fallback
+      const initialAccounts = [
+        {
+          id: 'client-rendy',
+          username: 'rendy',
+          password: 'password123',
+          name: 'Bpk. Wangkis Suwito & Ibu Susi (Irendy)',
+          type: 'khitan',
+          phone: '082134966499',
+          tier: 'Paket Sapphire VIP'
+        },
+        {
+          id: 'client-fadhil',
+          username: 'fadhil',
+          password: 'password123',
+          name: 'Bpk. Hendra Gunawan & Ibu Nur (Fadhil)',
+          type: 'khitan',
           phone: '081234567890',
-          tier: 'Paket Sapphire VIP',
-          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'
-        };
-        localStorage.setItem('inveet_user', JSON.stringify(userObj));
-        window.location.href = 'dashboard.html';
+          tier: 'Paket Sapphire VIP'
+        },
+        {
+          id: 'client-dimas-sarah',
+          username: 'dimas-sarah',
+          password: 'password123',
+          name: 'Dimas Pratama & Sarah Azhari',
+          type: 'nikah',
+          phone: '081987654321',
+          tier: 'Paket Sapphire VIP'
+        }
+      ];
+
+      function getAccounts() {
+        try {
+          const saved = localStorage.getItem('inveet_client_accounts');
+          if (saved) return JSON.parse(saved);
+        } catch(e) {}
+        localStorage.setItem('inveet_client_accounts', JSON.stringify(initialAccounts));
+        return initialAccounts;
       }
 
-      document.getElementById('btnAutoLoginDemo').addEventListener('click', () => {
-        doLogin('Rizky Pratama', 'rizky.pratama@gmail.com');
+      function doClientLogin(username, password) {
+        const errorBox = document.getElementById('loginError');
+        const errorText = document.getElementById('loginErrorText');
+        errorBox.classList.add('hidden');
+
+        const accounts = getAccounts();
+        const found = accounts.find(a => 
+          a.username.toLowerCase() === username.toLowerCase().trim() && 
+          a.password === password.trim()
+        );
+
+        if (found) {
+          localStorage.setItem('inveet_logged_client', JSON.stringify(found));
+          if (found.type === 'khitan') {
+            window.location.href = `builder-khitan.html?client=${encodeURIComponent(found.username)}`;
+          } else {
+            window.location.href = `builder.html?client=${encodeURIComponent(found.username)}`;
+          }
+        } else {
+          errorText.textContent = 'Username atau kata sandi tidak ditemukan. Silakan hubungi admin jika belum memiliki akun.';
+          errorBox.classList.remove('hidden');
+        }
+      }
+
+      // Demo buttons
+      document.querySelectorAll('.btn-demo-client').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const u = btn.getAttribute('data-user');
+          const p = btn.getAttribute('data-pass');
+          document.getElementById('buyerUsername').value = u;
+          document.getElementById('buyerPassword').value = p;
+          doClientLogin(u, p);
+        });
       });
 
-      document.getElementById('loginForm').addEventListener('submit', (e) => {
+      // Submit
+      document.getElementById('buyerLoginForm').addEventListener('submit', (e) => {
         e.preventDefault();
-        const em = document.getElementById('emailInput').value.trim();
-        const nm = em.split('@')[0].replace('.', ' ').toUpperCase();
-        doLogin(nm, em);
+        const u = document.getElementById('buyerUsername').value.trim();
+        const p = document.getElementById('buyerPassword').value.trim();
+        doClientLogin(u, p);
       });
     });
   </script>

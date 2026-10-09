@@ -98,6 +98,20 @@
     </div>
   </header>
 
+  <!-- Client Account Banner (Visible if ?client=... is present) -->
+  <div id="clientBanner" class="hidden bg-emerald-900 text-emerald-100 px-4 py-2.5 text-xs border-b border-emerald-700 shadow-inner">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="px-2.5 py-0.5 rounded-full bg-emerald-800 text-[10px] font-bold uppercase tracking-wider text-emerald-300">Akun Pembeli</span>
+        <span>Mengedit Undangan Klien: <strong id="clientBannerName" class="text-white font-bold"></strong></span>
+      </div>
+      <a href="admin.html" class="inline-flex items-center gap-1.5 text-emerald-200 hover:text-white underline text-[11px] font-medium">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+        <span>Kembali ke Portal Admin</span>
+      </a>
+    </div>
+  </div>
+
   <!-- MAIN CONTAINER -->
   <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-6">
 
@@ -461,22 +475,47 @@
         </div>
 
         <div class="p-5 rounded-2xl bg-stone-50/80 border border-stone-200/80 space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-medium text-stone-700 mb-1">Nama Bank</label>
-              <input type="text" id="bank1Name" placeholder="BCA" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
-            </div>
-            <div>
-              <label class="block text-xs font-medium text-stone-700 mb-1">Nomor Rekening</label>
-              <input type="text" id="bank1Number" placeholder="1234567890" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
-            </div>
-            <div>
-              <label class="block text-xs font-medium text-stone-700 mb-1">Atas Nama (Pemilik)</label>
-              <input type="text" id="bank1Holder" placeholder="Ahmad Fauzi (Ayah)" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+          <!-- Rekening 1 -->
+          <div>
+            <span class="text-xs font-bold text-stone-800 uppercase tracking-wider block mb-2">1. Rekening Bank Utama</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-stone-700 mb-1">Nama Bank 1</label>
+                <input type="text" id="bank1Name" placeholder="BCA" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-stone-700 mb-1">Nomor Rekening 1</label>
+                <input type="text" id="bank1Number" placeholder="1234567890" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-stone-700 mb-1">Atas Nama 1</label>
+                <input type="text" id="bank1Holder" placeholder="Ahmad Fauzi (Ayah)" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+              </div>
             </div>
           </div>
 
-          <div>
+          <!-- Rekening 2 (DANA / Dompet Digital) -->
+          <div class="pt-3 border-t border-stone-200">
+            <span class="text-xs font-bold text-sky-800 uppercase tracking-wider block mb-2">2. Rekening Cadangan / E-Wallet (DANA / OVO / GoPay)</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-stone-700 mb-1">Nama Bank / E-Wallet 2</label>
+                <input type="text" id="bank2Name" placeholder="Dana" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-stone-700 mb-1">Nomor Rekening / No. HP 2</label>
+                <input type="text" id="bank2Number" placeholder="082134966499" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-stone-700 mb-1">Atas Nama 2</label>
+                <input type="text" id="bank2Holder" placeholder="Susi Dwi Jayanti (Ibu)" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+              </div>
+            </div>
+            <p class="text-[10px] text-stone-400 mt-1">*Kosongkan Nomor Rekening 2 jika hanya ingin menampilkan 1 rekening saja.</p>
+          </div>
+
+          <!-- Kado Fisik -->
+          <div class="pt-3 border-t border-stone-200">
             <label class="block text-xs font-medium text-stone-700 mb-1">Alamat Pengiriman Kado Fisik</label>
             <textarea id="physicalAddress" rows="2" placeholder="Tuliskan alamat pengiriman kado..." class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none resize-none"></textarea>
           </div>

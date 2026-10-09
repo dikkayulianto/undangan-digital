@@ -2,30 +2,38 @@
  * Script Dashboard Editor Undangan Walimatul Khitan
  */
 
+const urlParams = new URLSearchParams(window.location.search);
+const currentClient = urlParams.get('client') || '';
+const clientStorageKey = currentClient ? `khitan_config_${currentClient}` : 'khitan_config';
+const clientPhotoKey = currentClient ? `khitan_child_photo_${currentClient}` : 'khitan_child_photo';
+
 const defaultKhitanConfig = {
   childNickname: 'Rendy',
   childFullname: 'Irendy Wijaya Saputra',
   childOrder: 'Putra Kedua dari pasangan:',
   father: 'Bpk. Wangkis Suwito',
   mother: 'Ibu Susi Dwi jayanti',
-  photo: 'images/khitan/rendy-profile.jpg',
+  photo: 'images/khitan/rendy-profile.jpg?v=20261009b',
   eventDateDisplay: 'Senin, 16 November 2026',
   eventDateIso: '2026-11-16T10:00',
   eventTime: 'Pukul 10.00 WIB',
   eventPlace: 'Rumah Hajat',
   eventAddress: 'Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon',
   mapsUrl: 'https://maps.app.goo.gl/FNjBDJMcNzKmvb6B7',
-  bank1Name: 'Dana',
-  bank1Number: '082134966499',
-  bank1Holder: 'Susi Dwi Jayanti (Ibu)',
+  bank1Name: 'BCA',
+  bank1Number: '1234567890',
+  bank1Holder: 'Wangkis Suwito (Ayah)',
+  bank2Name: 'Dana',
+  bank2Number: '082134966499',
+  bank2Holder: 'Susi Dwi Jayanti (Ibu)',
   physicalAddress: 'Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon',
   audioUrl: 'audio/qalbi.mp3',
   gallery: [
-    'images/khitan/rendy-galeri-1.jpg',
-    'images/khitan/rendy-galeri-2.jpg',
-    'images/khitan/rendy-galeri-3.jpg',
-    'images/khitan/rendy-galeri-4.jpg',
-    'images/khitan/rendy-galeri-5.jpg'
+    'images/khitan/rendy-galeri-1.jpg?v=20261009b',
+    'images/khitan/rendy-galeri-2.jpg?v=20261009b',
+    'images/khitan/rendy-galeri-3.jpg?v=20261009b',
+    'images/khitan/rendy-galeri-4.jpg?v=20261009b',
+    'images/khitan/rendy-galeri-5.jpg?v=20261009b'
   ],
   theme: 'cream'
 };
@@ -112,6 +120,9 @@ function encodeKhitanConfigForUrl(cfg) {
     b1n: cfg.bank1Name || '',
     b1no: cfg.bank1Number || '',
     b1h: cfg.bank1Holder || '',
+    b2n: cfg.bank2Name || '',
+    b2no: cfg.bank2Number || '',
+    b2h: cfg.bank2Holder || '',
     pa: cfg.physicalAddress || '',
     au: cfg.audioUrl || '',
     bg: (cfg.customBg && cfg.customBg.startsWith('http')) ? cfg.customBg : ''
@@ -129,7 +140,7 @@ function encodeKhitanConfigForUrl(cfg) {
 }
 
 function getKhitanConfig() {
-  const saved = localStorage.getItem('khitan_config');
+  const saved = localStorage.getItem(clientStorageKey);
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
@@ -145,7 +156,7 @@ function getKhitanConfig() {
 
 function saveKhitanConfig(cfg) {
   try {
-    localStorage.setItem('khitan_config', JSON.stringify(cfg));
+    localStorage.setItem(clientStorageKey, JSON.stringify(cfg));
     return true;
   } catch (err) {
     console.error('Khitan storage error:', err);
@@ -270,13 +281,13 @@ document.addEventListener('DOMContentLoaded', () => {
           if (cloudUrl && cloudUrl.startsWith('http')) {
             childPhotoInput.value = cloudUrl;
             childPhotoPreview.src = cloudUrl;
-            localStorage.setItem('khitan_child_photo', cloudUrl);
+            localStorage.setItem(clientPhotoKey, cloudUrl);
             const cur = getKhitanConfig();
             cur.photo = cloudUrl;
             saveKhitanConfig(cur);
             showToast('Foto berhasil diunggah ke CDN & disimpan!');
           } else {
-            localStorage.setItem('khitan_child_photo', dataUrl);
+            localStorage.setItem(clientPhotoKey, dataUrl);
             const cur = getKhitanConfig();
             cur.photo = dataUrl;
             saveKhitanConfig(cur);
@@ -484,11 +495,27 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('eventAddress').value = config.eventAddress || '';
   document.getElementById('mapsUrl').value = config.mapsUrl || '';
 
-  // Gift
+  // Gift & Banks
   document.getElementById('bank1Name').value = config.bank1Name || '';
   document.getElementById('bank1Number').value = config.bank1Number || '';
   document.getElementById('bank1Holder').value = config.bank1Holder || '';
+  if (document.getElementById('bank2Name')) document.getElementById('bank2Name').value = config.bank2Name || '';
+  if (document.getElementById('bank2Number')) document.getElementById('bank2Number').value = config.bank2Number || '';
+  if (document.getElementById('bank2Holder')) document.getElementById('bank2Holder').value = config.bank2Holder || '';
   document.getElementById('physicalAddress').value = config.physicalAddress || '';
+
+  // Client Banner if ?client=...
+  if (currentClient) {
+    const clientBanner = document.getElementById('clientBanner');
+    const clientBannerName = document.getElementById('clientBannerName');
+    if (clientBanner) clientBanner.classList.remove('hidden');
+    if (clientBannerName) clientBannerName.textContent = currentClient;
+
+    const viewInviteLink = document.querySelector('header a[href="khitan.html"]');
+    if (viewInviteLink) {
+      viewInviteLink.href = `khitan.html?client=${encodeURIComponent(currentClient)}`;
+    }
+  }
 
   // Audio Handler (YouTube, SoundCloud & MP3 Preview)
   const audioUrlInput = document.getElementById('audioUrl');
@@ -775,6 +802,9 @@ document.addEventListener('DOMContentLoaded', () => {
       bank1Name: document.getElementById('bank1Name').value.trim(),
       bank1Number: document.getElementById('bank1Number').value.trim(),
       bank1Holder: document.getElementById('bank1Holder').value.trim(),
+      bank2Name: document.getElementById('bank2Name')?.value?.trim() || '',
+      bank2Number: document.getElementById('bank2Number')?.value?.trim() || '',
+      bank2Holder: document.getElementById('bank2Holder')?.value?.trim() || '',
       physicalAddress: document.getElementById('physicalAddress').value.trim(),
       audioUrl: document.getElementById('audioUrl').value.trim(),
       customBg: document.getElementById('customBgInput')?.value?.trim() || '',
@@ -857,6 +887,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Base URL resolution (clean origin - avoids 404 folder nesting)
     const baseOrigin = window.location.origin;
     let fullInvitationUrl = `${baseOrigin}/khitan.html?to=${encodeURIComponent(guestName)}`;
+    if (currentClient) {
+      fullInvitationUrl += `&client=${encodeURIComponent(currentClient)}`;
+    }
     if (currentCfg.theme && currentCfg.theme !== 'cream') {
       fullInvitationUrl += `&theme=${encodeURIComponent(currentCfg.theme)}`;
     }
@@ -923,16 +956,18 @@ Salam hormat,
             currentCfg.photo = cloudUrl;
             const photoInput = document.getElementById('childPhoto');
             if (photoInput) photoInput.value = cloudUrl;
-            localStorage.setItem('khitan_child_photo', cloudUrl);
+            localStorage.setItem(clientPhotoKey, cloudUrl);
             saveKhitanConfig(currentCfg);
           }
         } catch (err) {}
       }
 
       let generalUrl = `${window.location.origin}/khitan.html`;
-      if (currentCfg.theme && currentCfg.theme !== 'cream') {
-        generalUrl += `?theme=${encodeURIComponent(currentCfg.theme)}`;
-      }
+      const queryParts = [];
+      if (currentClient) queryParts.push(`client=${encodeURIComponent(currentClient)}`);
+      if (currentCfg.theme && currentCfg.theme !== 'cream') queryParts.push(`theme=${encodeURIComponent(currentCfg.theme)}`);
+      if (queryParts.length > 0) generalUrl += `?${queryParts.join('&')}`;
+
       navigator.clipboard.writeText(generalUrl).then(() => {
         showToast('Link undangan umum (siap share grup WA) berhasil disalin!');
       });

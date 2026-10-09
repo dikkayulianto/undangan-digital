@@ -358,21 +358,40 @@
 
         <div class="space-y-4 max-w-sm mx-auto" data-aos="fade-up">
           <!-- Card Rekening 1 (Metallic Gold / Warm Bronze) -->
-          <div class="bg-gradient-to-br from-[#8c6735] via-[#a88247] to-[#735022] rounded-2xl p-5 text-white shadow-xl space-y-4 relative overflow-hidden border border-amber-300/30">
+          <div id="bank1Container" class="bg-gradient-to-br from-[#8c6735] via-[#a88247] to-[#735022] rounded-2xl p-5 text-white shadow-xl space-y-4 relative overflow-hidden border border-amber-300/30">
             <div class="flex items-center justify-between">
-              <span id="bank1NameText" class="font-bold text-lg tracking-wider text-amber-200">Dana</span>
+              <span id="bank1NameText" class="font-bold text-lg tracking-wider text-amber-200">BCA</span>
               <i data-lucide="credit-card" class="w-5 h-5 text-amber-300"></i>
             </div>
             <div class="space-y-1">
-              <p class="text-amber-200/80 text-[10px] tracking-widest uppercase">Nomor Rekening / Dompet Digital</p>
+              <p class="text-amber-200/80 text-[10px] tracking-widest uppercase">Nomor Rekening Bank</p>
               <div class="flex items-center justify-between">
-                <span id="bank1NumberText" class="font-mono text-lg font-bold tracking-widest text-white">082134966499</span>
+                <span id="bank1NumberText" class="font-mono text-lg font-bold tracking-widest text-white">1234567890</span>
               </div>
-              <p id="bank1HolderText" class="text-xs text-amber-100 font-medium">a.n Susi Dwi Jayanti (Ibu)</p>
+              <p id="bank1HolderText" class="text-xs text-amber-100 font-medium">a.n Wangkis Suwito (Ayah)</p>
             </div>
-            <button id="btnCopyBank1" onclick="copyToClipboard('082134966499', 'Dana')" class="w-full py-2 px-3 rounded-lg bg-white/15 hover:bg-white/25 border border-white/30 text-xs font-medium flex items-center justify-center gap-2 transition">
+            <button id="btnCopyBank1" onclick="copyToClipboard('1234567890', 'BCA')" class="w-full py-2 px-3 rounded-lg bg-white/15 hover:bg-white/25 border border-white/30 text-xs font-medium flex items-center justify-center gap-2 transition cursor-pointer">
               <i data-lucide="copy" class="w-3.5 h-3.5 text-amber-200"></i>
-              <span>Salin No. Rekening / No. Dana</span>
+              <span>Salin No. Rekening</span>
+            </button>
+          </div>
+
+          <!-- Card Rekening 2 (DANA / Dompet Digital Sky Blue) -->
+          <div id="bank2Container" class="bg-gradient-to-br from-[#118eea] via-[#0d7ac9] to-[#095b96] rounded-2xl p-5 text-white shadow-xl space-y-4 relative overflow-hidden border border-sky-300/30">
+            <div class="flex items-center justify-between">
+              <span id="bank2NameText" class="font-bold text-lg tracking-wider text-sky-100">Dana</span>
+              <i data-lucide="smartphone" class="w-5 h-5 text-sky-200"></i>
+            </div>
+            <div class="space-y-1">
+              <p class="text-sky-200/80 text-[10px] tracking-widest uppercase">Nomor E-Wallet / No. DANA</p>
+              <div class="flex items-center justify-between">
+                <span id="bank2NumberText" class="font-mono text-lg font-bold tracking-widest text-white">082134966499</span>
+              </div>
+              <p id="bank2HolderText" class="text-xs text-sky-100 font-medium">a.n Susi Dwi Jayanti (Ibu)</p>
+            </div>
+            <button id="btnCopyBank2" onclick="copyToClipboard('082134966499', 'Dana')" class="w-full py-2 px-3 rounded-lg bg-white/15 hover:bg-white/25 border border-white/30 text-xs font-medium flex items-center justify-center gap-2 transition cursor-pointer">
+              <i data-lucide="copy" class="w-3.5 h-3.5 text-sky-200"></i>
+              <span>Salin No. Dana</span>
             </button>
           </div>
 
@@ -505,6 +524,18 @@
         }
       }
 
+      // Cache-Busting Image URL Helper
+      function getFreshImageUrl(url) {
+        if (!url) return '';
+        if (url.startsWith('data:')) return url;
+        if (url.includes('unsplash.com')) return url;
+        const separator = url.includes('?') ? '&' : '?';
+        if (!url.includes('v=')) {
+          return `${url}${separator}v=20261009b`;
+        }
+        return url;
+      }
+
       // Default Khitan Config (Updated for Irendy Wijaya Saputra)
       const defaultKhitanConfig = {
         childNickname: 'Rendy',
@@ -512,24 +543,27 @@
         childOrder: 'Putra Kedua dari pasangan:',
         father: 'Bpk. Wangkis Suwito',
         mother: 'Ibu Susi Dwi jayanti',
-        photo: 'images/khitan/rendy-profile.jpg',
+        photo: 'images/khitan/rendy-profile.jpg?v=20261009b',
         eventDateDisplay: 'Senin, 16 November 2026',
         eventDateIso: '2026-11-16T10:00:00+07:00',
         eventTime: 'Pukul 10.00 WIB',
         eventPlace: 'Rumah Hajat',
         eventAddress: 'Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon',
         mapsUrl: 'https://maps.app.goo.gl/FNjBDJMcNzKmvb6B7',
-        bank1Name: 'Dana',
-        bank1Number: '082134966499',
-        bank1Holder: 'Susi Dwi Jayanti (Ibu)',
+        bank1Name: 'BCA',
+        bank1Number: '1234567890',
+        bank1Holder: 'Wangkis Suwito (Ayah)',
+        bank2Name: 'Dana',
+        bank2Number: '082134966499',
+        bank2Holder: 'Susi Dwi Jayanti (Ibu)',
         physicalAddress: 'Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon',
         audioUrl: 'audio/qalbi.mp3',
         gallery: [
-          'images/khitan/rendy-galeri-1.jpg',
-          'images/khitan/rendy-galeri-2.jpg',
-          'images/khitan/rendy-galeri-3.jpg',
-          'images/khitan/rendy-galeri-4.jpg',
-          'images/khitan/rendy-galeri-5.jpg'
+          'images/khitan/rendy-galeri-1.jpg?v=20261009b',
+          'images/khitan/rendy-galeri-2.jpg?v=20261009b',
+          'images/khitan/rendy-galeri-3.jpg?v=20261009b',
+          'images/khitan/rendy-galeri-4.jpg?v=20261009b',
+          'images/khitan/rendy-galeri-5.jpg?v=20261009b'
         ],
         theme: 'cream'
       };
@@ -557,6 +591,9 @@
           if (compact.b1n) res.bank1Name = compact.b1n;
           if (compact.b1no) res.bank1Number = compact.b1no;
           if (compact.b1h) res.bank1Holder = compact.b1h;
+          if (compact.b2n) res.bank2Name = compact.b2n;
+          if (compact.b2no) res.bank2Number = compact.b2no;
+          if (compact.b2h) res.bank2Holder = compact.b2h;
           if (compact.pa) res.physicalAddress = compact.pa;
           if (compact.au) res.audioUrl = compact.au;
           if (compact.bg) res.customBg = compact.bg;
@@ -567,8 +604,13 @@
         }
       }
 
+      // Multi-Tenant Client Support
+      const clientParam = urlParams.get('client');
+      const clientStorageKey = clientParam ? `khitan_config_${clientParam}` : 'khitan_config';
+      const clientPhotoKey = clientParam ? `khitan_child_photo_${clientParam}` : 'khitan_child_photo';
+
       let config = defaultKhitanConfig;
-      const saved = localStorage.getItem('khitan_config');
+      const saved = localStorage.getItem(clientStorageKey);
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -579,7 +621,7 @@
       }
 
       // Check direct photo key if available
-      const directChildPhoto = localStorage.getItem('khitan_child_photo');
+      const directChildPhoto = localStorage.getItem(clientPhotoKey);
       if (directChildPhoto && directChildPhoto.trim() && !directChildPhoto.includes('unsplash.com')) {
         config.photo = directChildPhoto.trim();
       }
@@ -591,8 +633,8 @@
         if (urlConfig) {
           config = Object.assign({}, config, urlConfig);
           try {
-            localStorage.setItem('khitan_config', JSON.stringify(config));
-            if (urlConfig.photo) localStorage.setItem('khitan_child_photo', urlConfig.photo);
+            localStorage.setItem(clientStorageKey, JSON.stringify(config));
+            if (urlConfig.photo) localStorage.setItem(clientPhotoKey, urlConfig.photo);
           } catch(e) {}
         }
       }
@@ -605,8 +647,8 @@
         if (document.getElementById('childOrderText')) document.getElementById('childOrderText').textContent = cfg.childOrder;
         if (document.getElementById('parentsText')) document.getElementById('parentsText').textContent = `${cfg.father} & ${cfg.mother}`;
         if (document.getElementById('footerFamilyName')) document.getElementById('footerFamilyName').textContent = `${cfg.father} & ${cfg.mother}`;
-        if (document.getElementById('coverChildPhoto') && cfg.photo) document.getElementById('coverChildPhoto').src = cfg.photo;
-        if (document.getElementById('childPhotoImg') && cfg.photo) document.getElementById('childPhotoImg').src = cfg.photo;
+        if (document.getElementById('coverChildPhoto') && cfg.photo) document.getElementById('coverChildPhoto').src = getFreshImageUrl(cfg.photo);
+        if (document.getElementById('childPhotoImg') && cfg.photo) document.getElementById('childPhotoImg').src = getFreshImageUrl(cfg.photo);
         if (document.getElementById('coverDateText') && cfg.eventDateDisplay) document.getElementById('coverDateText').textContent = cfg.eventDateDisplay;
 
         if (document.getElementById('desktopDateText')) document.getElementById('desktopDateText').textContent = `${cfg.eventDateDisplay} • Balapulang Kulon`;
@@ -616,12 +658,30 @@
         if (document.getElementById('eventAddressText')) document.getElementById('eventAddressText').textContent = cfg.eventAddress;
         if (document.getElementById('btnMapsLink') && cfg.mapsUrl) document.getElementById('btnMapsLink').href = cfg.mapsUrl;
 
-        if (document.getElementById('bank1NameText')) document.getElementById('bank1NameText').textContent = cfg.bank1Name;
-        if (document.getElementById('bank1NumberText')) document.getElementById('bank1NumberText').textContent = cfg.bank1Number;
-        if (document.getElementById('bank1HolderText')) document.getElementById('bank1HolderText').textContent = `a.n ${cfg.bank1Holder}`;
+        // Bank 1
+        if (document.getElementById('bank1NameText')) document.getElementById('bank1NameText').textContent = cfg.bank1Name || 'BCA';
+        if (document.getElementById('bank1NumberText')) document.getElementById('bank1NumberText').textContent = cfg.bank1Number || '1234567890';
+        if (document.getElementById('bank1HolderText')) document.getElementById('bank1HolderText').textContent = `a.n ${cfg.bank1Holder || ''}`;
         if (document.getElementById('btnCopyBank1')) {
-          document.getElementById('btnCopyBank1').setAttribute('onclick', `copyToClipboard('${cfg.bank1Number}', '${cfg.bank1Name}')`);
+          document.getElementById('btnCopyBank1').setAttribute('onclick', `copyToClipboard('${cfg.bank1Number || '1234567890'}', '${cfg.bank1Name || 'BCA'}')`);
         }
+
+        // Bank 2 (DANA / E-Wallet)
+        const b2Container = document.getElementById('bank2Container');
+        if (b2Container) {
+          if (cfg.bank2Number && cfg.bank2Number.trim()) {
+            b2Container.style.display = 'block';
+            if (document.getElementById('bank2NameText')) document.getElementById('bank2NameText').textContent = cfg.bank2Name || 'Dana';
+            if (document.getElementById('bank2NumberText')) document.getElementById('bank2NumberText').textContent = cfg.bank2Number;
+            if (document.getElementById('bank2HolderText')) document.getElementById('bank2HolderText').textContent = `a.n ${cfg.bank2Holder || ''}`;
+            if (document.getElementById('btnCopyBank2')) {
+              document.getElementById('btnCopyBank2').setAttribute('onclick', `copyToClipboard('${cfg.bank2Number}', '${cfg.bank2Name || 'Dana'}')`);
+            }
+          } else {
+            b2Container.style.display = 'none';
+          }
+        }
+
         if (document.getElementById('physicalAddressText')) document.getElementById('physicalAddressText').textContent = cfg.physicalAddress;
         if (document.getElementById('btnCopyAddress')) {
           document.getElementById('btnCopyAddress').setAttribute('onclick', `copyToClipboard('${cfg.physicalAddress.replace(/'/g, "\\'")}', 'Alamat')`);
@@ -993,12 +1053,13 @@
         if (kGrid) {
           kGrid.innerHTML = '';
           kGallery.forEach((photoUrl, idx) => {
+            const freshUrl = getFreshImageUrl(photoUrl);
             const isFull = (idx % 3 === 2);
             const item = document.createElement('div');
             item.className = `khitan-gallery-item cursor-pointer overflow-hidden rounded-2xl shadow-md group relative h-48 ${isFull ? 'col-span-2' : ''}`;
-            item.setAttribute('data-full', photoUrl);
+            item.setAttribute('data-full', freshUrl);
             item.innerHTML = `
-              <img src="${photoUrl}" alt="Khitan Gallery ${idx + 1}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+              <img src="${freshUrl}" alt="Khitan Gallery ${idx + 1}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
               <div class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
                 <i data-lucide="zoom-in" class="w-6 h-6 text-amber-200"></i>
               </div>
