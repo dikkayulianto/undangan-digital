@@ -366,11 +366,11 @@
             <div class="space-y-1">
               <p class="text-amber-200/80 text-[10px] tracking-widest uppercase">Nomor Rekening Bank</p>
               <div class="flex items-center justify-between">
-                <span id="bank1NumberText" class="font-mono text-lg font-bold tracking-widest text-white">1234567890</span>
+                <span id="bank1NumberText" class="font-mono text-lg font-bold tracking-widest text-white">6062 0104 0268 531</span>
               </div>
-              <p id="bank1HolderText" class="text-xs text-amber-100 font-medium">a.n Wangkis Suwito (Ayah)</p>
+              <p id="bank1HolderText" class="text-xs text-amber-100 font-medium">a.n Wangkis Suwito</p>
             </div>
-            <button id="btnCopyBank1" onclick="copyToClipboard('1234567890', 'BRI')" class="w-full py-2 px-3 rounded-lg bg-white/15 hover:bg-white/25 border border-white/30 text-xs font-medium flex items-center justify-center gap-2 transition cursor-pointer">
+            <button id="btnCopyBank1" onclick="copyToClipboard('606201040268531', 'BRI')" class="w-full py-2 px-3 rounded-lg bg-white/15 hover:bg-white/25 border border-white/30 text-xs font-medium flex items-center justify-center gap-2 transition cursor-pointer">
               <i data-lucide="copy" class="w-3.5 h-3.5 text-amber-200"></i>
               <span>Salin No. Rekening BRI</span>
             </button>
@@ -551,8 +551,8 @@
         eventAddress: 'Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon',
         mapsUrl: 'https://maps.app.goo.gl/FNjBDJMcNzKmvb6B7',
         bank1Name: 'BRI',
-        bank1Number: '1234567890',
-        bank1Holder: 'Wangkis Suwito (Ayah)',
+        bank1Number: '6062 0104 0268 531',
+        bank1Holder: 'Wangkis Suwito',
         bank2Name: 'Dana',
         bank2Number: '082134966499',
         bank2Holder: 'Susi Dwi Jayanti (Ibu)',
@@ -661,10 +661,11 @@
 
         // Bank 1
         if (document.getElementById('bank1NameText')) document.getElementById('bank1NameText').textContent = cfg.bank1Name || 'BRI';
-        if (document.getElementById('bank1NumberText')) document.getElementById('bank1NumberText').textContent = cfg.bank1Number || '1234567890';
-        if (document.getElementById('bank1HolderText')) document.getElementById('bank1HolderText').textContent = `a.n ${cfg.bank1Holder || 'Wangkis Suwito (Ayah)'}`;
+        if (document.getElementById('bank1NumberText')) document.getElementById('bank1NumberText').textContent = cfg.bank1Number || '6062 0104 0268 531';
+        if (document.getElementById('bank1HolderText')) document.getElementById('bank1HolderText').textContent = `a.n ${cfg.bank1Holder || 'Wangkis Suwito'}`;
         if (document.getElementById('btnCopyBank1')) {
-          document.getElementById('btnCopyBank1').setAttribute('onclick', `copyToClipboard('${cfg.bank1Number || '1234567890'}', '${cfg.bank1Name || 'BRI'}')`);
+          const rawNo = (cfg.bank1Number || '606201040268531').replace(/\s+/g, '');
+          document.getElementById('btnCopyBank1').setAttribute('onclick', `copyToClipboard('${rawNo}', '${cfg.bank1Name || 'BRI'}')`);
         }
 
         // Bank 2 (DANA / E-Wallet)
