@@ -19,11 +19,13 @@ const defaultKhitanConfig = {
   bank1Number: '082134966499',
   bank1Holder: 'Susi Dwi Jayanti (Ibu)',
   physicalAddress: 'Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon',
-  audioUrl: 'audio/nasheed.mp3',
+  audioUrl: 'audio/qalbi.mp3',
   gallery: [
     'images/khitan/rendy-galeri-1.jpg',
     'images/khitan/rendy-galeri-2.jpg',
-    'images/khitan/rendy-galeri-3.jpg'
+    'images/khitan/rendy-galeri-3.jpg',
+    'images/khitan/rendy-galeri-4.jpg',
+    'images/khitan/rendy-galeri-5.jpg'
   ],
   theme: 'cream'
 };
@@ -488,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('bank1Holder').value = config.bank1Holder || '';
   document.getElementById('physicalAddress').value = config.physicalAddress || '';
 
-  // Audio Handler (SoundCloud & MP3 Preview)
+  // Audio Handler (YouTube, SoundCloud & MP3 Preview)
   const audioUrlInput = document.getElementById('audioUrl');
   const audioFormatBadge = document.getElementById('audioFormatBadge');
   const btnTestAudio = document.getElementById('btnTestAudio');
@@ -496,20 +498,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const builderTestAudio = document.getElementById('builderTestAudio');
   const builderScPlayer = document.getElementById('builderScPlayer');
   let builderScWidget = null;
+  let builderYtPlayerInstance = null;
   let isTestingAudio = false;
+
+  function extractYouTubeId(url) {
+    if (!url) return null;
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/i);
+    return match ? match[1] : null;
+  }
 
   function updateAudioFormatBadge(url) {
     if (!audioFormatBadge) return;
-    const clean = (url || '').trim().toLowerCase();
+    const clean = (url || '').trim();
     if (!clean) {
       audioFormatBadge.className = 'hidden';
       return;
     }
 
-    if (clean.includes('soundcloud.com')) {
+    const ytId = extractYouTubeId(clean);
+    if (ytId) {
+      audioFormatBadge.textContent = '🎵 YouTube Audio (Didukung Penuh)';
+      audioFormatBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800 border border-red-300';
+    } else if (clean.toLowerCase().includes('soundcloud.com')) {
       audioFormatBadge.textContent = '🎵 SoundCloud Track (Didukung Penuh)';
       audioFormatBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 text-orange-800 border border-orange-300';
-    } else if (clean.endsWith('.mp3') || clean.includes('.mp3?') || clean.endsWith('.m4a') || clean.endsWith('.ogg')) {
+    } else if (clean.toLowerCase().endsWith('.mp3') || clean.toLowerCase().includes('.mp3?') || clean.startsWith('audio/')) {
       audioFormatBadge.textContent = '🎵 Direct Audio MP3';
       audioFormatBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
     } else {
@@ -518,22 +531,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function setTestingAudioActive(active) {
+    isTestingAudio = active;
+    if (btnTestAudioText) btnTestAudioText.textContent = active ? 'Berhenti Putar' : 'Tes Putar';
+    if (btnTestAudio) {
+      const icon = btnTestAudio.querySelector('i');
+      if (icon) icon.setAttribute('data-lucide', active ? 'square' : 'play');
+      if (window.lucide) lucide.createIcons();
+    }
+  }
+
   function stopAllTestAudio() {
-    isTestingAudio = false;
+    setTestingAudioActive(false);
     if (builderTestAudio) {
       builderTestAudio.pause();
       builderTestAudio.currentTime = 0;
     }
     if (builderScWidget && typeof builderScWidget.pause === 'function') {
-      try {
-        builderScWidget.pause();
-      } catch (e) {}
+      try { builderScWidget.pause(); } catch (e) {}
     }
-    if (btnTestAudioText) btnTestAudioText.textContent = 'Tes Putar';
-    if (btnTestAudio) {
-      const icon = btnTestAudio.querySelector('i');
-      if (icon) icon.setAttribute('data-lucide', 'play');
-      if (window.lucide) lucide.createIcons();
+    if (builderYtPlayerInstance && typeof builderYtPlayerInstance.pauseVideo === 'function') {
+      try { builderYtPlayerInstance.pauseVideo(); } catch (e) {}
     }
   }
 
@@ -574,60 +592,92 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      const ytId = extractYouTubeId(targetUrl);
       const isSoundCloud = targetUrl.toLowerCase().includes('soundcloud.com');
 
-      if (isSoundCloud) {
+      if (ytId) {
+        // YouTube Audio Engine
+        function startYt() {
+          if (window.YT && window.YT.Player) {
+            if (builderYtPlayerInstance && typeof builderYtPlayerInstance.loadVideoById === 'function') {
+              builderYtPlayerInstance.loadVideoById(ytId);
+              builderYtPlayerInstance.playVideo();
+              setTestingAudioActive(true);
+            } else {
+              builderYtPlayerInstance = new YT.Player('builderYtPlayer', {
+                height: '10',
+                width: '10',
+                videoId: ytId,
+                playerVars: { autoplay: 1, controls: 0 },
+                events: {
+                  onReady: () => {
+                    builderYtPlayerInstance.playVideo();
+                    setTestingAudioActive(true);
+                  },
+                  onStateChange: (e) => {
+                    if (e.data === YT.PlayerState.PLAYING) {
+                      setTestingAudioActive(true);
+                    } else if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) {
+                      setTestingAudioActive(false);
+                    }
+                  }
+                }
+              });
+            }
+          } else {
+            alert('YouTube Player sedang dimuat, silakan coba 2 detik lagi.');
+          }
+        }
+        startYt();
+      } else if (isSoundCloud) {
         // Init SoundCloud test widget
         if (builderScPlayer) {
           const cleanUrl = targetUrl.split('?')[0];
-          const embedSrc = `https://w.soundcloud.com/player/?url=${encodeURIComponent(cleanUrl)}&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false`;
+          const embedSrc = `https://w.soundcloud.com/player/?url=${encodeURIComponent(cleanUrl)}&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false`;
           
           if (!builderScPlayer.src || !builderScPlayer.src.includes(encodeURIComponent(cleanUrl))) {
             builderScPlayer.src = embedSrc;
           }
 
-          if (window.SC && window.SC.Widget) {
-            builderScWidget = window.SC.Widget(builderScPlayer);
-            builderScWidget.bind(window.SC.Widget.Events.READY, () => {
-              builderScWidget.play();
-            });
-            builderScWidget.bind(window.SC.Widget.Events.PLAY, () => {
-              isTestingAudio = true;
-              if (btnTestAudioText) btnTestAudioText.textContent = 'Berhenti Putar';
-              const icon = btnTestAudio.querySelector('i');
-              if (icon) icon.setAttribute('data-lucide', 'square');
-              if (window.lucide) lucide.createIcons();
-            });
-            builderScWidget.bind(window.SC.Widget.Events.PAUSE, () => {
-              stopAllTestAudio();
-            });
-            builderScWidget.bind(window.SC.Widget.Events.FINISH, () => {
-              stopAllTestAudio();
-            });
-            try {
-              builderScWidget.play();
-            } catch(e) {}
-          } else {
-            alert('Widget SoundCloud sedang dimuat, silakan coba 2 detik lagi.');
+          function connectScWidget() {
+            if (window.SC && window.SC.Widget) {
+              builderScWidget = window.SC.Widget(builderScPlayer);
+              builderScWidget.bind(window.SC.Widget.Events.READY, () => {
+                builderScWidget.play();
+                setTestingAudioActive(true);
+              });
+              builderScWidget.bind(window.SC.Widget.Events.PLAY, () => {
+                setTestingAudioActive(true);
+              });
+              builderScWidget.bind(window.SC.Widget.Events.PAUSE, () => {
+                setTestingAudioActive(false);
+              });
+              builderScWidget.bind(window.SC.Widget.Events.FINISH, () => {
+                setTestingAudioActive(false);
+              });
+              try {
+                builderScWidget.play();
+                setTestingAudioActive(true);
+              } catch(e) {}
+            } else {
+              alert('Widget SoundCloud sedang dimuat, silakan coba 2 detik lagi.');
+            }
           }
+          connectScWidget();
         }
       } else {
         // Direct MP3
         if (builderTestAudio) {
           builderTestAudio.src = targetUrl;
           builderTestAudio.play().then(() => {
-            isTestingAudio = true;
-            if (btnTestAudioText) btnTestAudioText.textContent = 'Berhenti Putar';
-            const icon = btnTestAudio.querySelector('i');
-            if (icon) icon.setAttribute('data-lucide', 'square');
-            if (window.lucide) lucide.createIcons();
+            setTestingAudioActive(true);
           }).catch(err => {
             console.error('Audio play error:', err);
             alert('Gagal memutar audio. Pastikan URL valid dan dapat diakses publik.');
           });
 
           builderTestAudio.onended = () => {
-            stopAllTestAudio();
+            setTestingAudioActive(false);
           };
         }
       }

@@ -77,19 +77,21 @@
     }
   </style>
 
-  <!-- SoundCloud Widget API -->
+  <!-- SoundCloud & YouTube API -->
   <script src="https://w.soundcloud.com/player/api.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body class="bg-[#fbf9f5] text-stone-800 antialiased selection:bg-amber-200 selection:text-stone-900">
 
-  <!-- AUDIO ELEMENT (Background Instrumental Nasheed / Ambient HTML5) -->
+  <!-- AUDIO ELEMENT (Background Audio HTML5) -->
   <audio id="khitanAudio" loop preload="auto">
-    <source src="audio/nasheed.mp3" type="audio/mp3">
+    <source src="audio/qalbi.mp3" type="audio/mp3">
   </audio>
 
-  <!-- SOUNDCLOUD PLAYER CONTAINER (Hidden in DOM within viewport to prevent mobile browser suspension) -->
+  <!-- SOUNDCLOUD PLAYER CONTAINER -->
   <div class="fixed top-0 left-0 w-[1px] h-[1px] opacity-[0.01] overflow-hidden pointer-events-none z-0" aria-hidden="true">
     <iframe id="scKhitanPlayer" allow="autoplay; encrypted-media" src="" width="100" height="100"></iframe>
+    <div id="ytKhitanPlayer"></div>
   </div>
 
   <!-- TOAST NOTIFICATION -->
@@ -521,11 +523,13 @@
         bank1Number: '082134966499',
         bank1Holder: 'Susi Dwi Jayanti (Ibu)',
         physicalAddress: 'Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon',
-        audioUrl: 'audio/nasheed.mp3',
+        audioUrl: 'audio/qalbi.mp3',
         gallery: [
           'images/khitan/rendy-galeri-1.jpg',
           'images/khitan/rendy-galeri-2.jpg',
-          'images/khitan/rendy-galeri-3.jpg'
+          'images/khitan/rendy-galeri-3.jpg',
+          'images/khitan/rendy-galeri-4.jpg',
+          'images/khitan/rendy-galeri-5.jpg'
         ],
         theme: 'cream'
       };
@@ -635,29 +639,29 @@
       const themePacks = {
         cream: {
           name: 'Warm Cream & Gold',
-          bgUrl: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1600&q=85',
+          bgUrl: 'images/khitan/bg-khitan.jpg',
           bodyBg: '#fbf9f5',
           deskBg: '#f5ede0',
-          deskGrad: 'linear-gradient(to right, rgba(251,248,242,0.95), rgba(246,239,228,0.85))',
-          covGrad: 'linear-gradient(to bottom, rgba(253,250,245,0.72), rgba(246,238,225,0.95))',
+          deskGrad: 'linear-gradient(to right, rgba(251,248,242,0.94), rgba(246,239,228,0.85))',
+          covGrad: 'linear-gradient(to bottom, rgba(253,250,245,0.78), rgba(246,238,225,0.95))',
           cardBank: 'linear-gradient(to bottom right, #8c6735, #a88247, #735022)'
         },
         sage: {
           name: 'Sage Terang (Mint Ivory)',
-          bgUrl: 'https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?auto=format&fit=crop&w=1600&q=85',
+          bgUrl: 'images/khitan/bg-khitan.jpg',
           bodyBg: '#f6f9f6',
           deskBg: '#eaf2ea',
-          deskGrad: 'linear-gradient(to right, rgba(246,249,246,0.96), rgba(234,242,234,0.88))',
-          covGrad: 'linear-gradient(to bottom, rgba(248,251,248,0.74), rgba(234,242,234,0.96))',
+          deskGrad: 'linear-gradient(to right, rgba(246,249,246,0.95), rgba(234,242,234,0.88))',
+          covGrad: 'linear-gradient(to bottom, rgba(248,251,248,0.80), rgba(234,242,234,0.96))',
           cardBank: 'linear-gradient(to bottom right, #385942, #527c5e, #2d4734)'
         },
         ivory: {
           name: 'Royal Ivory & Pearl Gold',
-          bgUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
+          bgUrl: 'images/khitan/bg-khitan.jpg',
           bodyBg: '#faf9f6',
           deskBg: '#f2f0eb',
-          deskGrad: 'linear-gradient(to right, rgba(253,252,250,0.96), rgba(242,240,235,0.88))',
-          covGrad: 'linear-gradient(to bottom, rgba(255,254,252,0.74), rgba(242,240,235,0.96))',
+          deskGrad: 'linear-gradient(to right, rgba(253,252,250,0.95), rgba(242,240,235,0.88))',
+          covGrad: 'linear-gradient(to bottom, rgba(255,254,252,0.80), rgba(242,240,235,0.96))',
           cardBank: 'linear-gradient(to bottom right, #946f31, #b58d46, #745422)'
         }
       };
@@ -717,9 +721,62 @@
       let scReady = false;
       let playRequested = false;
 
-      const audioUrl = config.audioUrl || 'audio/nasheed.mp3';
+      const audioUrl = config.audioUrl || 'audio/qalbi.mp3';
+      let isYouTube = false;
+      let ytPlayer = null;
+      let ytReady = false;
 
-      if (audioUrl.includes('soundcloud.com')) {
+      function extractYouTubeId(url) {
+        if (!url) return null;
+        const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/i);
+        return match ? match[1] : null;
+      }
+
+      const ytId = extractYouTubeId(audioUrl);
+
+      if (ytId) {
+        isYouTube = true;
+        function setupKhitanYT() {
+          if (window.YT && window.YT.Player) {
+            try {
+              ytPlayer = new YT.Player('ytKhitanPlayer', {
+                height: '10',
+                width: '10',
+                videoId: ytId,
+                playerVars: {
+                  autoplay: 0,
+                  controls: 0,
+                  loop: 1,
+                  playlist: ytId,
+                  playsinline: 1
+                },
+                events: {
+                  onReady: () => {
+                    ytReady = true;
+                    if (playRequested) {
+                      ytPlayer.playVideo();
+                      isPlaying = true;
+                      if (musicDisc) musicDisc.classList.remove('paused');
+                    }
+                  },
+                  onStateChange: (e) => {
+                    if (e.data === YT.PlayerState.PLAYING) {
+                      isPlaying = true;
+                      if (musicDisc) musicDisc.classList.remove('paused');
+                    } else if (e.data === YT.PlayerState.PAUSED) {
+                      isPlaying = false;
+                      if (musicDisc) musicDisc.classList.add('paused');
+                    }
+                  }
+                }
+              });
+            } catch(e) {}
+          } else {
+            setTimeout(setupKhitanYT, 250);
+          }
+        }
+        setupKhitanYT();
+      } else if (audioUrl.includes('soundcloud.com')) {
         isSoundCloud = true;
         const cleanUrl = audioUrl.split('?')[0];
         const scFrame = document.getElementById('scKhitanPlayer');
@@ -768,16 +825,22 @@
 
       function playAudio() {
         playRequested = true;
-        if (isSoundCloud) {
-          if (scWidget && scReady) {
-            try {
-              scWidget.play();
-              isPlaying = true;
-              if (musicDisc) musicDisc.classList.remove('paused');
-              return;
-            } catch (e) {
-              console.log('SC play error, fallback to HTML5 audio:', e);
-            }
+        if (isYouTube && ytPlayer && ytReady) {
+          try {
+            ytPlayer.playVideo();
+            isPlaying = true;
+            if (musicDisc) musicDisc.classList.remove('paused');
+            return;
+          } catch(e) {}
+        }
+        if (isSoundCloud && scWidget && scReady) {
+          try {
+            scWidget.play();
+            isPlaying = true;
+            if (musicDisc) musicDisc.classList.remove('paused');
+            return;
+          } catch (e) {
+            console.log('SC play error, fallback to HTML5 audio:', e);
           }
         }
         playHtml5Audio();
@@ -785,8 +848,8 @@
 
       function playHtml5Audio() {
         if (audio) {
-          if (!audio.src || audio.src === window.location.href) {
-            audio.src = 'audio/nasheed.mp3';
+          if (!audio.src || audio.src === window.location.href || audio.src.endsWith('/')) {
+            audio.src = 'audio/qalbi.mp3';
           }
           const playPromise = audio.play();
           if (playPromise !== undefined) {
@@ -802,7 +865,10 @@
 
       function pauseAudio() {
         playRequested = false;
-        if (isSoundCloud && scWidget) {
+        if (isYouTube && ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+          try { ytPlayer.pauseVideo(); } catch(e) {}
+        }
+        if (isSoundCloud && scWidget && typeof scWidget.pause === 'function') {
           try {
             scWidget.pause();
           } catch (e) {}
@@ -918,7 +984,9 @@
           : [
               'images/khitan/rendy-galeri-1.jpg',
               'images/khitan/rendy-galeri-2.jpg',
-              'images/khitan/rendy-galeri-3.jpg'
+              'images/khitan/rendy-galeri-3.jpg',
+              'images/khitan/rendy-galeri-4.jpg',
+              'images/khitan/rendy-galeri-5.jpg'
             ];
 
         const kGrid = document.getElementById('khitanGalleryGrid');
