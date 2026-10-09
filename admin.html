@@ -295,8 +295,8 @@
       // Default Sample Accounts
       const initialAccounts = [
         {
-          id: 'client-rendy',
-          username: 'rendy',
+          id: 'client-wangkis',
+          username: 'wangkis',
           password: 'password123',
           name: 'Bpk. Wangkis Suwito & Ibu Susi (Irendy)',
           type: 'khitan',
@@ -329,7 +329,24 @@
       function getAccounts() {
         try {
           const saved = localStorage.getItem('inveet_client_accounts');
-          if (saved) return JSON.parse(saved);
+          if (saved) {
+            let accs = JSON.parse(saved);
+            let updated = false;
+            accs = accs.map(a => {
+              if (a.username === 'rendy') {
+                a.username = 'wangkis';
+                a.id = 'client-wangkis';
+                updated = true;
+              }
+              return a;
+            });
+            if (!accs.some(a => a.username === 'wangkis')) {
+              accs.unshift(initialAccounts[0]);
+              updated = true;
+            }
+            if (updated) localStorage.setItem('inveet_client_accounts', JSON.stringify(accs));
+            return accs;
+          }
         } catch(e) {}
         localStorage.setItem('inveet_client_accounts', JSON.stringify(initialAccounts));
         return initialAccounts;

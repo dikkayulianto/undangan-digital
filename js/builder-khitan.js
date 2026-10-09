@@ -140,14 +140,44 @@ function encodeKhitanConfigForUrl(cfg) {
   }
 }
 
+function sanitizeKhitanConfig(cfg) {
+  if (!cfg || typeof cfg !== 'object') return JSON.parse(JSON.stringify(defaultKhitanConfig));
+  
+  // Stale Bank Check: Auto-migrate any BCA or old dummy number to official BRI Wangkis Suwito
+  if (cfg.bank1Name === 'BCA' || cfg.bank1Number === '5220304958' || !cfg.bank1Number) {
+    cfg.bank1Name = 'BRI';
+    cfg.bank1Number = '6062 0104 0268 531';
+    cfg.bank1Holder = 'Wangkis Suwito';
+  }
+  // Stale Bank 2 Check: Ensure Dana 082134966499
+  if (!cfg.bank2Number || cfg.bank2Number === '081234567890') {
+    cfg.bank2Name = 'Dana';
+    cfg.bank2Number = '082134966499';
+    cfg.bank2Holder = 'Susi Dwi Jayanti (Ibu)';
+  }
+  // Remove unsplash photos
+  if (cfg.photo && cfg.photo.includes('unsplash.com')) {
+    cfg.photo = defaultKhitanConfig.photo;
+  }
+  // Gallery photo check: Ensure exactly the 3 latest photos if old photos detected
+  if (!Array.isArray(cfg.gallery) || cfg.gallery.length !== 3 || cfg.gallery.some(p => p.includes('unsplash.com') || p.includes('galeri-4') || p.includes('galeri-5') || p.includes('gallery-4') || p.includes('gallery-5'))) {
+    cfg.gallery = [...defaultKhitanConfig.gallery];
+  }
+  return cfg;
+}
+
 function getKhitanConfig() {
   const saved = localStorage.getItem(clientStorageKey) || localStorage.getItem('khitan_config_wangkis') || localStorage.getItem('khitan_config');
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-      if (parsed.photo && parsed.photo.includes('unsplash.com')) delete parsed.photo;
-      if (parsed.gallery && Array.isArray(parsed.gallery) && parsed.gallery.some(p => p.includes('unsplash.com'))) delete parsed.gallery;
-      return Object.assign({}, defaultKhitanConfig, parsed);
+      const merged = Object.assign({}, defaultKhitanConfig, parsed);
+      const sanitized = sanitizeKhitanConfig(merged);
+      const str = JSON.stringify(sanitized);
+      localStorage.setItem(clientStorageKey, str);
+      localStorage.setItem('khitan_config_wangkis', str);
+      localStorage.setItem('khitan_config', str);
+      return sanitized;
     } catch (e) {
       console.error('Error parsing khitan config', e);
     }
@@ -157,14 +187,15 @@ function getKhitanConfig() {
 
 function saveKhitanConfig(cfg) {
   try {
-    const str = JSON.stringify(cfg);
+    const sanitized = sanitizeKhitanConfig(cfg);
+    const str = JSON.stringify(sanitized);
     localStorage.setItem(clientStorageKey, str);
     localStorage.setItem('khitan_config', str);
     localStorage.setItem('khitan_config_wangkis', str);
     localStorage.setItem('khitan_config_rendy', str);
-    if (cfg.photo && !cfg.photo.startsWith('data:')) {
-      localStorage.setItem('khitan_child_photo', cfg.photo);
-      localStorage.setItem('khitan_child_photo_wangkis', cfg.photo);
+    if (sanitized.photo && !sanitized.photo.startsWith('data:')) {
+      localStorage.setItem('khitan_child_photo', sanitized.photo);
+      localStorage.setItem('khitan_child_photo_wangkis', sanitized.photo);
     }
     return true;
   } catch (err) {
@@ -547,10 +578,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (viewInviteLink) {
       let href = 'khitan.html';
       const q = [];
+      if (cfg && cfg.cloudId) {
+        q.push(`c=${encodeURIComponent(cfg.cloudId)}`);
+      }
       const isCustomClient = currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy';
       if (isCustomClient) {
         q.push(`client=${encodeURIComponent(currentClient)}`);
-        if (cfg && cfg.cloudId) q.push(`c=${encodeURIComponent(cfg.cloudId)}`);
       }
       if (cfg && cfg.theme && cfg.theme !== 'cream') {
         q.push(`theme=${encodeURIComponent(cfg.theme)}`);
@@ -858,10 +891,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     newConfig = await syncLocalImagesToCloud(newConfig);
 
-    if (currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy') {
-      const cid = await syncConfigToCloud(currentClient, newConfig);
-      if (cid) newConfig.cloudId = cid;
-    }
+    const activeClient = currentClient || 'wangkis';
+    const cid = await syncConfigToCloud(activeClient, newConfig);
+    if (cid) newConfig.cloudId = cid;
 
     if (saveKhitanConfig(newConfig)) {
       updateViewInviteLink(newConfig);
@@ -938,16 +970,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Base URL resolution (clean origin - avoids 404 folder nesting)
     const baseOrigin = window.location.origin;
     let fullInvitationUrl = `${baseOrigin}/khitan.html?to=${encodeURIComponent(guestName)}`;
+    const activeClient = currentClient || 'wangkis';
+    let cloudId = currentCfg.cloudId;
+    if (!cloudId) {
+      cloudId = await syncConfigToCloud(activeClient, currentCfg);
+    }
+    if (cloudId) {
+      fullInvitationUrl += `&c=${encodeURIComponent(cloudId)}`;
+    }
     const isCustomClient = currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy';
     if (isCustomClient) {
       fullInvitationUrl += `&client=${encodeURIComponent(currentClient)}`;
-      let cloudId = currentCfg.cloudId;
-      if (!cloudId) {
-        cloudId = await syncConfigToCloud(currentClient, currentCfg);
-      }
-      if (cloudId) {
-        fullInvitationUrl += `&c=${encodeURIComponent(cloudId)}`;
-      }
     }
     if (currentCfg.theme && currentCfg.theme !== 'cream') {
       fullInvitationUrl += `&theme=${encodeURIComponent(currentCfg.theme)}`;
@@ -1023,14 +1056,15 @@ Salam hormat,
 
       let generalUrl = `${window.location.origin}/khitan.html`;
       const queryParts = [];
+      const activeClient = currentClient || 'wangkis';
+      let cloudId = currentCfg.cloudId;
+      if (!cloudId) {
+        cloudId = await syncConfigToCloud(activeClient, currentCfg);
+      }
+      if (cloudId) queryParts.push(`c=${encodeURIComponent(cloudId)}`);
       const isCustomClient = currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy';
       if (isCustomClient) {
         queryParts.push(`client=${encodeURIComponent(currentClient)}`);
-        let cloudId = currentCfg.cloudId;
-        if (!cloudId) {
-          cloudId = await syncConfigToCloud(currentClient, currentCfg);
-        }
-        if (cloudId) queryParts.push(`c=${encodeURIComponent(cloudId)}`);
       }
       if (currentCfg.theme && currentCfg.theme !== 'cream') queryParts.push(`theme=${encodeURIComponent(currentCfg.theme)}`);
       if (queryParts.length > 0) generalUrl += `?${queryParts.join('&')}`;

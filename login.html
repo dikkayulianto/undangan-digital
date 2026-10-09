@@ -104,8 +104,8 @@
       // Sample Accounts Fallback
       const initialAccounts = [
         {
-          id: 'client-rendy',
-          username: 'rendy',
+          id: 'client-wangkis',
+          username: 'wangkis',
           password: 'password123',
           name: 'Bpk. Wangkis Suwito & Ibu Susi (Irendy)',
           type: 'khitan',
@@ -135,7 +135,24 @@
       function getAccounts() {
         try {
           const saved = localStorage.getItem('inveet_client_accounts');
-          if (saved) return JSON.parse(saved);
+          if (saved) {
+            let accs = JSON.parse(saved);
+            let updated = false;
+            accs = accs.map(a => {
+              if (a.username === 'rendy') {
+                a.username = 'wangkis';
+                a.id = 'client-wangkis';
+                updated = true;
+              }
+              return a;
+            });
+            if (!accs.some(a => a.username === 'wangkis')) {
+              accs.unshift(initialAccounts[0]);
+              updated = true;
+            }
+            if (updated) localStorage.setItem('inveet_client_accounts', JSON.stringify(accs));
+            return accs;
+          }
         } catch(e) {}
         localStorage.setItem('inveet_client_accounts', JSON.stringify(initialAccounts));
         return initialAccounts;
@@ -146,20 +163,23 @@
         const errorText = document.getElementById('loginErrorText');
         errorBox.classList.add('hidden');
 
+        const cleanUser = username.toLowerCase().trim();
         const accounts = getAccounts();
         const found = accounts.find(a => 
-          (a.username.toLowerCase() === username.toLowerCase().trim() || 
-           (a.username.toLowerCase() === 'rendy' && username.toLowerCase().trim() === 'wangkis') ||
-           (a.username.toLowerCase() === 'wangkis' && username.toLowerCase().trim() === 'rendy')) && 
+          (a.username.toLowerCase() === cleanUser || 
+           (a.username.toLowerCase() === 'wangkis' && cleanUser === 'rendy') ||
+           (a.username.toLowerCase() === 'rendy' && cleanUser === 'wangkis')) && 
           a.password === password.trim()
         );
 
         if (found) {
+          const resolvedUser = (found.username === 'rendy' || cleanUser === 'wangkis') ? 'wangkis' : found.username;
+          found.username = resolvedUser;
           localStorage.setItem('inveet_logged_client', JSON.stringify(found));
           if (found.type === 'khitan') {
-            window.location.href = `builder-khitan.html?client=${encodeURIComponent(found.username)}`;
+            window.location.href = `builder-khitan.html?client=${encodeURIComponent(resolvedUser)}`;
           } else {
-            window.location.href = `builder.html?client=${encodeURIComponent(found.username)}`;
+            window.location.href = `builder.html?client=${encodeURIComponent(resolvedUser)}`;
           }
         } else {
           errorText.textContent = 'Username atau kata sandi tidak ditemukan. Silakan hubungi admin jika belum memiliki akun.';

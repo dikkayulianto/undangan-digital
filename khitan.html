@@ -605,6 +605,27 @@
         }
       }
 
+      function sanitizeKhitanConfig(cfg) {
+        if (!cfg || typeof cfg !== 'object') return defaultKhitanConfig;
+        if (cfg.bank1Name === 'BCA' || cfg.bank1Number === '5220304958' || !cfg.bank1Number) {
+          cfg.bank1Name = 'BRI';
+          cfg.bank1Number = '6062 0104 0268 531';
+          cfg.bank1Holder = 'Wangkis Suwito';
+        }
+        if (!cfg.bank2Number || cfg.bank2Number === '081234567890') {
+          cfg.bank2Name = 'Dana';
+          cfg.bank2Number = '082134966499';
+          cfg.bank2Holder = 'Susi Dwi Jayanti (Ibu)';
+        }
+        if (cfg.photo && cfg.photo.includes('unsplash.com')) {
+          cfg.photo = defaultKhitanConfig.photo;
+        }
+        if (!Array.isArray(cfg.gallery) || cfg.gallery.length !== 3 || cfg.gallery.some(p => p.includes('unsplash.com') || p.includes('galeri-4') || p.includes('galeri-5') || p.includes('gallery-4') || p.includes('gallery-5'))) {
+          cfg.gallery = [...defaultKhitanConfig.gallery];
+        }
+        return cfg;
+      }
+
       // Multi-Tenant Client Support
       const clientParam = urlParams.get('client');
       const clientStorageKey = clientParam ? `khitan_config_${clientParam}` : 'khitan_config';
@@ -615,9 +636,11 @@
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          if (parsed.photo && parsed.photo.includes('unsplash.com')) delete parsed.photo;
-          if (parsed.gallery && Array.isArray(parsed.gallery) && parsed.gallery.some(p => p.includes('unsplash.com'))) delete parsed.gallery;
-          config = Object.assign({}, defaultKhitanConfig, parsed);
+          config = sanitizeKhitanConfig(Object.assign({}, defaultKhitanConfig, parsed));
+          try {
+            localStorage.setItem(clientStorageKey, JSON.stringify(config));
+            localStorage.setItem('khitan_config_wangkis', JSON.stringify(config));
+          } catch(e) {}
         } catch(e) {}
       }
 
@@ -627,27 +650,14 @@
         config.photo = directChildPhoto.trim();
       }
 
-      // Priority Override: Read URL Encoded Data (?d=...)
-      const dParam = urlParams.get('d');
-      if (dParam) {
-        const urlConfig = decodeKhitanConfigFromUrl(dParam);
-        if (urlConfig) {
-          config = Object.assign({}, config, urlConfig);
-          try {
-            localStorage.setItem(clientStorageKey, JSON.stringify(config));
-            if (urlConfig.photo) localStorage.setItem(clientPhotoKey, urlConfig.photo);
-          } catch(e) {}
-        }
-      }
-
-      // Short Cloud Config ID (?c=...)
+      // Priority 1: Short Cloud Config ID (?c=...)
       const cParam = urlParams.get('c');
       if (cParam) {
         fetch(`https://files.catbox.moe/${encodeURIComponent(cParam)}.json`)
           .then(res => res.json())
           .then(cloudCfg => {
             if (cloudCfg && typeof cloudCfg === 'object') {
-              config = Object.assign({}, defaultKhitanConfig, cloudCfg);
+              config = sanitizeKhitanConfig(Object.assign({}, defaultKhitanConfig, cloudCfg));
               try {
                 localStorage.setItem(clientStorageKey, JSON.stringify(config));
               } catch(e) {}
@@ -655,6 +665,20 @@
             }
           })
           .catch(() => {});
+      }
+
+      // Priority 2: URL Encoded Data (?d=...)
+      const dParam = urlParams.get('d');
+      if (dParam) {
+        const urlConfig = decodeKhitanConfigFromUrl(dParam);
+        if (urlConfig) {
+          config = sanitizeKhitanConfig(Object.assign({}, config, urlConfig));
+          try {
+            localStorage.setItem(clientStorageKey, JSON.stringify(config));
+            if (urlConfig.photo) localStorage.setItem(clientPhotoKey, urlConfig.photo);
+          } catch(e) {}
+          populateElements(config);
+        }
       }
 
       // Populate Elements
@@ -766,21 +790,13 @@
 
       populateElements(config);
 
-      // Async fetch data/khitan.json as fallback if no URL payload is provided
-      if (!dParam) {
+      // Async fetch data/khitan.json as authoritative fallback if no URL payload is provided
+      if (!cParam && !dParam) {
         fetch('data/khitan.json')
           .then(res => res.json())
           .then(data => {
             if (data && typeof data === 'object') {
-              let parsedSaved = {};
-              if (saved) {
-                try {
-                  parsedSaved = JSON.parse(saved);
-                  if (parsedSaved.photo && parsedSaved.photo.includes('unsplash.com')) delete parsedSaved.photo;
-                  if (parsedSaved.gallery && Array.isArray(parsedSaved.gallery) && parsedSaved.gallery.some(p => p.includes('unsplash.com'))) delete parsedSaved.gallery;
-                } catch(e) {}
-              }
-              config = Object.assign({}, defaultKhitanConfig, data, parsedSaved);
+              config = sanitizeKhitanConfig(Object.assign({}, defaultKhitanConfig, data));
               if (directChildPhoto && !directChildPhoto.includes('unsplash.com')) config.photo = directChildPhoto.trim();
               populateElements(config);
             }
