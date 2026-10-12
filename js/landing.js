@@ -1,5 +1,6 @@
 /**
- * Inveet Landing Page Scripts & Interactive Simulator
+ * BikinUndangan Landing Page Scripts & Interactive Simulator
+ * https://bikinundangan.biz.id
  */
 
 document.addEventListener('DOMContentLoaded', () => {

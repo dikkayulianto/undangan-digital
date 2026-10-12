@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Masuk ke Undangan Anda - Inveet.id</title>
+  <title>Masuk ke Undangan Anda - BikinUndangan</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -46,10 +47,8 @@
     <!-- Logo & Header -->
     <div class="text-center space-y-2">
       <a href="index.html" class="inline-flex items-center gap-2 mb-1">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-700 to-stone-900 text-gold-300 font-serif font-bold text-xl flex items-center justify-center shadow">
-          I
-        </div>
-        <span class="text-2xl font-bold tracking-tight text-stone-900">inveet<span class="text-amber-600">.id</span></span>
+        <img src="images/logo-icon.svg" alt="BikinUndangan Logo" class="w-10 h-10 rounded-2xl shadow">
+        <span class="text-2xl font-extrabold tracking-tight text-stone-900">Bikin<span class="text-amber-600">Undangan</span></span>
       </a>
       <h1 class="text-xl font-bold text-stone-900">Masuk ke Undangan Anda</h1>
       <p class="text-xs text-stone-500">Kelola foto, data tasyakuran, musik, dan daftar tamu undangan Anda.</p>
@@ -182,7 +181,7 @@
         const pass = password.trim();
 
         // Admin fallback
-        if ((cleanUser === 'admin' || cleanUser === 'admin@inveet.id') && pass === 'admin123') {
+        if ((cleanUser === 'admin' || cleanUser === 'admin@bikinundangan.biz.id' || cleanUser === 'admin@bikinundangan.id' || cleanUser === 'admin@inveet.id') && pass === 'admin123') {
           sessionStorage.setItem('inveet_admin_session', 'true');
           localStorage.setItem('inveet_admin_session', 'true');
           if (redirectParam && redirectParam.trim() !== '') {

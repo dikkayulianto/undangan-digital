@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Administrator - Inveet.id</title>
+  <title>Login Administrator - BikinUndangan</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -46,10 +47,10 @@
 
     <!-- Header -->
     <div class="text-center space-y-2">
-      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-slate-950 font-bold shadow-lg shadow-amber-500/20 mb-2">
-        <i data-lucide="shield-check" class="w-7 h-7"></i>
+      <div class="inline-flex items-center justify-center mb-2">
+        <img src="images/logo-icon.svg" alt="BikinUndangan Logo" class="w-14 h-14 rounded-2xl shadow-lg shadow-amber-500/20">
       </div>
-      <h1 class="text-2xl font-bold tracking-tight text-white">Portal Administrator</h1>
+      <h1 class="text-2xl font-extrabold tracking-tight text-white">Bikin<span class="text-amber-400">Undangan</span> Admin</h1>
       <p class="text-xs text-slate-400">Masuk untuk membuat akun pembeli dan mengelola undangan digital</p>
     </div>
 
@@ -97,7 +98,7 @@
       if (window.lucide) lucide.createIcons();
 
       function doAdminLogin(user, pass) {
-        if ((user === 'admin' || user === 'admin@inveet.id') && pass === 'admin123') {
+        if ((user === 'admin' || user === 'admin@bikinundangan.biz.id' || user === 'admin@bikinundangan.id' || user === 'admin@inveet.id') && pass === 'admin123') {
           sessionStorage.setItem('inveet_admin_session', 'true');
           localStorage.setItem('inveet_admin_session', 'true');
           window.location.href = 'admin.html';

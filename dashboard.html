@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Pengguna - Inveet.id Digital Invitation</title>
+  <title>Dashboard Pengguna - BikinUndangan Digital Invitation</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -111,12 +112,10 @@
       <!-- Brand & Left Menu -->
       <div class="flex items-center gap-6">
         <a href="index.html" class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-700 to-stone-900 text-gold-300 font-serif font-bold text-lg flex items-center justify-center shadow">
-            I
-          </div>
+          <img src="images/logo-icon.svg" alt="BikinUndangan Logo" class="w-9 h-9 rounded-xl shadow-xs">
           <div class="flex flex-col">
-            <span class="text-base font-bold tracking-tight text-stone-900 leading-tight">inveet<span class="text-amber-600">.id</span></span>
-            <span class="text-[9px] text-stone-400 font-medium tracking-wide uppercase">Dashboard Pengguna</span>
+            <span class="text-base font-extrabold tracking-tight text-stone-900 leading-tight">Bikin<span class="text-amber-600">Undangan</span></span>
+            <span class="text-[9px] text-stone-400 font-semibold tracking-wide uppercase">Dashboard Pengguna</span>
           </div>
         </a>
 
@@ -570,7 +569,7 @@
   <!-- FOOTER -->
   <footer class="bg-white border-t border-stone-200 py-6 text-center text-xs text-stone-400 mt-auto">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <p>&copy; 2026 inveet.id &bull; Platform Undangan Digital Indonesia. Hak cipta dilindungi.</p>
+      <p>&copy; 2026 BikinUndangan (bikinundangan.biz.id) &bull; Platform Undangan Digital Indonesia. Hak cipta dilindungi.</p>
       <div class="flex items-center gap-4 text-stone-500">
         <a href="index.html" class="hover:text-stone-900 transition">Beranda</a>
         <a href="builder.html" class="hover:text-stone-900 transition">Editor Pernikahan</a>
@@ -793,7 +792,7 @@
           const encodedUri = encodeURI(csvContent);
           const link = document.createElement("a");
           link.setAttribute("href", encodedUri);
-          link.setAttribute("download", "buku_tamu_inveet.csv");
+          link.setAttribute("download", "buku_tamu_bikinundangan.csv");
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);

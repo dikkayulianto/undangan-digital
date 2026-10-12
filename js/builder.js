@@ -1,5 +1,6 @@
 /**
- * Inveet-style Wedding Builder Scripts
+ * BikinUndangan Wedding Builder Scripts
+ * https://bikinundangan.biz.id
  */
 
 const defaultWeddingConfig = {

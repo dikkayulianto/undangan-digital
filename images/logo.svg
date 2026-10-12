@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 90" width="380" height="90">
+  <defs>
+    <linearGradient id="bgGradFull" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c1917" />
+      <stop offset="50%" stop-color="#2d1a0e" />
+      <stop offset="100%" stop-color="#0c0a09" />
+    </linearGradient>
+
+    <linearGradient id="goldGradFull" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="25%" stop-color="#f59e0b" />
+      <stop offset="60%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+
+    <linearGradient id="goldTextGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b45309" />
+      <stop offset="50%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+
+    <linearGradient id="shimmerFull" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#fde68a" stop-opacity="0.3" />
+    </linearGradient>
+  </defs>
+
+  <!-- ICON BADGE (Left) -->
+  <g transform="translate(6, 9)">
+    <rect x="2" y="2" width="70" height="70" rx="18" fill="url(#bgGradFull)" stroke="#d97706" stroke-opacity="0.4" stroke-width="1.5" />
+    <rect x="4" y="4" width="66" height="66" rx="16" fill="none" stroke="#fef08a" stroke-opacity="0.1" stroke-width="1" />
+
+    <!-- Monogram B scaled -->
+    <g transform="translate(5, 5) scale(0.65)">
+      <rect x="26" y="16" width="10" height="66" rx="5" fill="url(#goldGradFull)" />
+      
+      <path d="M 31 16 H 55 C 67 16, 75 23, 75 34 C 75 44, 67 49, 55 49 H 31 Z" 
+            fill="none" stroke="url(#goldGradFull)" stroke-width="9" stroke-linejoin="round" stroke-linecap="round" />
+
+      <path d="M 31 47 H 59 C 72 47, 80 55, 80 66 C 80 77, 71 80, 57 80 H 31 Z" 
+            fill="none" stroke="url(#goldGradFull)" stroke-width="9" stroke-linejoin="round" stroke-linecap="round" />
+
+      <!-- Center Fold Accent -->
+      <path d="M 38 32 L 49 40 L 60 32" fill="none" stroke="#fef08a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
+
+      <!-- Sparkling Star -->
+      <path d="M 78 12 Q 78 19 85 19 Q 78 19 78 26 Q 78 19 71 19 Q 78 19 78 12 Z" fill="url(#shimmerFull)" />
+    </g>
+  </g>
+
+  <!-- BRAND TYPOGRAPHY (Right) -->
+  <g transform="translate(94, 20)">
+    <!-- Main Brand Name -->
+    <text x="0" y="34" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="800" font-size="30" letter-spacing="-0.5">
+      <tspan fill="#1c1917">Bikin</tspan><tspan fill="url(#goldTextGrad)">Undangan</tspan>
+    </text>
+
+    <!-- Subtitle / Domain Tagline -->
+    <text x="1" y="52" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="600" font-size="9.5" fill="#a8a29e" letter-spacing="2">
+      PLATFORM UNDANGAN DIGITAL
+    </text>
+  </g>
+</svg>

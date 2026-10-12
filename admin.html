@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Admin - Manajemen Akun Pembeli | Inveet.id</title>
+  <title>Portal Admin - Manajemen Akun Pembeli | BikinUndangan</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -83,12 +84,10 @@
   <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 text-slate-950 font-bold flex items-center justify-center shadow">
-          <i data-lucide="shield-check" class="w-5 h-5"></i>
-        </div>
+        <img src="images/logo-icon.svg" alt="BikinUndangan Logo" class="w-9 h-9 rounded-xl shadow">
         <div>
           <div class="flex items-center gap-2">
-            <span class="text-base font-bold tracking-tight text-white leading-none">inveet<span class="text-amber-400">.id</span></span>
+            <span class="text-base font-extrabold tracking-tight text-white leading-none">Bikin<span class="text-amber-400">Undangan</span></span>
             <span class="px-2 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-[10px] font-bold uppercase tracking-wider">Admin Portal</span>
           </div>
           <span class="text-[10px] text-slate-400">Pusat Pembuatan Akun &amp; Multi-Undangan</span>
@@ -264,7 +263,7 @@
   <!-- FOOTER -->
   <footer class="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500 mt-auto">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <p>&copy; 2026 inveet.id &bull; Platform Undangan Digital Indonesia (Admin Master).</p>
+      <p>&copy; 2026 BikinUndangan (bikinundangan.biz.id) &bull; Platform Undangan Digital Indonesia (Admin Master).</p>
       <div class="flex items-center gap-4 text-slate-400">
         <a href="login.html" class="hover:text-white transition">Halaman Login Pembeli</a>
         <a href="builder-khitan.html" class="hover:text-white transition">Editor Khitan</a>
@@ -556,7 +555,7 @@
         const waText = 
 `Halo Kak *${acc.name}*,
 
-Selamat! Akun undangan digital *${typeLabel}* Anda di *inveet.id* telah aktif dan siap digunakan.
+Selamat! Akun undangan digital *${typeLabel}* Anda di *bikinundangan.biz.id* telah aktif dan siap digunakan.
 
 Berikut detail akun Anda untuk mengisi data acara & foto:
 🌐 *Link Login:* ${loginUrl}
@@ -572,7 +571,7 @@ Langkah mudah:
 3. Klik "Simpan Perubahan" dan bagikan tautan undangan ke para tamu!
 
 Jika butuh bantuan teknis, silakan hubungi kami kembali. Terima kasih!
-_Tim Inveet.id Digital Invitation_`;
+_Tim BikinUndangan Digital Invitation_`;
 
         waModalText.value = waText;
         waModal.classList.remove('hidden');

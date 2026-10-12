@@ -1,5 +1,6 @@
 /**
- * Inveet.id Style Wedding Invitation Scripts
+ * BikinUndangan Digital Platform Scripts
+ * https://bikinundangan.biz.id
  */
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,6 +1,6 @@
-# 💍 Undangan Digital Platform (Inveet Style)
+# 💍 BikinUndangan - Platform Undangan Digital
 
-Platform undangan digital mandiri berbasis web yang terinspirasi dari **Inveet.id**. Dibuat menggunakan arsitektur **100% Client-Side Statis (HTML5, Tailwind CSS, Vanilla JS)** sehingga sangat cepat, ringan, bebas biaya database, dan dapat langsung dideploy ke hosting mana saja (Vercel, Netlify, GitHub Pages, cPanel).
+Platform undangan digital mandiri berbasis web (**bikinundangan.biz.id**). Dibuat menggunakan arsitektur **100% Client-Side Statis (HTML5, Tailwind CSS, Vanilla JS)** sehingga sangat cepat, ringan, bebas biaya database, dan dapat langsung dideploy ke hosting mana saja (Vercel, Netlify, GitHub Pages, cPanel).
 
 ![Status](https://img.shields.io/badge/status-ready--to--publish-success)
 ![Tech Stack](https://img.shields.io/badge/tech-HTML5%20%7C%20TailwindCSS%20%7C%20VanillaJS-blue)
@@ -111,7 +111,7 @@ Klik kanan pada file `index.html` lalu pilih **Open with Live Server**.
 ---
 
 ## 📝 Lisensi & Kredit
-- Desain terinspirasi oleh **Inveet.id**.
+- Dikembangkan untuk **bikinundangan.biz.id**.
 - Ikon oleh **Lucide Icons**.
 - Widget Musik oleh **SoundCloud Widget API**.
 - Tipografi oleh **Google Fonts** (*Plus Jakarta Sans* & *Cormorant Garamond*).
