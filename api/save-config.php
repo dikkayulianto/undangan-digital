@@ -99,6 +99,29 @@ if ($saved === false) {
     exit;
 }
 
+// Update static Open Graph meta tags di khitan.html jika type khitan
+if ($type === 'khitan') {
+    $khitanHtmlPath = __DIR__ . '/../khitan.html';
+    if (file_exists($khitanHtmlPath) && is_writable($khitanHtmlPath)) {
+        $htmlContent = file_get_contents($khitanHtmlPath);
+        $nick = !empty($config['childNickname']) ? $config['childNickname'] : 'Rendy';
+        $full = !empty($config['childFullname']) ? $config['childFullname'] : 'Irendy Wijaya Saputra';
+        $p = !empty($config['photo']) ? $config['photo'] : 'images/khitan/rendy-profile.jpg';
+        
+        $proto = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) ? 'https://' : 'http://';
+        $domain = !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'bikinundangan.biz.id';
+        $absP = preg_match('/^https?:\/\//i', $p) ? $p : ($proto . $domain . '/' . ltrim($p, '/'));
+        
+        $htmlContent = preg_replace('/<title>.*?<\/title>/is', '<title>Tasyakuran Walimatul Khitan - ' . htmlspecialchars($nick, ENT_QUOTES, 'UTF-8') . '</title>', $htmlContent, 1);
+        $htmlContent = preg_replace('/<meta\s+property=["\']og:title["\']\s+content=["\'].*?["\']\s*\/?>/is', '<meta property="og:title" content="Tasyakuran Walimatul Khitan - ' . htmlspecialchars($nick, ENT_QUOTES, 'UTF-8') . '">', $htmlContent, 1);
+        $htmlContent = preg_replace('/<meta\s+property=["\']og:image["\']\s+content=["\'].*?["\']\s*\/?>/is', '<meta property="og:image" content="' . htmlspecialchars($absP, ENT_QUOTES, 'UTF-8') . '">', $htmlContent, 1);
+        $htmlContent = preg_replace('/<meta\s+property=["\']og:image:secure_url["\']\s+content=["\'].*?["\']\s*\/?>/is', '<meta property="og:image:secure_url" content="' . htmlspecialchars($absP, ENT_QUOTES, 'UTF-8') . '">', $htmlContent, 1);
+        $htmlContent = preg_replace('/<meta\s+name=["\']twitter:image["\']\s+content=["\'].*?["\']\s*\/?>/is', '<meta name="twitter:image" content="' . htmlspecialchars($absP, ENT_QUOTES, 'UTF-8') . '">', $htmlContent, 1);
+        
+        @file_put_contents($khitanHtmlPath, $htmlContent);
+    }
+}
+
 echo json_encode([
     'success' => true,
     'message' => 'Pengaturan berhasil disimpan dan langsung online di server!',

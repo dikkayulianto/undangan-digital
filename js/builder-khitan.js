@@ -1163,7 +1163,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Clean, direct server URL for invitations
     const baseOrigin = window.location.origin;
-    let fullInvitationUrl = `${baseOrigin}/khitan.html?to=${encodeURIComponent(guestName)}`;
+    let fullInvitationUrl = `${baseOrigin}/khitan?to=${encodeURIComponent(guestName)}`;
     const isCustomClient = currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy';
     if (isCustomClient) {
       fullInvitationUrl += `&client=${encodeURIComponent(currentClient)}`;
@@ -1237,7 +1237,7 @@ Salam hormat,
         } catch (err) {}
       }
 
-      let generalUrl = `${window.location.origin}/khitan.html`;
+      let generalUrl = `${window.location.origin}/khitan`;
       const queryParts = [];
       const encodedPayload = encodeKhitanConfigForUrl(currentCfg);
       if (encodedPayload) queryParts.push(`d=${encodedPayload}`);

@@ -14,16 +14,19 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
 RewriteRule ^ /%1 [NC,L,R=301]
 
-# 3. Baca file .html meskipun pengunjung tidak mengetik .html
-# Contoh: pengunjung membuka domain.com/khitan -> server membaca khitan.html
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}\.html -f
-RewriteRule ^(.*)$ $1.html [NC,L]
+# 2b. Handler Khusus Undangan Khitan (Dynamic Open Graph WhatsApp Preview)
+RewriteRule ^khitan/?$ khitan.php [QSA,L]
 
-# 3b. Baca file .php jika ada (misal /api/save-config -> /api/save-config.php)
+# 3. Baca file .php jika ada (misal /api/save-config -> /api/save-config.php)
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^(.*)$ $1.php [NC,L]
+
+# 3b. Baca file .html meskipun pengunjung tidak mengetik .html
+# Contoh: pengunjung membuka domain.com/builder-khitan -> server membaca builder-khitan.html
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html [NC,L]
 
 # 4. Gzip & Deflate Compression (Mempercepat loading web)
 <IfModule mod_deflate.c>
