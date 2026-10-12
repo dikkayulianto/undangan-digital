@@ -573,6 +573,56 @@ document.addEventListener('DOMContentLoaded', () => {
     if (clientBannerName) clientBannerName.textContent = currentClient;
   }
 
+  function updateViewInviteLink(cfg) {
+    const viewInviteLink = document.querySelector('header a[href*="khitan.html"]');
+    if (viewInviteLink) {
+      let href = 'khitan.html';
+      const q = [];
+      const encodedPayload = encodeKhitanConfigForUrl(cfg);
+      if (encodedPayload) q.push(`d=${encodedPayload}`);
+      const isCustomClient = currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy';
+      if (isCustomClient) {
+        q.push(`client=${encodeURIComponent(currentClient)}`);
+      }
+      if (cfg && cfg.theme && cfg.theme !== 'cream') {
+        q.push(`theme=${encodeURIComponent(cfg.theme)}`);
+      }
+      if (q.length > 0) href += `?${q.join('&')}`;
+      viewInviteLink.href = href;
+    }
+  }
+
+  function extractYouTubeId(url) {
+    if (!url) return null;
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/i);
+    return match ? match[1] : null;
+  }
+
+  function updateAudioFormatBadge(url) {
+    const badge = document.getElementById('audioFormatBadge');
+    if (!badge) return;
+    const clean = (url || '').trim();
+    if (!clean) {
+      badge.className = 'hidden';
+      return;
+    }
+
+    const ytId = extractYouTubeId(clean);
+    if (ytId) {
+      badge.textContent = '🎵 YouTube Audio (Didukung Penuh)';
+      badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800 border border-red-300';
+    } else if (clean.toLowerCase().includes('soundcloud.com')) {
+      badge.textContent = '🎵 SoundCloud Track (Didukung Penuh)';
+      badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 text-orange-800 border border-orange-300';
+    } else if (clean.toLowerCase().endsWith('.mp3') || clean.toLowerCase().includes('.mp3?') || clean.startsWith('audio/')) {
+      badge.textContent = '🎵 Direct Audio MP3';
+      badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
+    } else {
+      badge.textContent = '🎵 URL Audio Online';
+      badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-300';
+    }
+  }
+
   function populateBuilderForm(cfg) {
     if (!cfg || typeof cfg !== 'object') return;
     const c = sanitizeKhitanConfig(cfg);
@@ -609,7 +659,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (typeof updateKhitanThemeUI === 'function') updateKhitanThemeUI(c.theme || 'cream');
     updateViewInviteLink(c);
-    if (typeof updateAudioFormatBadge === 'function') updateAudioFormatBadge(c.audioUrl);
+    updateAudioFormatBadge(c.audioUrl);
   }
 
   // Populate from local initial config
@@ -634,30 +684,10 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Using local config fallback:', err);
     });
 
-  function updateViewInviteLink(cfg) {
-    const viewInviteLink = document.querySelector('header a[href*="khitan.html"]');
-    if (viewInviteLink) {
-      let href = 'khitan.html';
-      const q = [];
-      const encodedPayload = encodeKhitanConfigForUrl(cfg);
-      if (encodedPayload) q.push(`d=${encodedPayload}`);
-      const isCustomClient = currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy';
-      if (isCustomClient) {
-        q.push(`client=${encodeURIComponent(currentClient)}`);
-      }
-      if (cfg && cfg.theme && cfg.theme !== 'cream') {
-        q.push(`theme=${encodeURIComponent(cfg.theme)}`);
-      }
-      if (q.length > 0) href += `?${q.join('&')}`;
-      viewInviteLink.href = href;
-    }
-  }
-
   updateViewInviteLink(config);
 
   // Audio Handler (YouTube, SoundCloud & MP3 Preview)
   const audioUrlInput = document.getElementById('audioUrl');
-  const audioFormatBadge = document.getElementById('audioFormatBadge');
   const btnTestAudio = document.getElementById('btnTestAudio');
   const btnTestAudioText = document.getElementById('btnTestAudioText');
   const builderTestAudio = document.getElementById('builderTestAudio');
@@ -665,36 +695,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let builderScWidget = null;
   let builderYtPlayerInstance = null;
   let isTestingAudio = false;
-
-  function extractYouTubeId(url) {
-    if (!url) return null;
-    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/i);
-    return match ? match[1] : null;
-  }
-
-  function updateAudioFormatBadge(url) {
-    if (!audioFormatBadge) return;
-    const clean = (url || '').trim();
-    if (!clean) {
-      audioFormatBadge.className = 'hidden';
-      return;
-    }
-
-    const ytId = extractYouTubeId(clean);
-    if (ytId) {
-      audioFormatBadge.textContent = '🎵 YouTube Audio (Didukung Penuh)';
-      audioFormatBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800 border border-red-300';
-    } else if (clean.toLowerCase().includes('soundcloud.com')) {
-      audioFormatBadge.textContent = '🎵 SoundCloud Track (Didukung Penuh)';
-      audioFormatBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 text-orange-800 border border-orange-300';
-    } else if (clean.toLowerCase().endsWith('.mp3') || clean.toLowerCase().includes('.mp3?') || clean.startsWith('audio/')) {
-      audioFormatBadge.textContent = '🎵 Direct Audio MP3';
-      audioFormatBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
-    } else {
-      audioFormatBadge.textContent = '🎵 URL Audio Online';
-      audioFormatBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-300';
-    }
-  }
 
   function setTestingAudioActive(active) {
     isTestingAudio = active;

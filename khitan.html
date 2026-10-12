@@ -670,6 +670,8 @@
     document.addEventListener('DOMContentLoaded', () => {
       if (window.lucide) lucide.createIcons();
 
+      let isLiveEditActive = false;
+
       // Dynamic Guest Name
       const urlParams = new URLSearchParams(window.location.search);
       const guestNameParam = urlParams.get('to');
@@ -1422,8 +1424,6 @@
       const btnCancelEditGallery = document.getElementById('btnCancelEditGallery');
       const btnSaveEditGallery = document.getElementById('btnSaveEditGallery');
       const btnLiveAddGalleryPhoto = document.getElementById('btnLiveAddGalleryPhoto');
-
-      let isLiveEditActive = false;
 
       // Image compression helper
       function compressImage(file, maxWidth = 1000, maxHeight = 1000, quality = 0.78) {
