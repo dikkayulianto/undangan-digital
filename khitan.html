@@ -616,8 +616,8 @@
             </button>
           </form>
 
-          <!-- Wishes List -->
-          <div class="space-y-3">
+          <!-- Wishes List (Hidden by default until there is a wish submitted) -->
+          <div id="wishesListWrapper" class="space-y-3 hidden">
             <div class="flex items-center justify-between text-xs text-stone-500 px-1">
               <span class="font-semibold text-stone-700">Untaian Doa Tamu</span>
               <span id="wishesCount">(0)</span>
@@ -1359,35 +1359,69 @@
         });
       }
 
-      // RSVP & Wishes
-      const defaultWishes = [
-        { name: 'Ustadz Mansur & Keluarga', attendance: 'hadir', message: 'Barakallahu fiik ananda Fadhil. Semoga lekas sembuh, menjadi anak sholeh yang senantiasa membanggakan orang tua dan taat pada agama.', time: '2 jam yang lalu' },
-        { name: 'Pak RT Bambang', attendance: 'hadir', message: 'Selamat atas khitanan ananda Fadhil. Insya Allah kami sekeluarga hadir memberikan doa restu.', time: '5 jam yang lalu' }
-      ];
-
+      // RSVP & Wishes (Only display when filled)
       function getWishes() {
         const savedW = localStorage.getItem('khitan_wishes');
-        if (!savedW) return defaultWishes;
-        try { return JSON.parse(savedW); } catch { return defaultWishes; }
+        if (!savedW) return [];
+        try {
+          const parsed = JSON.parse(savedW);
+          if (!Array.isArray(parsed)) return [];
+          // Filter out legacy dummy entries (e.g. Mansur, Bambang, or Fadhil)
+          const filtered = parsed.filter(w => {
+            if (!w || !w.name) return false;
+            const n = String(w.name).toLowerCase();
+            const m = String(w.message || '').toLowerCase();
+            if (n.includes('mansur') || n.includes('bambang') || m.includes('fadhil')) return false;
+            return true;
+          });
+          if (filtered.length !== parsed.length) {
+            localStorage.setItem('khitan_wishes', JSON.stringify(filtered));
+          }
+          return filtered;
+        } catch {
+          return [];
+        }
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
       }
 
       function renderWishes() {
+        const wrapper = document.getElementById('wishesListWrapper');
         const container = document.getElementById('wishesContainer');
         const count = document.getElementById('wishesCount');
         if (!container) return;
         const wishes = getWishes();
+
+        if (wishes.length === 0) {
+          if (wrapper) wrapper.classList.add('hidden');
+          container.innerHTML = '';
+          if (count) count.textContent = '(0)';
+          return;
+        }
+
+        if (wrapper) wrapper.classList.remove('hidden');
         if (count) count.textContent = `(${wishes.length})`;
         container.innerHTML = '';
         wishes.forEach(w => {
           const card = document.createElement('div');
           card.className = 'p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-sm flex flex-col gap-1 text-xs';
+          const badgeText = w.attendance === 'hadir' ? 'Hadir' : (w.attendance === 'tidak' ? 'Berhalangan' : 'Doa Restu');
+          const badgeClass = w.attendance === 'hadir' ? 'bg-emerald-50 text-emerald-800' : 'bg-stone-100 text-stone-600';
           card.innerHTML = `
             <div class="flex items-center justify-between">
-              <span class="font-bold text-stone-800">${w.name}</span>
-              <span class="text-[10px] text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full">${w.attendance === 'hadir' ? 'Hadir' : 'Doa Restu'}</span>
+              <span class="font-bold text-stone-800">${escapeHtml(w.name)}</span>
+              <span class="text-[10px] font-semibold ${badgeClass} px-2 py-0.5 rounded-full">${badgeText}</span>
             </div>
-            <p class="text-stone-600 mt-0.5 leading-relaxed">${w.message}</p>
-            <span class="text-[10px] text-stone-400 self-end">${w.time}</span>
+            <p class="text-stone-600 mt-0.5 leading-relaxed">${escapeHtml(w.message)}</p>
+            <span class="text-[10px] text-stone-400 self-end">${escapeHtml(w.time || 'Baru saja')}</span>
           `;
           container.appendChild(card);
         });
