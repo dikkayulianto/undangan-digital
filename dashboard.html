@@ -150,10 +150,10 @@
         <!-- User Profile Dropdown Pill -->
         <div class="relative group">
           <button type="button" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-stone-100 transition cursor-pointer">
-            <img id="userAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Avatar" class="w-8 h-8 rounded-full object-cover border border-amber-300 shadow-xs">
+            <img id="userAvatar" src="images/khitan/rendy-profile.jpg" alt="Avatar" class="w-8 h-8 rounded-full object-cover border border-amber-300 shadow-xs">
             <div class="hidden lg:flex flex-col text-left">
-              <span id="userNameText" class="text-xs font-bold text-stone-800 leading-tight">Rizky Pratama</span>
-              <span id="userEmailText" class="text-[10px] text-stone-400 leading-tight truncate max-w-[120px]">rizky.pratama@gmail.com</span>
+              <span id="userNameText" class="text-xs font-bold text-stone-800 leading-tight">Bpk. Wangkis Suwito & Ibu Susi</span>
+              <span id="userEmailText" class="text-[10px] text-stone-400 leading-tight truncate max-w-[120px]">wangkis@bikinundangan.biz.id</span>
             </div>
             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-stone-400 hidden lg:block"></i>
           </button>
@@ -161,8 +161,8 @@
           <!-- Dropdown Menu -->
           <div class="absolute right-0 mt-1 w-52 bg-white rounded-2xl shadow-xl border border-stone-200 py-2 hidden group-hover:block transition z-40">
             <div class="px-4 py-2 border-b border-stone-100">
-              <p class="text-xs font-bold text-stone-900" id="dropdownUserName">Rizky Pratama</p>
-              <p class="text-[11px] text-stone-500 truncate" id="dropdownUserEmail">rizky.pratama@gmail.com</p>
+              <p class="text-xs font-bold text-stone-900" id="dropdownUserName">Bpk. Wangkis Suwito & Ibu Susi</p>
+              <p class="text-[11px] text-stone-500 truncate" id="dropdownUserEmail">wangkis@bikinundangan.biz.id</p>
               <span class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Akun Terverifikasi</span>
             </div>
             <a href="#sectionUndangan" class="block px-4 py-2 text-xs text-stone-700 hover:bg-stone-50 transition flex items-center gap-2">
@@ -173,7 +173,7 @@
               <i data-lucide="message-square" class="w-3.5 h-3.5 text-stone-400"></i>
               <span>Buku Tamu &amp; RSVP</span>
             </a>
-            <a href="login.html" class="block px-4 py-2 text-xs text-red-600 hover:bg-red-50 transition flex items-center gap-2 border-t border-stone-100 mt-1">
+            <a href="login.html" id="btnDashLogout" class="block px-4 py-2 text-xs text-red-600 hover:bg-red-50 transition flex items-center gap-2 border-t border-stone-100 mt-1 cursor-pointer">
               <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
               <span>Keluar / Ganti Akun</span>
             </a>
@@ -196,10 +196,10 @@
           <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
             ● Status Akun Aktif
           </span>
-          <span class="text-xs text-gold-300/80">ID: <span class="font-mono">INV-88219</span></span>
+          <span class="text-xs text-gold-300/80">ID: <span class="font-mono">INV-WANGKIS</span></span>
         </div>
         <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
-          Selamat Datang, <span class="text-gold-300" id="welcomeUserTitle">Rizky Pratama</span>! 👋
+          Selamat Datang, <span class="text-gold-300" id="welcomeUserTitle">Bpk. Wangkis Suwito & Ibu Susi</span>! 👋
         </h1>
         <p class="text-xs sm:text-sm text-stone-300 max-w-xl leading-relaxed">
           Kelola seluruh undangan digital Anda, pantau ucapan &amp; konfirmasi RSVP dari para tamu, atau buat desain undangan baru kapan saja. Siap dipublish langsung ke hosting!
@@ -388,8 +388,8 @@
                 </span>
               </div>
               <div class="z-10">
-                <h3 class="text-xl sm:text-2xl font-serif font-bold text-white tracking-wide" id="card2ChildTitle">Muhammad Fadhil Al-Fatih</h3>
-                <p class="text-xs text-emerald-300/90" id="card2EventDate">Ahad, 15 November 2026 &bull; Jakarta</p>
+                <h3 class="text-xl sm:text-2xl font-serif font-bold text-white tracking-wide" id="card2ChildTitle">Irendy Wijaya Saputra</h3>
+                <p class="text-xs text-emerald-300/90" id="card2EventDate">Senin, 16 November 2026 &bull; Balapulang Kulon</p>
               </div>
             </div>
 
@@ -399,15 +399,15 @@
               <div class="flex flex-wrap gap-2 text-[11px]">
                 <span class="px-2.5 py-1 rounded-lg bg-stone-100 text-stone-700 font-medium flex items-center gap-1">
                   <i data-lucide="palette" class="w-3 h-3 text-emerald-700"></i>
-                  <span>Tema: <strong>Emerald Islamic</strong></span>
+                  <span>Tema: <strong id="card2ThemeName">Sage Terang</strong></span>
                 </span>
                 <span class="px-2.5 py-1 rounded-lg bg-stone-100 text-stone-700 font-medium flex items-center gap-1">
                   <i data-lucide="music" class="w-3 h-3 text-emerald-700"></i>
-                  <span>SoundCloud / Religi</span>
+                  <span id="card2AudioBadge">🎵 Nasyid Qalbi</span>
                 </span>
                 <span class="px-2.5 py-1 rounded-lg bg-stone-100 text-stone-700 font-medium flex items-center gap-1">
                   <i data-lucide="image" class="w-3 h-3 text-emerald-700"></i>
-                  <span>Galeri Tasyakuran</span>
+                  <span id="card2GalleryBadge">5 Foto Galeri</span>
                 </span>
               </div>
 
@@ -431,8 +431,8 @@
               <div class="space-y-1">
                 <label class="block text-[11px] font-semibold text-stone-600">Link Publik Undangan Khitanan:</label>
                 <div class="flex gap-2">
-                  <input type="text" id="linkKhitanInput" readonly value="khitan.html" class="flex-1 px-3 py-1.5 rounded-xl bg-stone-50 border border-stone-200 text-xs text-stone-600 font-mono">
-                  <button type="button" class="btn-copy-card px-3 py-1.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold transition flex items-center gap-1 shrink-0 cursor-pointer" data-target="khitan.html">
+                  <input type="text" id="linkKhitanInput" readonly value="https://bikinundangan.biz.id/khitan" class="flex-1 px-3 py-1.5 rounded-xl bg-stone-50 border border-stone-200 text-xs text-stone-600 font-mono">
+                  <button type="button" class="btn-copy-card px-3 py-1.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold transition flex items-center gap-1 shrink-0 cursor-pointer" data-target="khitan">
                     <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                     <span>Salin</span>
                   </button>
@@ -443,11 +443,11 @@
 
           <!-- Card Actions Footer -->
           <div class="p-5 pt-0 grid grid-cols-2 gap-2.5">
-            <a href="builder-khitan.html" class="w-full py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition">
+            <a href="builder-khitan.html" id="btnCard2Edit" class="w-full py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition">
               <i data-lucide="edit-3" class="w-4 h-4 text-emerald-300"></i>
               <span>Buka Editor / Ubah</span>
             </a>
-            <a href="khitan.html" target="_blank" class="w-full py-2.5 rounded-xl bg-white hover:bg-stone-50 text-stone-800 font-semibold text-xs border border-stone-300 flex items-center justify-center gap-2 transition">
+            <a href="khitan" target="_blank" id="btnCard2View" class="w-full py-2.5 rounded-xl bg-white hover:bg-stone-50 text-stone-800 font-semibold text-xs border border-stone-300 flex items-center justify-center gap-2 transition">
               <i data-lucide="external-link" class="w-4 h-4 text-stone-500"></i>
               <span>Lihat Hasil Live</span>
             </a>
@@ -499,7 +499,7 @@
               <td class="py-3.5 px-4 font-bold text-stone-900">Keluarga H. Syamsuddin</td>
               <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-900 font-semibold text-[10px]">Khitanan</span></td>
               <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] flex items-center gap-1 w-max"><i data-lucide="check" class="w-3 h-3"></i> Hadir (3 Orang)</span></td>
-              <td class="py-3.5 px-4 text-stone-600 max-w-xs truncate">Selamat atas khitanan ananda Fadhil. Semoga lekas pulih dan menjadi anak yang sholeh berbakti.</td>
+              <td class="py-3.5 px-4 text-stone-600 max-w-xs truncate">Selamat atas khitanan ananda Rendy. Semoga lekas pulih dan menjadi anak yang sholeh serta berbakti.</td>
               <td class="py-3.5 px-4 text-stone-400 text-[11px]">35 menit lalu</td>
             </tr>
             <tr class="hover:bg-stone-50/70 transition">
@@ -584,32 +584,46 @@
     document.addEventListener('DOMContentLoaded', () => {
       if (window.lucide) lucide.createIcons();
 
-      // 1. Initial Registered User Profile
+      // 1. User Profile Resolution (Prioritizing Logged-in Client)
       const defaultUser = {
-        name: 'Rizky Pratama',
-        email: 'rizky.pratama@gmail.com',
-        phone: '081234567890',
+        name: 'Bpk. Wangkis Suwito & Ibu Susi',
+        email: 'wangkis@bikinundangan.biz.id',
+        id: 'INV-WANGKIS',
         tier: 'Paket Sapphire VIP',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'
+        avatar: 'images/khitan/rendy-profile.jpg'
       };
 
       let user = defaultUser;
       try {
-        const savedUser = localStorage.getItem('inveet_user');
-        if (savedUser) {
-          user = { ...defaultUser, ...JSON.parse(savedUser) };
+        const loggedClientStr = localStorage.getItem('inveet_logged_client');
+        if (loggedClientStr) {
+          const loggedClient = JSON.parse(loggedClientStr);
+          user = {
+            name: loggedClient.name || 'Bpk. Wangkis Suwito & Ibu Susi',
+            email: loggedClient.username ? `${loggedClient.username}@bikinundangan.biz.id` : 'wangkis@bikinundangan.biz.id',
+            id: loggedClient.id ? loggedClient.id.replace('client-', 'INV-').toUpperCase() : 'INV-WANGKIS',
+            tier: loggedClient.tier || 'Paket Sapphire VIP',
+            avatar: 'images/khitan/rendy-profile.jpg'
+          };
         } else {
-          localStorage.setItem('inveet_user', JSON.stringify(defaultUser));
+          const savedUser = localStorage.getItem('inveet_user');
+          if (savedUser) {
+            user = { ...defaultUser, ...JSON.parse(savedUser) };
+          }
         }
       } catch (e) {}
 
-      // Populate user info
-      document.getElementById('userNameText').textContent = user.name;
-      document.getElementById('welcomeUserTitle').textContent = user.name;
-      document.getElementById('userEmailText').textContent = user.email;
-      document.getElementById('dropdownUserName').textContent = user.name;
-      document.getElementById('dropdownUserEmail').textContent = user.email;
-      if (user.avatar) document.getElementById('userAvatar').src = user.avatar;
+      // Populate user info in header and welcome banner
+      if (document.getElementById('userNameText')) document.getElementById('userNameText').textContent = user.name;
+      if (document.getElementById('welcomeUserTitle')) document.getElementById('welcomeUserTitle').textContent = user.name;
+      if (document.getElementById('userEmailText')) document.getElementById('userEmailText').textContent = user.email;
+      if (document.getElementById('dropdownUserName')) document.getElementById('dropdownUserName').textContent = user.name;
+      if (document.getElementById('dropdownUserEmail')) document.getElementById('dropdownUserEmail').textContent = user.email;
+      if (document.getElementById('userTierBadge')) document.getElementById('userTierBadge').textContent = user.tier;
+      if (document.getElementById('userAvatar') && user.avatar) document.getElementById('userAvatar').src = user.avatar;
+      
+      const userIdSpan = document.querySelector('.text-gold-300\\/80 span.font-mono');
+      if (userIdSpan) userIdSpan.textContent = user.id;
 
       // 2. Load Wedding Info from localStorage
       const savedWedding = localStorage.getItem('wedding_config');
@@ -618,35 +632,83 @@
           const cfg = JSON.parse(savedWedding);
           const gNick = cfg.groom?.nickname || 'Dimas';
           const bNick = cfg.bride?.nickname || 'Sarah';
-          document.getElementById('card1CoupleTitle').textContent = `${gNick} & ${bNick}`;
-          if (cfg.event?.dateDisplay) {
-            document.getElementById('card1EventDate').textContent = `${cfg.event.dateDisplay} • Jakarta`;
+          const coupleTitle = document.getElementById('card1CoupleTitle');
+          if (coupleTitle) coupleTitle.textContent = `${gNick} & ${bNick}`;
+          const dateEl = document.getElementById('card1EventDate');
+          if (dateEl && cfg.event?.dateDisplay) {
+            dateEl.textContent = `${cfg.event.dateDisplay} • Jakarta`;
           }
-          if (cfg.theme) {
+          const themeEl = document.getElementById('card1ThemeName');
+          if (themeEl && cfg.theme) {
             const themeMap = {
               champagne: 'Champagne Gold',
               sage: 'Sage Botanical',
               midnight: 'Midnight Rose',
               royal: 'Royal Navy'
             };
-            document.getElementById('card1ThemeName').textContent = themeMap[cfg.theme] || cfg.theme;
+            themeEl.textContent = themeMap[cfg.theme] || cfg.theme;
           }
         } catch(e) {}
       }
 
-      // 3. Load Khitan Info from localStorage
-      const savedKhitan = localStorage.getItem('khitan_config');
-      if (savedKhitan) {
-        try {
-          const cfg = JSON.parse(savedKhitan);
-          if (cfg.childFullname) {
-            document.getElementById('card2ChildTitle').textContent = cfg.childFullname;
+      // 3. Load & Apply Khitan Info (Live Server + Local Storage Fallback)
+      function applyKhitanData(cfg) {
+        if (!cfg || typeof cfg !== 'object') return;
+        
+        const childTitle = document.getElementById('card2ChildTitle');
+        if (childTitle && cfg.childFullname) {
+          childTitle.textContent = cfg.childFullname;
+        }
+
+        const dateEl = document.getElementById('card2EventDate');
+        if (dateEl) {
+          const d = cfg.eventDateDisplay || 'Senin, 16 November 2026';
+          const loc = (cfg.eventAddress && cfg.eventAddress.includes('Balapulang')) ? 'Balapulang Kulon' : (cfg.eventPlace || 'Rumah Hajat');
+          dateEl.textContent = `${d} • ${loc}`;
+        }
+
+        const themeEl = document.getElementById('card2ThemeName');
+        if (themeEl) {
+          const themeMap = {
+            sage: 'Sage Terang',
+            cream: 'Warm Cream & Gold',
+            ivory: 'Royal Ivory'
+          };
+          const rawTheme = (cfg.theme || 'sage').toLowerCase();
+          themeEl.textContent = themeMap[rawTheme] || 'Sage Terang';
+        }
+
+        const audioEl = document.getElementById('card2AudioBadge');
+        if (audioEl) {
+          const a = (cfg.audioUrl || '').toLowerCase();
+          if (a.includes('youtube')) {
+            audioEl.textContent = '🎵 YouTube Audio';
+          } else if (a.includes('soundcloud')) {
+            audioEl.textContent = '🎵 SoundCloud';
+          } else if (a.includes('qalbi')) {
+            audioEl.textContent = '🎵 Nasyid Qalbi';
+          } else {
+            audioEl.textContent = '🎵 Musik Aktif';
           }
-          if (cfg.eventDateDisplay) {
-            document.getElementById('card2EventDate').textContent = `${cfg.eventDateDisplay} • Jakarta`;
-          }
-        } catch(e) {}
+        }
+
+        const galEl = document.getElementById('card2GalleryBadge');
+        if (galEl) {
+          const count = (Array.isArray(cfg.gallery) && cfg.gallery.length > 0) ? cfg.gallery.length : 5;
+          galEl.textContent = `${count} Foto Galeri`;
+        }
       }
+
+      // Fetch authoritative online data
+      fetch('data/khitan.json?v=' + Date.now())
+        .then(r => r.json())
+        .then(data => applyKhitanData(data))
+        .catch(() => {
+          const savedKhitan = localStorage.getItem('khitan_config') || localStorage.getItem('khitan_config_wangkis');
+          if (savedKhitan) {
+            try { applyKhitanData(JSON.parse(savedKhitan)); } catch(e) {}
+          }
+        });
 
       // 4. Modal Buat Undangan Baru
       const createModal = document.getElementById('createModal');
@@ -655,20 +717,22 @@
       const btnCloseCreateModal = document.getElementById('btnCloseCreateModal');
 
       function openModal() {
-        createModal.classList.remove('hidden');
+        if (createModal) createModal.classList.remove('hidden');
       }
       function closeModal() {
-        createModal.classList.add('hidden');
+        if (createModal) createModal.classList.add('hidden');
       }
 
       if (btnOpenCreateModal) btnOpenCreateModal.addEventListener('click', openModal);
       if (btnBannerCreate) btnBannerCreate.addEventListener('click', openModal);
       if (btnCloseCreateModal) btnCloseCreateModal.addEventListener('click', closeModal);
-      createModal.addEventListener('click', (e) => {
-        if (e.target === createModal) closeModal();
-      });
+      if (createModal) {
+        createModal.addEventListener('click', (e) => {
+          if (e.target === createModal) closeModal();
+        });
+      }
 
-      // 5. Toast & Copy URL
+      // 5. Toast & URL Resolver (Clean Origin URLs)
       const toast = document.getElementById('dashToast');
       const toastMsg = document.getElementById('dashToastMsg');
 
@@ -684,33 +748,46 @@
         }
       }
 
-      // Resolve full base URLs
-      let base = window.location.href.split('dashboard.html')[0];
-      if (!base.endsWith('/')) base += '/';
-
+      // Clean origin-based links (prevents /dashboard/ duplicate path bug)
+      const baseOrigin = window.location.origin;
       const linkWed = document.getElementById('linkWedInput');
       const linkKhitan = document.getElementById('linkKhitanInput');
-      if (linkWed) linkWed.value = `${base}invitation.html`;
-      if (linkKhitan) linkKhitan.value = `${base}khitan.html`;
+      if (linkWed) linkWed.value = `${baseOrigin}/invitation.html`;
+      if (linkKhitan) linkKhitan.value = `${baseOrigin}/khitan`;
 
       document.querySelectorAll('.btn-copy-card').forEach(btn => {
         btn.addEventListener('click', () => {
-          const target = btn.getAttribute('data-target');
-          const fullUrl = `${base}${target}`;
+          const target = btn.getAttribute('data-target') || '';
+          const cleanTarget = target.replace(/^\//, '');
+          const fullUrl = `${baseOrigin}/${cleanTarget}`;
           navigator.clipboard.writeText(fullUrl).then(() => {
-            showToast(`Tautan ${target} berhasil disalin!`);
+            showToast(`Tautan ${cleanTarget} berhasil disalin!`);
           });
         });
       });
 
-      // 6. Export CSV Handler
+      // 6. Logout Handler from User Dropdown
+      const btnDashLogout = document.getElementById('btnDashLogout');
+      if (btnDashLogout) {
+        btnDashLogout.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (confirm('Apakah Anda ingin keluar (logout) dari akun?')) {
+            localStorage.removeItem('inveet_logged_client');
+            localStorage.removeItem('inveet_admin_session');
+            sessionStorage.removeItem('inveet_admin_session');
+            window.location.href = 'login.html';
+          }
+        });
+      }
+
+      // 7. Export CSV Handler
       const btnExportCsv = document.getElementById('btnExportCsv');
       if (btnExportCsv) {
         btnExportCsv.addEventListener('click', () => {
           const csvContent = "data:text/csv;charset=utf-8," 
             + "Nama Tamu,Acara,Status Kehadiran,Ucapan,Waktu\n"
             + "Bapak Hendra Gunawan & Ibu,Pernikahan,Hadir (2 Orang),Barakallahu lakuma semoga menjadi keluarga sakinah,10 menit lalu\n"
-            + "Keluarga H. Syamsuddin,Khitanan,Hadir (3 Orang),Selamat atas khitanan ananda Fadhil semoga lekas pulih,35 menit lalu\n"
+            + "Keluarga H. Syamsuddin,Khitanan,Hadir (3 Orang),Selamat atas khitanan ananda Rendy semoga lekas pulih dan sholeh,35 menit lalu\n"
             + "Nadya Faradiba & Rekan,Pernikahan,Hadir (1 Orang),Selamat ya Dimas & Sarah! Bahagia selalu,1 jam lalu\n"
             + "Dr. Irwan Santoso,Pernikahan,Masih Ragu,Insya Allah diusahakan hadir jika jadwal dinas memungkinkan,3 jam lalu";
           const encodedUri = encodeURI(csvContent);
