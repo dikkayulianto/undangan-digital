@@ -138,6 +138,12 @@
         <span>Foto Anak</span>
       </button>
 
+      <!-- Generator Tamu WA / Share Button -->
+      <button id="btnOpenLiveShareModal" type="button" class="px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 text-[11px] font-semibold border border-emerald-500/40 flex items-center gap-1 cursor-pointer" title="Generator Tamu & Share WhatsApp">
+        <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+        <span>Bagi Undangan (WA)</span>
+      </button>
+
       <!-- Action Buttons -->
       <button id="btnLiveEditCancel" type="button" class="px-3 py-1 rounded-xl border border-stone-600 hover:bg-stone-800 text-stone-300 text-xs font-medium transition cursor-pointer">
         Batal
@@ -239,6 +245,71 @@
       <div class="flex items-center justify-end gap-2 pt-2">
         <button type="button" id="btnCancelEditGallery" class="px-4 py-2 rounded-xl border border-stone-300 text-xs text-stone-700 font-medium cursor-pointer">Batal</button>
         <button type="button" id="btnSaveEditGallery" class="px-5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold cursor-pointer">Tambahkan ke Galeri</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SHARE UNDANGAN / GENERATOR TAMU (WA) -->
+  <div id="liveShareModal" style="display: none;" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-2xl space-y-4 border border-stone-200 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-stone-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+            <i data-lucide="share-2" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-stone-900 leading-tight">Generator Tamu &amp; Share WA</h3>
+            <p class="text-[11px] text-stone-500">Buat tautan undangan personal &amp; kirim langsung ke WhatsApp</p>
+          </div>
+        </div>
+        <button type="button" id="btnCloseLiveShareModal" class="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Input Nama Tamu -->
+      <div class="space-y-1.5">
+        <label for="liveGuestInput" class="block text-xs font-semibold text-stone-700">Nama Tamu yang Dituju:</label>
+        <div class="flex gap-2">
+          <input type="text" id="liveGuestInput" placeholder="Contoh: Bapak Hendra &amp; Keluarga" class="flex-1 px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+          <button type="button" id="btnLiveGenerateLink" class="px-4 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs shadow transition shrink-0 cursor-pointer flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-gold-300"></i>
+            <span>Generate</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Result Box -->
+      <div id="liveGeneratedResultBox" class="space-y-3 pt-1">
+        <!-- URL Box -->
+        <div>
+          <label class="block text-[11px] font-semibold text-stone-600 mb-1">Tautan Undangan Personal:</label>
+          <div class="flex gap-2">
+            <input type="text" id="liveGeneratedUrlInput" readonly class="flex-1 px-3 py-2 rounded-xl bg-stone-50 border border-stone-200 text-xs text-stone-700 font-mono">
+            <button type="button" id="btnLiveCopyUrl" class="px-3.5 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold transition shrink-0 flex items-center gap-1 cursor-pointer">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Salin</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- WA Preview -->
+        <div>
+          <label class="block text-[11px] font-semibold text-stone-600 mb-1">Pratinjau Pesan WhatsApp:</label>
+          <textarea id="liveGeneratedWaPreview" rows="6" readonly class="w-full p-3 rounded-xl bg-stone-50 border border-stone-200 text-xs text-stone-700 font-mono resize-none leading-relaxed"></textarea>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row items-center gap-2 pt-1">
+          <button type="button" id="btnLiveCopyWaText" class="w-full sm:flex-1 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i data-lucide="copy" class="w-4 h-4 text-stone-600"></i>
+            <span>Salin Teks WhatsApp</span>
+          </button>
+          <a id="btnLiveOpenWa" href="#" target="_blank" class="w-full sm:flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-md">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>Kirim via WhatsApp</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -1410,21 +1481,54 @@
         if (wrapper) wrapper.classList.remove('hidden');
         if (count) count.textContent = `(${wishes.length})`;
         container.innerHTML = '';
-        wishes.forEach(w => {
+        wishes.forEach((w, idx) => {
           const card = document.createElement('div');
-          card.className = 'p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-sm flex flex-col gap-1 text-xs';
+          card.className = 'p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-sm flex flex-col gap-1 text-xs relative group transition';
           const badgeText = w.attendance === 'hadir' ? 'Hadir' : (w.attendance === 'tidak' ? 'Berhalangan' : 'Doa Restu');
           const badgeClass = w.attendance === 'hadir' ? 'bg-emerald-50 text-emerald-800' : 'bg-stone-100 text-stone-600';
+
+          let deleteBtnHtml = '';
+          if (isLiveEditActive) {
+            deleteBtnHtml = `
+              <button type="button" class="btn-delete-wish px-2 py-0.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 font-semibold text-[10px] border border-red-200 transition flex items-center gap-1 cursor-pointer" data-index="${idx}" title="Hapus doa/ucapan ini">
+                <i data-lucide="trash-2" class="w-3 h-3"></i>
+                <span>Hapus</span>
+              </button>
+            `;
+          }
+
           card.innerHTML = `
             <div class="flex items-center justify-between">
               <span class="font-bold text-stone-800">${escapeHtml(w.name)}</span>
-              <span class="text-[10px] font-semibold ${badgeClass} px-2 py-0.5 rounded-full">${badgeText}</span>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-semibold ${badgeClass} px-2 py-0.5 rounded-full">${badgeText}</span>
+                ${deleteBtnHtml}
+              </div>
             </div>
             <p class="text-stone-600 mt-0.5 leading-relaxed">${escapeHtml(w.message)}</p>
             <span class="text-[10px] text-stone-400 self-end">${escapeHtml(w.time || 'Baru saja')}</span>
           `;
           container.appendChild(card);
         });
+
+        // Add delete button event listeners
+        if (isLiveEditActive) {
+          container.querySelectorAll('.btn-delete-wish').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const idx = parseInt(btn.getAttribute('data-index'), 10);
+              const targetWish = wishes[idx];
+              const targetName = targetWish ? targetWish.name : 'ini';
+              if (confirm(`Apakah Anda yakin ingin menghapus doa/ucapan dari "${targetName}"?`)) {
+                wishes.splice(idx, 1);
+                localStorage.setItem('khitan_wishes', JSON.stringify(wishes));
+                renderWishes();
+                showToast('Doa/ucapan berhasil dihapus dari buku tamu.');
+              }
+            });
+          });
+        }
+        if (window.lucide) lucide.createIcons();
       }
 
       const rsvpForm = document.getElementById('rsvpForm');
@@ -1594,6 +1698,7 @@
           if (pPhoto) { pPhoto.classList.add('cursor-pointer', 'ring-4', 'ring-amber-400'); pPhoto.setAttribute('title', 'Klik untuk ganti foto anak'); }
 
           renderKhitanGallery(config.gallery);
+          renderWishes();
         } else {
           if (liveEditBar) liveEditBar.classList.add('hidden');
           if (liveEditGalleryControls) liveEditGalleryControls.classList.add('hidden');
@@ -1618,6 +1723,7 @@
           if (pPhoto) { pPhoto.classList.remove('cursor-pointer', 'ring-4', 'ring-amber-400'); pPhoto.removeAttribute('title'); }
 
           renderKhitanGallery(config.gallery);
+          renderWishes();
         }
       }
 
@@ -1877,6 +1983,142 @@
           }
           liveEditMapsModal.classList.add('opacity-0', 'pointer-events-none');
           setTimeout(() => { liveEditMapsModal.style.display = 'none'; }, 300);
+        });
+      }
+
+      // 6. Modal Generator Tamu & Share WhatsApp
+      const btnOpenLiveShareModal = document.getElementById('btnOpenLiveShareModal');
+      const liveShareModal = document.getElementById('liveShareModal');
+      const btnCloseLiveShareModal = document.getElementById('btnCloseLiveShareModal');
+      const liveGuestInput = document.getElementById('liveGuestInput');
+      const btnLiveGenerateLink = document.getElementById('btnLiveGenerateLink');
+      const liveGeneratedUrlInput = document.getElementById('liveGeneratedUrlInput');
+      const liveGeneratedWaPreview = document.getElementById('liveGeneratedWaPreview');
+      const btnLiveCopyUrl = document.getElementById('btnLiveCopyUrl');
+      const btnLiveCopyWaText = document.getElementById('btnLiveCopyWaText');
+      const btnLiveOpenWa = document.getElementById('btnLiveOpenWa');
+
+      function generateLiveGuestShare() {
+        const guestName = liveGuestInput ? liveGuestInput.value.trim() : '';
+        const guestDisplayName = guestName || 'Bapak/Ibu/Saudara/i';
+        
+        // Base URL
+        const origin = window.location.origin;
+        let pathname = window.location.pathname;
+        if (!pathname || pathname === '/') pathname = '/khitan.html';
+        let baseUrl = `${origin}${pathname}`;
+        if (baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1') || baseUrl.startsWith('file:')) {
+          baseUrl = 'https://bikinundangan.biz.id/khitan';
+        }
+
+        const shareUrl = guestName 
+          ? `${baseUrl}?to=${encodeURIComponent(guestName)}`
+          : baseUrl;
+
+        const childName = (document.getElementById('childFullnameText')?.innerText.trim() || config.childFullname || 'Irendy Wijaya Saputra');
+        const parents = (document.getElementById('parentsText')?.innerText.trim() || `${config.father || 'Bpk. Wangkis Suwito'} & ${config.mother || 'Ibu Susi Dwi jayanti'}`);
+        const eventDate = (document.getElementById('eventDateDisplayText')?.innerText.trim() || config.eventDateDisplay || 'Senin, 16 November 2026');
+        const eventPlace = (document.getElementById('eventPlaceText')?.innerText.trim() || config.eventPlace || 'Rumah Hajat');
+
+        const waMessage = 
+`Kepada Yth.
+*${guestDisplayName}*
+
+_Assalamu’alaikum Warahmatullahi Wabarakatuh_
+
+Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara Tasyakuran Walimatul Khitan putra kami:
+
+👶 *${childName}*
+
+📅 *Hari/Tanggal:* ${eventDate}
+📍 *Tempat:* ${eventPlace}
+
+Info lengkap acara & konfirmasi kehadiran melalui tautan undangan digital berikut:
+${shareUrl}
+
+Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila berkenan hadir dan memberikan doa restu kepada ananda.
+
+_Wassalamu’alaikum Warahmatullahi Wabarakatuh_
+
+Hormat kami,
+*${parents}*`;
+
+        if (liveGeneratedUrlInput) liveGeneratedUrlInput.value = shareUrl;
+        if (liveGeneratedWaPreview) liveGeneratedWaPreview.value = waMessage;
+        if (btnLiveOpenWa) {
+          btnLiveOpenWa.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(waMessage)}`;
+        }
+      }
+
+      function openLiveShareModal() {
+        if (!liveShareModal) return;
+        generateLiveGuestShare();
+        liveShareModal.style.display = 'flex';
+        liveShareModal.classList.remove('pointer-events-none');
+        setTimeout(() => liveShareModal.classList.remove('opacity-0'), 20);
+        if (liveGuestInput) setTimeout(() => liveGuestInput.focus(), 100);
+      }
+
+      function closeLiveShareModal() {
+        if (!liveShareModal) return;
+        liveShareModal.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => { liveShareModal.style.display = 'none'; }, 300);
+      }
+
+      if (btnOpenLiveShareModal) {
+        btnOpenLiveShareModal.addEventListener('click', openLiveShareModal);
+      }
+
+      if (btnCloseLiveShareModal) {
+        btnCloseLiveShareModal.addEventListener('click', closeLiveShareModal);
+      }
+
+      if (liveShareModal) {
+        liveShareModal.addEventListener('click', (e) => {
+          if (e.target === liveShareModal) closeLiveShareModal();
+        });
+      }
+
+      if (btnLiveGenerateLink) {
+        btnLiveGenerateLink.addEventListener('click', () => {
+          generateLiveGuestShare();
+          showToast('Tautan undangan & format pesan WA berhasil dibuat!');
+        });
+      }
+
+      if (liveGuestInput) {
+        liveGuestInput.addEventListener('input', generateLiveGuestShare);
+        liveGuestInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            generateLiveGuestShare();
+            showToast('Tautan undangan siap dibagikan!');
+          }
+        });
+      }
+
+      if (btnLiveCopyUrl && liveGeneratedUrlInput) {
+        btnLiveCopyUrl.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(liveGeneratedUrlInput.value);
+            showToast('✅ Tautan undangan berhasil disalin!');
+          } catch(err) {
+            liveGeneratedUrlInput.select();
+            document.execCommand('copy');
+            showToast('✅ Tautan undangan disalin!');
+          }
+        });
+      }
+
+      if (btnLiveCopyWaText && liveGeneratedWaPreview) {
+        btnLiveCopyWaText.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(liveGeneratedWaPreview.value);
+            showToast('✅ Teks pesan WhatsApp berhasil disalin!');
+          } catch(err) {
+            liveGeneratedWaPreview.select();
+            document.execCommand('copy');
+            showToast('✅ Teks WhatsApp disalin!');
+          }
         });
       }
 

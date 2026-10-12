@@ -284,17 +284,17 @@
         <div>
           <h2 class="text-lg font-bold text-stone-900 flex items-center gap-2">
             <span>Daftar Undangan Anda</span>
-            <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-xs font-bold">2 Undangan</span>
+            <span id="badgeActiveInvites" class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-xs font-bold">1 Undangan</span>
           </h2>
           <p class="text-xs text-stone-500">Pilih undangan untuk membuka editor, melihat tampilan web, atau menyalin link tamu.</p>
         </div>
       </div>
 
       <!-- INVITATIONS GRID -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div id="invitationsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         <!-- CARD 1: UNDANGAN PERNIKAHAN -->
-        <div class="rounded-3xl bg-white border border-stone-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col justify-between">
+        <div id="card1WeddingWrapper" class="rounded-3xl bg-white border border-stone-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col justify-between">
           <div>
             <!-- Banner / Cover Header -->
             <div class="h-36 bg-gradient-to-r from-amber-900 via-stone-900 to-amber-950 p-5 relative flex flex-col justify-between text-white">
@@ -374,7 +374,7 @@
         </div>
 
         <!-- CARD 2: UNDANGAN KHITANAN -->
-        <div class="rounded-3xl bg-white border border-stone-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col justify-between">
+        <div id="card2KhitanWrapper" class="rounded-3xl bg-white border border-stone-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col justify-between">
           <div>
             <!-- Banner / Cover Header -->
             <div class="h-36 bg-gradient-to-r from-emerald-950 via-stone-900 to-emerald-900 p-5 relative flex flex-col justify-between text-white">
@@ -414,15 +414,15 @@
               <div class="grid grid-cols-3 gap-2 py-3 px-4 rounded-2xl bg-stone-50 border border-stone-200/70 text-center">
                 <div>
                   <div class="text-xs text-stone-500">Dilihat</div>
-                  <div class="text-sm font-bold text-stone-900">198 Tamu</div>
+                  <div class="text-sm font-bold text-stone-900" id="card2ViewsCount">198 Tamu</div>
                 </div>
                 <div class="border-x border-stone-200">
                   <div class="text-xs text-stone-500">Hadir (RSVP)</div>
-                  <div class="text-sm font-bold text-emerald-700">42 Orang</div>
+                  <div class="text-sm font-bold text-emerald-700" id="card2HadirCount">0 Orang</div>
                 </div>
                 <div>
                   <div class="text-xs text-stone-500">Doa Restu</div>
-                  <div class="text-sm font-bold text-stone-900">29 Doa</div>
+                  <div class="text-sm font-bold text-stone-900" id="card2DoaCount">0 Doa</div>
                 </div>
               </div>
 
@@ -486,82 +486,10 @@
               <th class="py-3 px-4">Waktu</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-stone-100 text-stone-700">
-            <tr class="hover:bg-stone-50/70 transition">
-              <td class="py-3.5 px-4 font-bold text-stone-900">Bapak Hendra Gunawan &amp; Ibu</td>
-              <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 font-semibold text-[10px]">Pernikahan</span></td>
-              <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] flex items-center gap-1 w-max"><i data-lucide="check" class="w-3 h-3"></i> Hadir (2 Orang)</span></td>
-              <td class="py-3.5 px-4 text-stone-600 max-w-xs truncate">Barakallahu lakuma, semoga menjadi keluarga yang sakinah, mawaddah wa rahmah. Aamiin!</td>
-              <td class="py-3.5 px-4 text-stone-400 text-[11px]">10 menit lalu</td>
-            </tr>
-            <tr class="hover:bg-stone-50/70 transition">
-              <td class="py-3.5 px-4 font-bold text-stone-900">Keluarga H. Syamsuddin</td>
-              <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-900 font-semibold text-[10px]">Khitanan</span></td>
-              <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] flex items-center gap-1 w-max"><i data-lucide="check" class="w-3 h-3"></i> Hadir (3 Orang)</span></td>
-              <td class="py-3.5 px-4 text-stone-600 max-w-xs truncate">Selamat atas khitanan ananda Rendy. Semoga lekas pulih dan menjadi anak yang sholeh serta berbakti.</td>
-              <td class="py-3.5 px-4 text-stone-400 text-[11px]">35 menit lalu</td>
-            </tr>
-            <tr class="hover:bg-stone-50/70 transition">
-              <td class="py-3.5 px-4 font-bold text-stone-900">Nadya Faradiba &amp; Rekan</td>
-              <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 font-semibold text-[10px]">Pernikahan</span></td>
-              <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] flex items-center gap-1 w-max"><i data-lucide="check" class="w-3 h-3"></i> Hadir (1 Orang)</span></td>
-              <td class="py-3.5 px-4 text-stone-600 max-w-xs truncate">Selamat ya Dimas & Sarah! Bahagia selalu sampai kakek nenek!</td>
-              <td class="py-3.5 px-4 text-stone-400 text-[11px]">1 jam lalu</td>
-            </tr>
-            <tr class="hover:bg-stone-50/70 transition">
-              <td class="py-3.5 px-4 font-bold text-stone-900">Dr. Irwan Santoso</td>
-              <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 font-semibold text-[10px]">Pernikahan</span></td>
-              <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-bold text-[10px] flex items-center gap-1 w-max"><i data-lucide="clock" class="w-3 h-3"></i> Masih Ragu</span></td>
-              <td class="py-3.5 px-4 text-stone-600 max-w-xs truncate">Insya Allah diusahakan hadir jika jadwal dinas memungkinkan. Selamat berbahagia!</td>
-              <td class="py-3.5 px-4 text-stone-400 text-[11px]">3 jam lalu</td>
-            </tr>
+          <tbody id="dashRsvpTableBody" class="divide-y divide-stone-100 text-stone-700">
+            <!-- Rendered dynamically by JS from real wishes -->
           </tbody>
         </table>
-      </div>
-    </div>
-
-    <!-- ================= SECTION: PANDUAN PUBLISH KE HOSTING ================= -->
-    <div class="rounded-3xl p-6 sm:p-8 bg-white border border-stone-200 shadow-sm space-y-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
-          <i data-lucide="globe" class="w-5 h-5"></i>
-        </div>
-        <div>
-          <h3 class="font-bold text-base text-stone-900">Siap Dipublish ke Hosting Mana Saja (100% Statis &amp; Cepat)</h3>
-          <p class="text-xs text-stone-500">Website ini dibuat menggunakan HTML5, Tailwind CSS, &amp; Vanilla JS murni tanpa backend database rumit.</p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-2">
-          <div class="font-bold text-xs text-stone-900 flex items-center gap-1.5">
-            <span class="w-5 h-5 rounded-full bg-stone-900 text-white flex items-center justify-center text-[10px]">1</span>
-            <span>Hosting cPanel / Web Biasa</span>
-          </div>
-          <p class="text-[11px] text-stone-500 leading-relaxed">
-            Upload semua isi folder proyek ke dalam <code class="bg-stone-200 px-1 py-0.5 rounded text-[10px]">public_html</code> via File Manager atau FTP. Langsung aktif seketika!
-          </p>
-        </div>
-
-        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-2">
-          <div class="font-bold text-xs text-stone-900 flex items-center gap-1.5">
-            <span class="w-5 h-5 rounded-full bg-stone-900 text-white flex items-center justify-center text-[10px]">2</span>
-            <span>Vercel / Netlify (Gratis)</span>
-          </div>
-          <p class="text-[11px] text-stone-500 leading-relaxed">
-            Cukup <code class="bg-stone-200 px-1 py-0.5 rounded text-[10px]">drag & drop</code> folder ini ke Vercel atau Netlify Drop. Anda langsung mendapatkan domain online gratis ber-SSL (HTTPS).
-          </p>
-        </div>
-
-        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-2">
-          <div class="font-bold text-xs text-stone-900 flex items-center gap-1.5">
-            <span class="w-5 h-5 rounded-full bg-stone-900 text-white flex items-center justify-center text-[10px]">3</span>
-            <span>GitHub Pages (Gratis)</span>
-          </div>
-          <p class="text-[11px] text-stone-500 leading-relaxed">
-            Push ke repository GitHub lalu aktifkan GitHub Pages dari branch main. Undangan langsung online untuk dibagikan ke seluruh tamu.
-          </p>
-        </div>
       </div>
     </div>
   </main>
@@ -623,6 +551,106 @@
       
       const userIdSpan = document.querySelector('.text-gold-300\\/80 span.font-mono');
       if (userIdSpan) userIdSpan.textContent = user.id;
+
+      // Check if logged-in user is for Khitan only (e.g. Wangkis)
+      const isKhitanUser = (!user.type || user.type === 'khitan' || user.id === 'INV-WANGKIS' || (user.email && user.email.includes('wangkis')));
+      const card1Wedding = document.getElementById('card1WeddingWrapper');
+      const badgeActiveInvites = document.getElementById('badgeActiveInvites');
+      const statActiveInvites = document.getElementById('statActiveInvites');
+
+      if (isKhitanUser) {
+        if (card1Wedding) card1Wedding.classList.add('hidden');
+        if (badgeActiveInvites) badgeActiveInvites.textContent = '1 Undangan Aktif';
+        if (statActiveInvites) statActiveInvites.textContent = '1';
+      }
+
+      // Helper to escape HTML strings
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      // Helper to read realtime wishes
+      function getRealtimeKhitanWishes() {
+        try {
+          const raw = localStorage.getItem('khitan_wishes');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+              return parsed.filter(w => {
+                if (!w || !w.name) return false;
+                const n = String(w.name).toLowerCase();
+                const m = String(w.message || '').toLowerCase();
+                if (n.includes('mansur') || n.includes('bambang') || m.includes('fadhil')) return false;
+                return true;
+              });
+            }
+          }
+        } catch(e) {}
+        return [];
+      }
+
+      // Realtime RSVP & Wishes Table Renderer
+      function renderDashboardRsvp() {
+        const wishes = getRealtimeKhitanWishes();
+        const hadirCount = wishes.filter(w => w.attendance === 'hadir').length;
+        const totalWishes = wishes.length;
+
+        // Update stats overview cards
+        const statRsvpEl = document.getElementById('statRsvpCount');
+        const statWishesEl = document.getElementById('statWishesCount');
+        const card2HadirEl = document.getElementById('card2HadirCount');
+        const card2DoaEl = document.getElementById('card2DoaCount');
+
+        if (statRsvpEl) statRsvpEl.textContent = hadirCount;
+        if (statWishesEl) statWishesEl.textContent = totalWishes;
+        if (card2HadirEl) card2HadirEl.textContent = `${hadirCount} Orang`;
+        if (card2DoaEl) card2DoaEl.textContent = `${totalWishes} Doa`;
+
+        // Populate table
+        const tbody = document.getElementById('dashRsvpTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        if (wishes.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="5" class="py-8 text-center text-stone-400 text-xs">
+                <div class="flex flex-col items-center justify-center gap-1.5">
+                  <i data-lucide="inbox" class="w-6 h-6 text-stone-300"></i>
+                  <span>Belum ada doa restu atau konfirmasi RSVP masuk. Data akan muncul otomatis secara realtime setelah tamu mengirim ucapan.</span>
+                </div>
+              </td>
+            </tr>
+          `;
+        } else {
+          wishes.forEach(w => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-stone-50/70 transition';
+            const isHadir = w.attendance === 'hadir';
+            const badgeClass = isHadir ? 'bg-emerald-100 text-emerald-800' : (w.attendance === 'tidak' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800');
+            const badgeText = isHadir ? 'Hadir' : (w.attendance === 'tidak' ? 'Berhalangan' : 'Doa Restu');
+            const iconName = isHadir ? 'check' : (w.attendance === 'tidak' ? 'x' : 'clock');
+
+            tr.innerHTML = `
+              <td class="py-3.5 px-4 font-bold text-stone-900">${escapeHtml(w.name)}</td>
+              <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-900 font-semibold text-[10px]">Khitanan</span></td>
+              <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full ${badgeClass} font-bold text-[10px] flex items-center gap-1 w-max"><i data-lucide="${iconName}" class="w-3 h-3"></i> ${badgeText}</span></td>
+              <td class="py-3.5 px-4 text-stone-600 max-w-xs truncate">${escapeHtml(w.message)}</td>
+              <td class="py-3.5 px-4 text-stone-400 text-[11px]">${escapeHtml(w.time || 'Baru saja')}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+        if (window.lucide) lucide.createIcons();
+      }
+
+      renderDashboardRsvp();
 
       // 2. Load Wedding Info from localStorage
       const savedWedding = localStorage.getItem('wedding_config');
@@ -783,20 +811,28 @@
       const btnExportCsv = document.getElementById('btnExportCsv');
       if (btnExportCsv) {
         btnExportCsv.addEventListener('click', () => {
-          const csvContent = "data:text/csv;charset=utf-8," 
-            + "Nama Tamu,Acara,Status Kehadiran,Ucapan,Waktu\n"
-            + "Bapak Hendra Gunawan & Ibu,Pernikahan,Hadir (2 Orang),Barakallahu lakuma semoga menjadi keluarga sakinah,10 menit lalu\n"
-            + "Keluarga H. Syamsuddin,Khitanan,Hadir (3 Orang),Selamat atas khitanan ananda Rendy semoga lekas pulih dan sholeh,35 menit lalu\n"
-            + "Nadya Faradiba & Rekan,Pernikahan,Hadir (1 Orang),Selamat ya Dimas & Sarah! Bahagia selalu,1 jam lalu\n"
-            + "Dr. Irwan Santoso,Pernikahan,Masih Ragu,Insya Allah diusahakan hadir jika jadwal dinas memungkinkan,3 jam lalu";
+          const wishes = getRealtimeKhitanWishes();
+          if (wishes.length === 0) {
+            alert('Belum ada data ucapan / RSVP untuk diekspor ke CSV.');
+            return;
+          }
+          let csvContent = "data:text/csv;charset=utf-8,Nama Tamu,Acara,Status Kehadiran,Ucapan,Waktu\n";
+          wishes.forEach(w => {
+            const name = `"${(w.name || '').replace(/"/g, '""')}"`;
+            const event = `"Khitanan"`;
+            const status = `"${w.attendance === 'hadir' ? 'Hadir' : (w.attendance === 'tidak' ? 'Berhalangan' : 'Doa Restu')}"`;
+            const msg = `"${(w.message || '').replace(/"/g, '""')}"`;
+            const time = `"${(w.time || 'Baru saja').replace(/"/g, '""')}"`;
+            csvContent += `${name},${event},${status},${msg},${time}\n`;
+          });
           const encodedUri = encodeURI(csvContent);
           const link = document.createElement("a");
           link.setAttribute("href", encodedUri);
-          link.setAttribute("download", "buku_tamu_bikinundangan.csv");
+          link.setAttribute("download", `buku_tamu_khitan_${Date.now()}.csv`);
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
-          showToast('Data buku tamu berhasil diekspor ke format CSV!');
+          showToast('Data buku tamu realtime berhasil diekspor ke format CSV!');
         });
       }
     });
