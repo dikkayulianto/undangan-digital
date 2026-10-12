@@ -5,3 +5,5 @@ deployment:
     - /bin/cp -R * $DEPLOYPATH
     - /bin/cp -f .htaccess $DEPLOYPATH
     - /bin/chmod -R 777 $DEPLOYPATH/data
+    - /bin/mkdir -p $DEPLOYPATH/images/uploads
+    - /bin/chmod -R 777 $DEPLOYPATH/images/uploads

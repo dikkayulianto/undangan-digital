@@ -159,7 +159,7 @@
     </div>
 
     <!-- FORM CONTAINER -->
-    <form id="khitanBuilderForm" class="bg-white rounded-b-2xl p-6 sm:p-8 shadow-sm border-x border-b border-stone-200">
+    <form id="khitanBuilderForm" novalidate onsubmit="return false;" class="bg-white rounded-b-2xl p-6 sm:p-8 shadow-sm border-x border-b border-stone-200">
       <input type="hidden" id="selectedKhitanTheme" value="cream">
 
       <!-- ================= TAB 0: TEMA WARNA TERANG ================= -->
@@ -281,12 +281,12 @@
 
             <div>
               <label class="block text-xs font-medium text-stone-700 mb-1">Nama Panggilan Anak</label>
-              <input type="text" id="childNickname" value="Rendy" required placeholder="Contoh: Fadhil" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+              <input type="text" id="childNickname" value="Rendy" placeholder="Contoh: Fadhil" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
             </div>
 
             <div>
               <label class="block text-xs font-medium text-stone-700 mb-1">Nama Lengkap Anak</label>
-              <input type="text" id="childFullname" value="Irendy Wijaya Saputra" required placeholder="Contoh: Muhammad Fadhil Al-Fatih" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+              <input type="text" id="childFullname" value="Irendy Wijaya Saputra" placeholder="Contoh: Muhammad Fadhil Al-Fatih" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
             </div>
 
             <div>
@@ -319,12 +319,12 @@
 
             <div>
               <label class="block text-xs font-medium text-stone-700 mb-1">Nama Ayah</label>
-              <input type="text" id="fatherName" value="Bpk. Wangkis Suwito" required placeholder="Contoh: Bpk. Ahmad Fauzi" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+              <input type="text" id="fatherName" value="Bpk. Wangkis Suwito" placeholder="Contoh: Bpk. Ahmad Fauzi" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
             </div>
 
             <div>
               <label class="block text-xs font-medium text-stone-700 mb-1">Nama Ibu</label>
-              <input type="text" id="motherName" value="Ibu Susi Dwi jayanti" required placeholder="Contoh: Ibu Nurul Hidayah" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+              <input type="text" id="motherName" value="Ibu Susi Dwi jayanti" placeholder="Contoh: Ibu Nurul Hidayah" class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
             </div>
           </div>
         </div>
@@ -665,7 +665,7 @@
           <span class="text-[11px] text-stone-500 hidden sm:inline">&bull; Data akan disimpan permanen online di server hosting</span>
         </div>
         <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
-          <button type="submit" id="btnPublishOnline" class="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-emerald-700 via-emerald-800 to-emerald-900 hover:from-emerald-800 hover:to-emerald-950 text-white text-xs font-bold shadow-xl hover:shadow-emerald-900/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+          <button type="button" id="btnPublishOnline" class="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-emerald-700 via-emerald-800 to-emerald-900 hover:from-emerald-800 hover:to-emerald-950 text-white text-xs font-bold shadow-xl hover:shadow-emerald-900/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
             <i data-lucide="cloud-upload" class="w-4 h-4 text-emerald-300"></i>
             <span id="btnPublishText">Publikasikan ke Server (Online)</span>
           </button>

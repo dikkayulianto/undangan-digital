@@ -342,28 +342,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const file = childPhotoFile.files[0];
       if (file) {
         try {
-          showToast('Mengompresi & menyiapkan foto ananda...');
-          const dataUrl = await compressImage(file, 600, 600, 0.72);
-          childPhotoPreview.src = dataUrl;
-          childPhotoInput.value = dataUrl;
-          
-          showToast('Mengunggah foto ke Cloud CDN...');
-          const cloudUrl = await uploadImageToServer(dataUrl, file.name);
-          if (cloudUrl && cloudUrl.startsWith('http')) {
-            childPhotoInput.value = cloudUrl;
-            childPhotoPreview.src = cloudUrl;
-            localStorage.setItem(clientPhotoKey, cloudUrl);
-            const cur = getKhitanConfig();
-            cur.photo = cloudUrl;
-            saveKhitanConfig(cur);
-            showToast('Foto berhasil diunggah ke CDN & disimpan!');
-          } else {
-            localStorage.setItem(clientPhotoKey, dataUrl);
-            const cur = getKhitanConfig();
-            cur.photo = dataUrl;
-            saveKhitanConfig(cur);
-            showToast('Foto berhasil disimpan secara lokal!');
+          showToast('Mengompresi dan mengunggah foto ananda...');
+          const dataUrl = await compressImage(file, 800, 800, 0.78);
+          if (childPhotoPreview) childPhotoPreview.src = dataUrl;
+          if (childPhotoInput) childPhotoInput.value = dataUrl;
+          const up = await uploadImageToServer(dataUrl, file.name);
+          if (up && !up.startsWith('data:')) {
+            if (childPhotoInput) childPhotoInput.value = up;
+            if (childPhotoPreview) childPhotoPreview.src = up;
           }
+          showToast('Foto berhasil diunggah! Klik "Publikasikan ke Server" untuk menyimpan.');
         } catch (err) {
           alert(err.message || 'Gagal memproses foto.');
         }
@@ -419,15 +407,12 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
           showToast('Mengompresi background kustom...');
           const dataUrl = await compressImage(file, 1600, 1600, 0.80);
-          showToast('Mengunggah background ke Cloud CDN...');
-          const cloudUrl = await uploadImageToServer(dataUrl, file.name);
-          const finalBg = (cloudUrl && cloudUrl.startsWith('http')) ? cloudUrl : dataUrl;
+          showToast('Mengunggah background ke server...');
+          const up = await uploadImageToServer(dataUrl, file.name);
+          const finalBg = (up && !up.startsWith('data:')) ? up : dataUrl;
           if (customBgInput) customBgInput.value = finalBg;
           updateActiveKhitanBgCard(finalBg);
-          const cur = getKhitanConfig();
-          cur.customBg = finalBg;
-          saveKhitanConfig(cur);
-          showToast('Background kustom khitan berhasil disimpan!');
+          showToast('Background kustom siap! Klik "Publikasikan ke Server" untuk menyimpan.');
         } catch (err) {
           alert(err.message || 'Gagal memproses gambar.');
         }
@@ -501,11 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const delIdx = parseInt(btn.getAttribute('data-idx'), 10);
         khitanGalleryPhotos.splice(delIdx, 1);
         renderKhitanGalleryGrid();
-        const cur = getKhitanConfig();
-        cur.gallery = [...khitanGalleryPhotos];
-        saveKhitanConfig(cur);
-        updateViewInviteLink(cur);
-        showToast('Foto galeri khitan berhasil dihapus & tersimpan.');
+        showToast('Foto dihapus dari daftar. Klik "Publikasikan ke Server" untuk menyimpan.');
       });
     });
   }
@@ -519,30 +500,25 @@ document.addEventListener('DOMContentLoaded', () => {
       const files = Array.from(khitanGalleryFileInput.files);
       if (files.length === 0) return;
 
-      showToast(`Sedang memproses & mengunggah ${files.length} foto ke Cloud CDN...`);
+      showToast(`Sedang memproses & mengunggah ${files.length} foto...`);
 
       let successCount = 0;
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         try {
-          showToast(`Mengunggah foto ${i + 1}/${files.length} ke Cloud CDN...`);
-          const dataUrl = await compressImage(file, 1000, 1000, 0.75);
-          const cloudUrl = await uploadImageToServer(dataUrl, file.name);
-          const finalUrl = (cloudUrl && cloudUrl.startsWith('http')) ? cloudUrl : dataUrl;
+          const dataUrl = await compressImage(file, 1000, 1000, 0.78);
+          const up = await uploadImageToServer(dataUrl, file.name);
+          const finalUrl = (up && !up.startsWith('data:')) ? up : dataUrl;
           khitanGalleryPhotos.push(finalUrl);
           successCount++;
         } catch (err) {
-          console.error('Error uploading gallery photo:', err);
+          console.error('Error processing gallery photo:', err);
         }
       }
 
       khitanGalleryFileInput.value = '';
       renderKhitanGalleryGrid();
-      const cur = getKhitanConfig();
-      cur.gallery = [...khitanGalleryPhotos];
-      saveKhitanConfig(cur);
-      updateViewInviteLink(cur);
-      showToast(`${successCount} foto berhasil diunggah ke CDN & disimpan!`);
+      showToast(`${successCount} foto ditambahkan ke daftar galeri! Klik "Publikasikan ke Server" untuk menyimpan.`);
     });
   }
 
@@ -557,11 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
       khitanGalleryPhotos.push(url);
       khitanGalleryUrlInput.value = '';
       renderKhitanGalleryGrid();
-      const cur = getKhitanConfig();
-      cur.gallery = [...khitanGalleryPhotos];
-      saveKhitanConfig(cur);
-      updateViewInviteLink(cur);
-      showToast('Foto dari link berhasil ditambahkan ke galeri!');
+      showToast('Foto ditambahkan ke galeri! Klik "Publikasikan ke Server" untuk menyimpan.');
     });
   }
 
@@ -571,11 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (confirm('Yakin ingin menghapus seluruh foto galeri khitan?')) {
         khitanGalleryPhotos = [];
         renderKhitanGalleryGrid();
-        const cur = getKhitanConfig();
-        cur.gallery = [];
-        saveKhitanConfig(cur);
-        updateViewInviteLink(cur);
-        showToast('Semua foto galeri telah dihapus.');
+        showToast('Semua foto galeri dikosongkan. Klik "Publikasikan ke Server" untuk menyimpan.');
       }
     });
   }
@@ -605,26 +573,66 @@ document.addEventListener('DOMContentLoaded', () => {
     if (clientBannerName) clientBannerName.textContent = currentClient;
   }
 
-  async function syncConfigToCloud(client, cfg) {
-    try {
-      const res = await fetch('/api/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ client, configData: cfg })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.cloudId) {
-          cfg.cloudId = data.cloudId;
-          saveKhitanConfig(cfg);
-          return data.cloudId;
-        }
-      }
-    } catch (e) {
-      console.warn('Sync to cloud error:', e);
+  function populateBuilderForm(cfg) {
+    if (!cfg || typeof cfg !== 'object') return;
+    const c = sanitizeKhitanConfig(cfg);
+
+    if (document.getElementById('childNickname')) document.getElementById('childNickname').value = c.childNickname;
+    if (document.getElementById('childFullname')) document.getElementById('childFullname').value = c.childFullname;
+    if (document.getElementById('childOrder')) document.getElementById('childOrder').value = c.childOrder;
+    if (document.getElementById('fatherName')) document.getElementById('fatherName').value = c.father;
+    if (document.getElementById('motherName')) document.getElementById('motherName').value = c.mother;
+    if (document.getElementById('childPhoto')) document.getElementById('childPhoto').value = c.photo;
+    if (document.getElementById('childPhotoPreview') && c.photo) document.getElementById('childPhotoPreview').src = c.photo;
+
+    if (Array.isArray(c.gallery)) {
+      khitanGalleryPhotos = [...c.gallery];
+      renderKhitanGalleryGrid();
     }
-    return cfg.cloudId || '';
+
+    if (document.getElementById('eventDateDisplay')) document.getElementById('eventDateDisplay').value = c.eventDateDisplay;
+    if (document.getElementById('eventDateIso')) document.getElementById('eventDateIso').value = c.eventDateIso;
+    if (document.getElementById('eventTime')) document.getElementById('eventTime').value = c.eventTime;
+    if (document.getElementById('eventPlace')) document.getElementById('eventPlace').value = c.eventPlace;
+    if (document.getElementById('eventAddress')) document.getElementById('eventAddress').value = c.eventAddress;
+    if (document.getElementById('mapsUrl')) document.getElementById('mapsUrl').value = c.mapsUrl;
+
+    if (document.getElementById('bank1Name')) document.getElementById('bank1Name').value = c.bank1Name;
+    if (document.getElementById('bank1Number')) document.getElementById('bank1Number').value = c.bank1Number;
+    if (document.getElementById('bank1Holder')) document.getElementById('bank1Holder').value = c.bank1Holder;
+    if (document.getElementById('bank2Name')) document.getElementById('bank2Name').value = c.bank2Name;
+    if (document.getElementById('bank2Number')) document.getElementById('bank2Number').value = c.bank2Number;
+    if (document.getElementById('bank2Holder')) document.getElementById('bank2Holder').value = c.bank2Holder;
+    if (document.getElementById('physicalAddress')) document.getElementById('physicalAddress').value = c.physicalAddress;
+    if (document.getElementById('audioUrl')) document.getElementById('audioUrl').value = c.audioUrl;
+    if (document.getElementById('selectedKhitanTheme')) document.getElementById('selectedKhitanTheme').value = c.theme;
+
+    if (typeof updateKhitanThemeUI === 'function') updateKhitanThemeUI(c.theme || 'cream');
+    updateViewInviteLink(c);
+    if (typeof updateAudioFormatBadge === 'function') updateAudioFormatBadge(c.audioUrl);
   }
+
+  // Populate from local initial config
+  populateBuilderForm(config);
+
+  // Fetch server data/khitan.json (or data/khitan_[client].json) so any Live Editor changes load automatically
+  const serverJsonUrl = currentClient ? `data/khitan_${encodeURIComponent(currentClient)}.json?v=${Date.now()}` : `data/khitan.json?v=${Date.now()}`;
+  fetch(serverJsonUrl)
+    .then(res => {
+      if (!res.ok && currentClient) return fetch(`data/khitan.json?v=${Date.now()}`);
+      return res;
+    })
+    .then(res => res.json())
+    .then(serverData => {
+      if (serverData && typeof serverData === 'object') {
+        const fresh = sanitizeKhitanConfig(serverData);
+        populateBuilderForm(fresh);
+        saveKhitanConfig(fresh);
+      }
+    })
+    .catch(err => {
+      console.log('Using local config fallback:', err);
+    });
 
   function updateViewInviteLink(cfg) {
     const viewInviteLink = document.querySelector('header a[href*="khitan.html"]');
@@ -846,10 +854,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let changed = false;
     // 1. Sync child photo
     if (cfg.photo && cfg.photo.startsWith('data:image/')) {
-      showToast('Mengunggah foto ananda ke Cloud CDN...');
+      showToast('Mengunggah foto ananda ke server...');
       try {
         const cloudUrl = await uploadImageToServer(cfg.photo, 'foto-ananda.jpg');
-        if (cloudUrl && cloudUrl.startsWith('http')) {
+        if (cloudUrl && !cloudUrl.startsWith('data:')) {
           cfg.photo = cloudUrl;
           const photoInput = document.getElementById('childPhoto');
           if (photoInput) photoInput.value = cloudUrl;
@@ -863,10 +871,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Sync custom background
     if (cfg.customBg && cfg.customBg.startsWith('data:image/')) {
-      showToast('Mengunggah background kustom ke Cloud CDN...');
+      showToast('Mengunggah background kustom ke server...');
       try {
         const cloudUrl = await uploadImageToServer(cfg.customBg, 'background-kustom.jpg');
-        if (cloudUrl && cloudUrl.startsWith('http')) {
+        if (cloudUrl && !cloudUrl.startsWith('data:')) {
           cfg.customBg = cloudUrl;
           const bgInput = document.getElementById('customBgInput');
           if (bgInput) bgInput.value = cloudUrl;
@@ -879,10 +887,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cfg.gallery && Array.isArray(cfg.gallery)) {
       for (let i = 0; i < cfg.gallery.length; i++) {
         if (cfg.gallery[i] && cfg.gallery[i].startsWith('data:image/')) {
-          showToast(`Mengunggah foto galeri ${i + 1}/${cfg.gallery.length} ke Cloud CDN...`);
+          showToast(`Mengunggah foto galeri ${i + 1}/${cfg.gallery.length} ke server...`);
           try {
             const cloudUrl = await uploadImageToServer(cfg.gallery[i], `galeri-${i + 1}.jpg`);
-            if (cloudUrl && cloudUrl.startsWith('http')) {
+            if (cloudUrl && !cloudUrl.startsWith('data:')) {
               cfg.gallery[i] = cloudUrl;
               khitanGalleryPhotos[i] = cloudUrl;
               changed = true;
@@ -899,51 +907,63 @@ document.addEventListener('DOMContentLoaded', () => {
     return cfg;
   }
 
-  // Trigger auto-sync on load if any local base64 images exist
-  setTimeout(() => {
-    const cur = getKhitanConfig();
-    const hasLocal = (cur.photo && cur.photo.startsWith('data:image/')) ||
-                    (cur.customBg && cur.customBg.startsWith('data:image/')) ||
-                    (cur.gallery && cur.gallery.some(g => g && g.startsWith('data:image/')));
-    if (hasLocal) {
-      syncLocalImagesToCloud(cur);
-    }
-  }, 1200);
-
-  // Form Submit
-  // Form Submit & Publish Online to Server
-  const builderForm = document.getElementById('khitanBuilderForm');
-  builderForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    let newConfig = {
-      childNickname: document.getElementById('childNickname').value.trim(),
-      childFullname: document.getElementById('childFullname').value.trim(),
-      childOrder: document.getElementById('childOrder').value.trim(),
-      father: document.getElementById('fatherName').value.trim(),
-      mother: document.getElementById('motherName').value.trim(),
-      photo: document.getElementById('childPhoto').value.trim(),
+  // Manual Publish Handler
+  function collectCurrentBuilderConfig() {
+    return {
+      childNickname: document.getElementById('childNickname')?.value.trim() || defaultKhitanConfig.childNickname,
+      childFullname: document.getElementById('childFullname')?.value.trim() || defaultKhitanConfig.childFullname,
+      childOrder: document.getElementById('childOrder')?.value.trim() || defaultKhitanConfig.childOrder,
+      father: document.getElementById('fatherName')?.value.trim() || defaultKhitanConfig.father,
+      mother: document.getElementById('motherName')?.value.trim() || defaultKhitanConfig.mother,
+      photo: document.getElementById('childPhoto')?.value.trim() || defaultKhitanConfig.photo,
       gallery: [...khitanGalleryPhotos],
-      eventDateDisplay: document.getElementById('eventDateDisplay').value.trim(),
-      eventDateIso: document.getElementById('eventDateIso').value.trim(),
-      eventTime: document.getElementById('eventTime').value.trim(),
-      eventPlace: document.getElementById('eventPlace').value.trim(),
-      eventAddress: document.getElementById('eventAddress').value.trim(),
-      mapsUrl: document.getElementById('mapsUrl').value.trim(),
-      bank1Name: document.getElementById('bank1Name').value.trim(),
-      bank1Number: document.getElementById('bank1Number').value.trim(),
-      bank1Holder: document.getElementById('bank1Holder').value.trim(),
+      eventDateDisplay: document.getElementById('eventDateDisplay')?.value.trim() || defaultKhitanConfig.eventDateDisplay,
+      eventDateIso: document.getElementById('eventDateIso')?.value.trim() || defaultKhitanConfig.eventDateIso,
+      eventTime: document.getElementById('eventTime')?.value.trim() || defaultKhitanConfig.eventTime,
+      eventPlace: document.getElementById('eventPlace')?.value.trim() || defaultKhitanConfig.eventPlace,
+      eventAddress: document.getElementById('eventAddress')?.value.trim() || defaultKhitanConfig.eventAddress,
+      mapsUrl: document.getElementById('mapsUrl')?.value.trim() || defaultKhitanConfig.mapsUrl,
+      bank1Name: document.getElementById('bank1Name')?.value.trim() || defaultKhitanConfig.bank1Name,
+      bank1Number: document.getElementById('bank1Number')?.value.trim() || defaultKhitanConfig.bank1Number,
+      bank1Holder: document.getElementById('bank1Holder')?.value.trim() || defaultKhitanConfig.bank1Holder,
       bank2Name: document.getElementById('bank2Name')?.value?.trim() || '',
       bank2Number: document.getElementById('bank2Number')?.value?.trim() || '',
       bank2Holder: document.getElementById('bank2Holder')?.value?.trim() || '',
-      physicalAddress: document.getElementById('physicalAddress').value.trim(),
-      audioUrl: document.getElementById('audioUrl').value.trim(),
+      physicalAddress: document.getElementById('physicalAddress')?.value.trim() || defaultKhitanConfig.physicalAddress,
+      audioUrl: document.getElementById('audioUrl')?.value.trim() || defaultKhitanConfig.audioUrl,
       customBg: document.getElementById('customBgInput')?.value?.trim() || '',
       theme: document.getElementById('selectedKhitanTheme')?.value || 'cream'
     };
+  }
 
+  function handleManualPublish() {
+    const newConfig = collectCurrentBuilderConfig();
     publishConfigToServer(newConfig);
-  });
+  }
+
+  const builderForm = document.getElementById('khitanBuilderForm');
+  if (builderForm) {
+    builderForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleManualPublish();
+    });
+  }
+
+  const btnPublishOnline = document.getElementById('btnPublishOnline');
+  if (btnPublishOnline) {
+    btnPublishOnline.addEventListener('click', (e) => {
+      e.preventDefault();
+      handleManualPublish();
+    });
+  }
+
+  const btnHeaderPublish = document.getElementById('btnHeaderPublish');
+  if (btnHeaderPublish) {
+    btnHeaderPublish.addEventListener('click', (e) => {
+      e.preventDefault();
+      handleManualPublish();
+    });
+  }
 
   // Server-side publish function
   async function publishConfigToServer(cfg) {
@@ -1052,14 +1072,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Header Publish Button
-  const btnHeaderPublish = document.getElementById('btnHeaderPublish');
-  if (btnHeaderPublish) {
-    btnHeaderPublish.addEventListener('click', () => {
-      builderForm.requestSubmit();
-    });
-  }
-
   // Modal Close & Copy Handlers
   const btnClosePublishModal = document.getElementById('btnClosePublishModal');
   const btnCopyModalLink = document.getElementById('btnCopyModalLink');
@@ -1130,10 +1142,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Auto-upload photo if still a local data URL
     if (currentCfg.photo && currentCfg.photo.startsWith('data:image/')) {
-      showToast('Mengunggah foto ananda ke Cloud CDN...');
+      showToast('Mengunggah foto ananda ke server...');
       try {
         const cloudUrl = await uploadImageToServer(currentCfg.photo, 'foto-ananda.jpg');
-        if (cloudUrl && cloudUrl.startsWith('http')) {
+        if (cloudUrl && !cloudUrl.startsWith('data:')) {
           currentCfg.photo = cloudUrl;
           const photoInput = document.getElementById('childPhoto');
           if (photoInput) photoInput.value = cloudUrl;
