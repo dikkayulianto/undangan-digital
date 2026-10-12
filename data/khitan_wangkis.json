@@ -1,0 +1,31 @@
+{
+    "childNickname": "Rendy",
+    "childFullname": "Irendy Wijaya Saputra",
+    "childOrder": "Putra Kedua dari pasangan:",
+    "father": "Bpk. Wangkis Suwito",
+    "mother": "Ibu Susi Dwi jayanti",
+    "photo": "images/khitan/rendy-profile.jpg?v=20261009c",
+    "gallery": [
+        "images/uploads/upload_1791778708_782.jpg",
+        "images/uploads/upload_1791778714_682.jpg",
+        "images/uploads/upload_1791778716_129.jpg",
+        "images/uploads/upload_1791778720_902.jpg",
+        "images/uploads/upload_1791778720_854.jpg"
+    ],
+    "eventDateDisplay": "Senin, 16 November 2026",
+    "eventDateIso": "2026-11-16T10:00",
+    "eventTime": "Pukul 10.00 WIB",
+    "eventPlace": "Rumah Hajat",
+    "eventAddress": "Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon",
+    "mapsUrl": "https://maps.app.goo.gl/hChxvaaKnwF8VF5GA",
+    "bank1Name": "BRI",
+    "bank1Number": "6062 0104 0268 531",
+    "bank1Holder": "Wangkis Suwito (Ayah)",
+    "bank2Name": "Dana",
+    "bank2Number": "082134966499",
+    "bank2Holder": "Susi Dwi Jayanti (Ibu)",
+    "physicalAddress": "Jl. Mangga No. 12 RT 03 RW 01 Balapulang Kulon",
+    "audioUrl": "audio/qalbi.mp3",
+    "customBg": "",
+    "theme": "sage"
+}
