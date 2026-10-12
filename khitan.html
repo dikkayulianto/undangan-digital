@@ -75,6 +75,22 @@
       overflow: hidden;
       box-shadow: 0 10px 25px -5px rgba(22, 101, 52, 0.2);
     }
+    .live-editable-active {
+      outline: 2px dashed #d97706 !important;
+      outline-offset: 3px !important;
+      background-color: rgba(254, 243, 199, 0.45) !important;
+      border-radius: 6px !important;
+      cursor: text !important;
+      transition: all 0.2s ease !important;
+    }
+    .live-editable-active:hover {
+      background-color: rgba(254, 243, 199, 0.8) !important;
+      outline-color: #b45309 !important;
+    }
+    .live-editable-active:focus {
+      outline: 2px solid #059669 !important;
+      background-color: #ffffff !important;
+    }
   </style>
 
   <!-- SoundCloud & YouTube API -->
@@ -82,6 +98,48 @@
   <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body class="bg-[#fbf9f5] text-stone-800 antialiased selection:bg-amber-200 selection:text-stone-900">
+
+  <!-- TOP STICKY LIVE EDIT BAR -->
+  <div id="liveEditBar" class="fixed top-0 left-0 right-0 z-50 bg-stone-900/95 backdrop-blur-md text-white px-4 py-2.5 border-b-2 border-amber-500 shadow-2xl flex items-center justify-between gap-3 hidden">
+    <div class="flex items-center gap-2">
+      <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+      <span class="text-xs font-bold text-amber-300">✏️ MODE EDIT LANGSUNG:</span>
+      <span class="text-[11px] text-stone-300 hidden sm:inline">Klik teks di halaman untuk mengubahnya langsung, lalu simpan.</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="btnLiveEditCancel" type="button" class="px-3.5 py-1.5 rounded-xl border border-stone-600 hover:bg-stone-800 text-stone-300 text-xs font-medium transition cursor-pointer">
+        Batal
+      </button>
+      <button id="btnLiveEditSave" type="button" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold text-xs shadow-lg transition flex items-center gap-1.5 cursor-pointer">
+        <i data-lucide="cloud-upload" class="w-3.5 h-3.5"></i>
+        <span id="btnLiveEditSaveText">Simpan ke Server</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- FLOATING LIVE EDIT TOGGLE BUTTON -->
+  <button id="btnToggleLiveEdit" type="button" title="Aktifkan Mode Edit Langsung" class="fixed bottom-6 left-5 z-40 flex items-center gap-2 px-3.5 py-2 rounded-full bg-stone-900/90 hover:bg-stone-900 text-amber-300 hover:text-white shadow-xl backdrop-blur-md border border-amber-400/40 text-xs font-bold transition hover:scale-105 active:scale-95 cursor-pointer">
+    <i data-lucide="edit-3" class="w-4 h-4 text-amber-400"></i>
+    <span class="hidden sm:inline">Edit Undangan</span>
+  </button>
+
+  <!-- MODAL EDIT MAPS URL -->
+  <div id="liveEditMapsModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 border border-stone-200">
+      <h3 class="font-bold text-base text-stone-900 flex items-center gap-2">
+        <i data-lucide="map-pin" class="w-4 h-4 text-amber-600"></i>
+        <span>Ubah Link Google Maps</span>
+      </h3>
+      <div>
+        <label class="block text-xs font-medium text-stone-700 mb-1">Tempel link Google Maps baru:</label>
+        <input type="url" id="liveEditMapsInput" placeholder="https://maps.app.goo.gl/..." class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+      </div>
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button type="button" id="btnCancelEditMaps" class="px-4 py-2 rounded-xl border border-stone-300 text-xs text-stone-700 font-medium cursor-pointer">Batal</button>
+        <button type="button" id="btnSaveEditMaps" class="px-5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold cursor-pointer">Terapkan Link</button>
+      </div>
+    </div>
+  </div>
 
   <!-- AUDIO ELEMENT (Background Audio HTML5) -->
   <audio id="khitanAudio" loop preload="auto">
@@ -808,7 +866,12 @@
 
       // Async fetch data/khitan.json as authoritative fallback if no URL payload is provided
       if (!cParam && !dParam) {
-        fetch('data/khitan.json')
+        const dataUrlTarget = clientParam ? `data/khitan_${encodeURIComponent(clientParam)}.json?v=${Date.now()}` : `data/khitan.json?v=${Date.now()}`;
+        fetch(dataUrlTarget)
+          .then(res => {
+            if (!res.ok && clientParam) return fetch(`data/khitan.json?v=${Date.now()}`);
+            return res;
+          })
           .then(res => res.json())
           .then(data => {
             if (data && typeof data === 'object') {
@@ -1202,6 +1265,227 @@
         });
       }
       renderWishes();
+
+      // ==========================================
+      // LIVE EDITOR ENGINE (EDIT LANGSUNG ON-PAGE)
+      // ==========================================
+      const btnToggleLiveEdit = document.getElementById('btnToggleLiveEdit');
+      const liveEditBar = document.getElementById('liveEditBar');
+      const btnLiveEditCancel = document.getElementById('btnLiveEditCancel');
+      const btnLiveEditSave = document.getElementById('btnLiveEditSave');
+      const btnLiveEditSaveText = document.getElementById('btnLiveEditSaveText');
+      const liveEditMapsModal = document.getElementById('liveEditMapsModal');
+      const liveEditMapsInput = document.getElementById('liveEditMapsInput');
+      const btnCancelEditMaps = document.getElementById('btnCancelEditMaps');
+      const btnSaveEditMaps = document.getElementById('btnSaveEditMaps');
+
+      let isLiveEditActive = false;
+
+      const liveEditableSelectors = [
+        '#coverChildName',
+        '#childFullnameText',
+        '#desktopChildName',
+        '#childOrderText',
+        '#parentsText',
+        '#footerFamilyName',
+        '#coverDateText',
+        '#eventDateDisplayText',
+        '#eventTimeText',
+        '#eventPlaceText',
+        '#eventAddressText',
+        '#bank1NameText',
+        '#bank1NumberText',
+        '#bank1HolderText',
+        '#bank2NameText',
+        '#bank2NumberText',
+        '#bank2HolderText',
+        '#physicalAddressText'
+      ];
+
+      function setLiveEditMode(active) {
+        isLiveEditActive = active;
+        if (active) {
+          if (liveEditBar) liveEditBar.classList.remove('hidden');
+          if (btnToggleLiveEdit) {
+            btnToggleLiveEdit.classList.add('bg-emerald-800', 'text-white', 'ring-2', 'ring-emerald-400');
+            const span = btnToggleLiveEdit.querySelector('span');
+            if (span) span.textContent = 'Keluar Mode Edit';
+          }
+          showToast('✏️ Mode Edit Aktif! Klik langsung teks di halaman ini.');
+
+          liveEditableSelectors.forEach(sel => {
+            const el = document.querySelector(sel);
+            if (el) {
+              el.setAttribute('contenteditable', 'true');
+              el.classList.add('live-editable-active');
+              el.setAttribute('title', 'Klik untuk mengubah teks langsung');
+            }
+          });
+        } else {
+          if (liveEditBar) liveEditBar.classList.add('hidden');
+          if (btnToggleLiveEdit) {
+            btnToggleLiveEdit.classList.remove('bg-emerald-800', 'text-white', 'ring-2', 'ring-emerald-400');
+            const span = btnToggleLiveEdit.querySelector('span');
+            if (span) span.textContent = 'Edit Undangan';
+          }
+
+          liveEditableSelectors.forEach(sel => {
+            const el = document.querySelector(sel);
+            if (el) {
+              el.removeAttribute('contenteditable');
+              el.classList.remove('live-editable-active');
+              el.removeAttribute('title');
+            }
+          });
+        }
+      }
+
+      if (btnToggleLiveEdit) {
+        btnToggleLiveEdit.addEventListener('click', () => {
+          setLiveEditMode(!isLiveEditActive);
+        });
+      }
+
+      if (btnLiveEditCancel) {
+        btnLiveEditCancel.addEventListener('click', () => {
+          populateElements(config);
+          setLiveEditMode(false);
+          showToast('Perubahan dibatalkan.');
+        });
+      }
+
+      // Intercept Maps Link in Live Edit Mode
+      const btnMapsLink = document.getElementById('btnMapsLink');
+      if (btnMapsLink) {
+        btnMapsLink.addEventListener('click', (e) => {
+          if (isLiveEditActive) {
+            e.preventDefault();
+            if (liveEditMapsModal && liveEditMapsInput) {
+              liveEditMapsInput.value = config.mapsUrl || 'https://maps.app.goo.gl/FNjBDJMcNzKmvb6B7';
+              liveEditMapsModal.classList.remove('hidden');
+              setTimeout(() => liveEditMapsModal.classList.remove('opacity-0'), 20);
+            }
+          }
+        });
+      }
+
+      if (btnCancelEditMaps && liveEditMapsModal) {
+        btnCancelEditMaps.addEventListener('click', () => {
+          liveEditMapsModal.classList.add('opacity-0');
+          setTimeout(() => liveEditMapsModal.classList.add('hidden'), 300);
+        });
+      }
+
+      if (btnSaveEditMaps && liveEditMapsModal && liveEditMapsInput) {
+        btnSaveEditMaps.addEventListener('click', () => {
+          const newMap = liveEditMapsInput.value.trim();
+          if (newMap) {
+            config.mapsUrl = newMap;
+            if (btnMapsLink) btnMapsLink.href = newMap;
+            showToast('Link Google Maps diperbarui!');
+          }
+          liveEditMapsModal.classList.add('opacity-0');
+          setTimeout(() => liveEditMapsModal.classList.add('hidden'), 300);
+        });
+      }
+
+      // Save & Publish directly to Server from Live Editor
+      if (btnLiveEditSave) {
+        btnLiveEditSave.addEventListener('click', async () => {
+          if (btnLiveEditSaveText) btnLiveEditSaveText.textContent = 'Menyimpan...';
+
+          // 1. Collect updated values
+          const childFull = document.getElementById('childFullnameText')?.innerText.trim() || config.childFullname;
+          const childOrder = document.getElementById('childOrderText')?.innerText.trim() || config.childOrder;
+          const parentsRaw = document.getElementById('parentsText')?.innerText.trim() || '';
+          let father = config.father;
+          let mother = config.mother;
+          if (parentsRaw.includes('&')) {
+            const parts = parentsRaw.split('&');
+            father = parts[0].trim();
+            mother = parts[1].trim();
+          }
+          const eventDateDisp = document.getElementById('eventDateDisplayText')?.innerText.trim() || config.eventDateDisplay;
+          const eventTime = document.getElementById('eventTimeText')?.innerText.trim() || config.eventTime;
+          const eventPlace = document.getElementById('eventPlaceText')?.innerText.trim() || config.eventPlace;
+          const eventAddress = document.getElementById('eventAddressText')?.innerText.trim() || config.eventAddress;
+
+          const bank1Name = document.getElementById('bank1NameText')?.innerText.trim() || config.bank1Name;
+          const bank1Number = document.getElementById('bank1NumberText')?.innerText.trim() || config.bank1Number;
+          let bank1Holder = document.getElementById('bank1HolderText')?.innerText.trim() || config.bank1Holder;
+          bank1Holder = bank1Holder.replace(/^a\.n\s*/i, '');
+
+          const bank2Name = document.getElementById('bank2NameText')?.innerText.trim() || config.bank2Name;
+          const bank2Number = document.getElementById('bank2NumberText')?.innerText.trim() || config.bank2Number;
+          let bank2Holder = document.getElementById('bank2HolderText')?.innerText.trim() || config.bank2Holder;
+          bank2Holder = bank2Holder.replace(/^a\.n\s*/i, '');
+
+          const physicalAddress = document.getElementById('physicalAddressText')?.innerText.trim() || config.physicalAddress;
+
+          // Sync into config
+          config.childFullname = childFull;
+          config.childNickname = childFull.split(' ')[0] || config.childNickname;
+          config.childOrder = childOrder;
+          config.father = father;
+          config.mother = mother;
+          config.eventDateDisplay = eventDateDisp;
+          config.eventTime = eventTime;
+          config.eventPlace = eventPlace;
+          config.eventAddress = eventAddress;
+          config.bank1Name = bank1Name;
+          config.bank1Number = bank1Number;
+          config.bank1Holder = bank1Holder;
+          config.bank2Name = bank2Name;
+          config.bank2Number = bank2Number;
+          config.bank2Holder = bank2Holder;
+          config.physicalAddress = physicalAddress;
+
+          // 2. Save locally
+          try {
+            localStorage.setItem(clientStorageKey, JSON.stringify(config));
+            localStorage.setItem('khitan_config', JSON.stringify(config));
+            localStorage.setItem('khitan_config_wangkis', JSON.stringify(config));
+          } catch(e) {}
+
+          // 3. POST to server API
+          let serverOk = false;
+          try {
+            let res = await fetch('api/save-config.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ client: clientParam || 'wangkis', type: 'khitan', config: config })
+            });
+            if (!res.ok) {
+              res = await fetch('api/save-config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ client: clientParam || 'wangkis', type: 'khitan', config: config })
+              });
+            }
+            if (res.ok) {
+              const data = await res.json();
+              if (data && data.success) serverOk = true;
+            }
+          } catch(err) {
+            console.warn('Live save error:', err);
+          }
+
+          if (btnLiveEditSaveText) btnLiveEditSaveText.textContent = 'Simpan ke Server';
+          setLiveEditMode(false);
+          populateElements(config);
+
+          if (serverOk) {
+            showToast('🎉 Berhasil disimpan langsung ke server!');
+          } else {
+            showToast('Perubahan tersimpan di browser lokal.');
+          }
+        });
+      }
+
+      // Auto-enable live edit if ?edit=1 in URL
+      if (urlParams.get('edit') === '1' || urlParams.get('edit') === 'true') {
+        setTimeout(() => setLiveEditMode(true), 400);
+      }
     });
   </script>
 </body>

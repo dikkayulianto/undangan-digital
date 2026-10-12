@@ -9,3 +9,4 @@ Thumbs.db
 # Node / Temp (if any)
 node_modules/
 *.log
+*.zip

@@ -80,6 +80,11 @@
       </div>
 
       <div class="flex items-center gap-2">
+        <button type="button" id="btnHeaderPublish" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-900 hover:from-emerald-800 hover:to-emerald-950 text-white text-xs font-bold shadow-md hover:shadow-lg transition cursor-pointer">
+          <i data-lucide="cloud-upload" class="w-3.5 h-3.5 text-emerald-300"></i>
+          <span>Publikasikan ke Server</span>
+        </button>
+
         <a href="builder.html" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-300 text-xs font-medium text-amber-800 bg-amber-50 hover:bg-amber-100 transition" title="Beralih ke Undangan Pernikahan">
           <i data-lucide="heart" class="w-3.5 h-3.5 text-amber-600"></i>
           <span>Undangan Pernikahan</span>
@@ -90,7 +95,7 @@
           <span>Reset Default</span>
         </button>
 
-        <a href="khitan.html" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-semibold shadow-md hover:shadow-lg transition">
+        <a href="khitan.html" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold shadow-md hover:shadow-lg transition">
           <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
           <span>Lihat Undangan</span>
         </a>
@@ -651,15 +656,56 @@
       </div>
 
       <!-- BOTTOM ACTION BAR -->
-      <div class="pt-6 border-t border-stone-200 flex items-center justify-between mt-8">
-        <p class="text-[11px] text-stone-400 italic">*Semua data tersimpan otomatis di browser</p>
-        <button type="submit" class="px-6 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold shadow-lg hover:shadow-emerald-900/20 transition flex items-center gap-2">
-          <i data-lucide="save" class="w-4 h-4 text-emerald-300"></i>
-          <span>Simpan Perubahan</span>
-        </button>
+      <div class="pt-6 border-t border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pb-10">
+        <div class="flex items-center gap-2 text-xs">
+          <span id="serverSyncStatusBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-[11px]">
+            <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span id="serverSyncStatusText">Siap Dipublikasikan ke Server</span>
+          </span>
+          <span class="text-[11px] text-stone-500 hidden sm:inline">&bull; Data akan disimpan permanen online di server hosting</span>
+        </div>
+        <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+          <button type="submit" id="btnPublishOnline" class="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-emerald-700 via-emerald-800 to-emerald-900 hover:from-emerald-800 hover:to-emerald-950 text-white text-xs font-bold shadow-xl hover:shadow-emerald-900/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+            <i data-lucide="cloud-upload" class="w-4 h-4 text-emerald-300"></i>
+            <span id="btnPublishText">Publikasikan ke Server (Online)</span>
+          </button>
+        </div>
       </div>
     </form>
   </main>
+
+  <!-- MODAL SUKSES PUBLISH -->
+  <div id="publishSuccessModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center space-y-5 border border-stone-100 transform scale-95 transition-transform duration-300" id="publishModalBox">
+      <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 mx-auto flex items-center justify-center shadow-inner">
+        <i data-lucide="check-circle" class="w-9 h-9 text-emerald-600"></i>
+      </div>
+      <div class="space-y-1.5">
+        <h3 class="text-xl font-bold font-serif text-stone-900">Berhasil Dipublikasikan!</h3>
+        <p class="text-xs text-stone-600 leading-relaxed">
+          Seluruh pengaturan undangan telah tersimpan secara permanen di server hosting Anda. Tamu di mana saja kini langsung melihat data terbaru ini!
+        </p>
+      </div>
+      <div class="p-3 bg-stone-50 rounded-2xl border border-stone-200/80 text-left space-y-1">
+        <span class="text-[10px] uppercase font-bold text-stone-400 tracking-wider">Tautan Undangan Online:</span>
+        <div class="flex items-center justify-between gap-2">
+          <input type="text" id="modalOnlineLinkInput" readonly value="https://bikinundangan.biz.id/khitan" class="w-full text-xs font-mono text-emerald-800 bg-transparent border-none outline-none">
+          <button type="button" id="btnCopyModalLink" class="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-900 text-white text-[10px] font-semibold shrink-0 transition">
+            Salin
+          </button>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 pt-2">
+        <a id="btnModalOpenInvite" href="khitan.html" target="_blank" class="flex-1 py-3 px-4 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
+          <i data-lucide="external-link" class="w-4 h-4"></i>
+          <span>Buka Undangan</span>
+        </a>
+        <button type="button" id="btnClosePublishModal" class="py-3 px-5 rounded-xl border border-stone-300 text-stone-700 hover:bg-stone-100 font-semibold text-xs transition">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
 
   <script src="js/builder-khitan.js"></script>
 </body>

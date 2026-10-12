@@ -79,14 +79,21 @@ function compressImage(file, maxWidth = 1000, maxHeight = 1000, quality = 0.75) 
   });
 }
 
-// Upload helper to Vercel Serverless Function / Cloud CDN
+// Upload helper to server (PHP api/upload.php or /api/upload)
 async function uploadImageToServer(dataUrl, filename) {
   try {
-    const res = await fetch('/api/upload', {
+    let res = await fetch('api/upload.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ image: dataUrl, filename: filename || `khitan-${Date.now()}.jpg` })
     });
+    if (!res.ok) {
+      res = await fetch('api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: dataUrl, filename: filename || `khitan-${Date.now()}.jpg` })
+      });
+    }
     if (res.ok) {
       const data = await res.json();
       if (data && data.url) {
@@ -904,6 +911,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 1200);
 
   // Form Submit
+  // Form Submit & Publish Online to Server
   const builderForm = document.getElementById('khitanBuilderForm');
   builderForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -934,19 +942,145 @@ document.addEventListener('DOMContentLoaded', () => {
       theme: document.getElementById('selectedKhitanTheme')?.value || 'cream'
     };
 
-    // 1. Simpan LANGSUNG ke database lokal secara instan (tidak tergantung koneksi jaringan)
-    saveKhitanConfig(newConfig);
-    updateViewInviteLink(newConfig);
-    showToast('Perubahan undangan khitanan berhasil disimpan!');
-
-    // 2. Background sync non-blocking jika ada gambar lokal
-    syncLocalImagesToCloud(newConfig).then(updated => {
-      if (updated) {
-        saveKhitanConfig(updated);
-        updateViewInviteLink(updated);
-      }
-    }).catch(() => {});
+    publishConfigToServer(newConfig);
   });
+
+  // Server-side publish function
+  async function publishConfigToServer(cfg) {
+    const btnPublishText = document.getElementById('btnPublishText');
+    const badge = document.getElementById('serverSyncStatusBadge');
+    const badgeText = document.getElementById('serverSyncStatusText');
+
+    if (btnPublishText) btnPublishText.textContent = 'Menyimpan ke Server...';
+    if (badgeText) badgeText.textContent = 'Sedang Menyimpan ke Server...';
+    if (badge) badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 font-semibold text-[11px]';
+
+    // 1. Upload any base64 images to server first so URLs are clean
+    try {
+      if (cfg.photo && cfg.photo.startsWith('data:image/')) {
+        showToast('Mengunggah foto ananda ke server...');
+        const up = await uploadImageToServer(cfg.photo, 'foto-ananda.jpg');
+        if (up && !up.startsWith('data:')) {
+          cfg.photo = up;
+          const photoInput = document.getElementById('childPhoto');
+          if (photoInput) photoInput.value = up;
+          const photoPrev = document.getElementById('childPhotoPreview');
+          if (photoPrev) photoPrev.src = up;
+        }
+      }
+      if (cfg.customBg && cfg.customBg.startsWith('data:image/')) {
+        const up = await uploadImageToServer(cfg.customBg, 'background-kustom.jpg');
+        if (up && !up.startsWith('data:')) {
+          cfg.customBg = up;
+          const bgInput = document.getElementById('customBgInput');
+          if (bgInput) bgInput.value = up;
+        }
+      }
+      if (Array.isArray(cfg.gallery)) {
+        for (let i = 0; i < cfg.gallery.length; i++) {
+          if (cfg.gallery[i] && cfg.gallery[i].startsWith('data:image/')) {
+            showToast(`Mengunggah galeri ${i + 1}/${cfg.gallery.length} ke server...`);
+            const up = await uploadImageToServer(cfg.gallery[i], `galeri-${i + 1}.jpg`);
+            if (up && !up.startsWith('data:')) {
+              cfg.gallery[i] = up;
+              khitanGalleryPhotos[i] = up;
+            }
+          }
+        }
+        renderKhitanGalleryGrid();
+      }
+    } catch(e) {
+      console.warn('Image upload error:', e);
+    }
+
+    // 2. Save locally
+    saveKhitanConfig(cfg);
+    updateViewInviteLink(cfg);
+
+    // 3. POST to server API (PHP / cPanel)
+    let serverOk = false;
+    let errorMsg = '';
+    try {
+      let res = await fetch('api/save-config.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client: currentClient || 'wangkis', type: 'khitan', config: cfg })
+      });
+      if (!res.ok) {
+        res = await fetch('api/save-config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ client: currentClient || 'wangkis', type: 'khitan', config: cfg })
+        });
+      }
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success) {
+          serverOk = true;
+        } else if (data && data.error) {
+          errorMsg = data.error;
+        }
+      } else {
+        errorMsg = 'Status HTTP ' + res.status;
+      }
+    } catch(err) {
+      errorMsg = err.message || 'Koneksi server terputus';
+      console.warn('Network save-config error:', err);
+    }
+
+    // 4. Update UI
+    if (btnPublishText) btnPublishText.textContent = 'Publikasikan ke Server (Online)';
+    if (serverOk) {
+      if (badgeText) badgeText.textContent = '✅ Berhasil Online di Server';
+      if (badge) badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-[11px]';
+      showToast('🎉 Pengaturan berhasil disimpan dan langsung aktif di server!');
+
+      // Show modal
+      const modal = document.getElementById('publishSuccessModal');
+      const linkInput = document.getElementById('modalOnlineLinkInput');
+      const openBtn = document.getElementById('btnModalOpenInvite');
+      if (linkInput) linkInput.value = `${window.location.origin}/khitan`;
+      if (openBtn) openBtn.href = `khitan.html?t=${Date.now()}`;
+      if (modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 20);
+      }
+    } else {
+      if (badgeText) badgeText.textContent = '⚠️ Tersimpan Lokal (' + errorMsg + ')';
+      if (badge) badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-300 font-semibold text-[11px]';
+      showToast('Data tersimpan di browser lokal. Status server: ' + errorMsg);
+    }
+  }
+
+  // Header Publish Button
+  const btnHeaderPublish = document.getElementById('btnHeaderPublish');
+  if (btnHeaderPublish) {
+    btnHeaderPublish.addEventListener('click', () => {
+      builderForm.requestSubmit();
+    });
+  }
+
+  // Modal Close & Copy Handlers
+  const btnClosePublishModal = document.getElementById('btnClosePublishModal');
+  const btnCopyModalLink = document.getElementById('btnCopyModalLink');
+  const publishModal = document.getElementById('publishSuccessModal');
+  if (btnClosePublishModal && publishModal) {
+    btnClosePublishModal.addEventListener('click', () => {
+      publishModal.classList.add('opacity-0');
+      setTimeout(() => publishModal.classList.add('hidden'), 300);
+    });
+  }
+  if (btnCopyModalLink) {
+    btnCopyModalLink.addEventListener('click', () => {
+      const linkInput = document.getElementById('modalOnlineLinkInput');
+      if (linkInput) {
+        navigator.clipboard.writeText(linkInput.value).then(() => {
+          btnCopyModalLink.textContent = 'Tersalin!';
+          setTimeout(() => btnCopyModalLink.textContent = 'Salin', 2000);
+        });
+      }
+    });
+  }
 
   // Reset
   const btnReset = document.getElementById('btnReset');

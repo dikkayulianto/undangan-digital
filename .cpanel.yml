@@ -4,3 +4,4 @@ deployment:
     - export DEPLOYPATH=/home/fhcbnx02ql/bikinundangan.biz.id/
     - /bin/cp -R * $DEPLOYPATH
     - /bin/cp -f .htaccess $DEPLOYPATH
+    - /bin/chmod -R 777 $DEPLOYPATH/data
