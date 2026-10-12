@@ -1062,7 +1062,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (linkInput) linkInput.value = `${window.location.origin}/khitan`;
       if (openBtn) openBtn.href = `khitan.html?t=${Date.now()}`;
       if (modal) {
-        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+        modal.classList.remove('pointer-events-none');
         setTimeout(() => modal.classList.remove('opacity-0'), 20);
       }
     } else {
@@ -1078,8 +1079,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const publishModal = document.getElementById('publishSuccessModal');
   if (btnClosePublishModal && publishModal) {
     btnClosePublishModal.addEventListener('click', () => {
-      publishModal.classList.add('opacity-0');
-      setTimeout(() => publishModal.classList.add('hidden'), 300);
+      publishModal.classList.add('opacity-0', 'pointer-events-none');
+      setTimeout(() => { publishModal.style.display = 'none'; }, 300);
     });
   }
   if (btnCopyModalLink) {
@@ -1138,7 +1139,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const currentCfg = getKhitanConfig();
+    const currentCfg = collectCurrentBuilderConfig();
 
     // Auto-upload photo if still a local data URL
     if (currentCfg.photo && currentCfg.photo.startsWith('data:image/')) {
@@ -1160,19 +1161,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const childName = currentCfg.childFullname || 'Irendy Wijaya Saputra';
     const parents = `${currentCfg.father || 'Bpk. Wangkis Suwito'} & ${currentCfg.mother || 'Ibu Susi Dwi jayanti'}`;
 
-    // Base URL resolution (clean origin - avoids 404 folder nesting)
+    // Clean, direct server URL for invitations
     const baseOrigin = window.location.origin;
     let fullInvitationUrl = `${baseOrigin}/khitan.html?to=${encodeURIComponent(guestName)}`;
-    const encodedPayload = encodeKhitanConfigForUrl(currentCfg);
-    if (encodedPayload) {
-      fullInvitationUrl += `&d=${encodedPayload}`;
-    }
     const isCustomClient = currentClient && currentClient !== 'wangkis' && currentClient !== 'rendy';
     if (isCustomClient) {
       fullInvitationUrl += `&client=${encodeURIComponent(currentClient)}`;
-    }
-    if (currentCfg.theme && currentCfg.theme !== 'cream') {
-      fullInvitationUrl += `&theme=${encodeURIComponent(currentCfg.theme)}`;
     }
 
     const waMessage = 

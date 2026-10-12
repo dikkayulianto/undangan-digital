@@ -140,13 +140,13 @@
   </div>
 
   <!-- FLOATING LIVE EDIT TOGGLE BUTTON -->
-  <button id="btnToggleLiveEdit" type="button" title="Aktifkan Mode Edit Langsung" class="fixed bottom-6 left-5 z-40 flex items-center gap-2 px-3.5 py-2 rounded-full bg-stone-900/90 hover:bg-stone-900 text-amber-300 hover:text-white shadow-xl backdrop-blur-md border border-amber-400/40 text-xs font-bold transition hover:scale-105 active:scale-95 cursor-pointer">
+  <button id="btnToggleLiveEdit" type="button" title="Aktifkan Mode Edit Langsung" class="fixed bottom-24 left-5 z-50 flex items-center gap-2 px-3.5 py-2 rounded-full bg-stone-900/95 hover:bg-stone-900 text-amber-300 hover:text-white shadow-xl backdrop-blur-md border border-amber-400/40 text-xs font-bold transition hover:scale-105 active:scale-95 cursor-pointer">
     <i data-lucide="edit-3" class="w-4 h-4 text-amber-400"></i>
     <span class="hidden sm:inline">Edit Undangan</span>
   </button>
 
   <!-- MODAL EDIT MAPS URL -->
-  <div id="liveEditMapsModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+  <div id="liveEditMapsModal" style="display: none;" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 items-center justify-center p-4">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 border border-stone-200">
       <h3 class="font-bold text-base text-stone-900 flex items-center gap-2">
         <i data-lucide="map-pin" class="w-4 h-4 text-amber-600"></i>
@@ -164,7 +164,7 @@
   </div>
 
   <!-- MODAL EDIT FOTO ANAK -->
-  <div id="liveEditPhotoModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+  <div id="liveEditPhotoModal" style="display: none;" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 items-center justify-center p-4">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 border border-stone-200">
       <h3 class="font-bold text-base text-stone-900 flex items-center gap-2">
         <i data-lucide="camera" class="w-4 h-4 text-amber-600"></i>
@@ -188,7 +188,7 @@
   </div>
 
   <!-- MODAL EDIT MUSIK -->
-  <div id="liveEditMusicModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+  <div id="liveEditMusicModal" style="display: none;" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 items-center justify-center p-4">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 border border-stone-200">
       <h3 class="font-bold text-base text-stone-900 flex items-center gap-2">
         <i data-lucide="music" class="w-4 h-4 text-amber-600"></i>
@@ -206,7 +206,7 @@
   </div>
 
   <!-- MODAL TAMBAH FOTO GALERI -->
-  <div id="liveEditGalleryModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+  <div id="liveEditGalleryModal" style="display: none;" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 items-center justify-center p-4">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 border border-stone-200">
       <h3 class="font-bold text-base text-stone-900 flex items-center gap-2">
         <i data-lucide="image-plus" class="w-4 h-4 text-amber-600"></i>
@@ -249,7 +249,7 @@
   </div>
 
   <!-- LIGHTBOX MODAL -->
-  <div id="khitanLightbox" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+  <div id="khitanLightbox" style="display: none;" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 items-center justify-center p-4">
     <button id="closeKhitanLightbox" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition cursor-pointer">
       <i data-lucide="x" class="w-6 h-6"></i>
     </button>
@@ -633,14 +633,18 @@
           </div>
 
           <!-- Edit Undangan & Home Link -->
-          <div class="pt-4 flex items-center justify-center gap-2">
+          <div class="pt-4 flex items-center justify-center gap-2 flex-wrap">
             <a href="index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-stone-200 text-[11px] border border-white/15 transition">
               <i data-lucide="home" class="w-3.5 h-3.5"></i>
-              <span>Beranda Inveet</span>
+              <span>Beranda</span>
             </a>
+            <button type="button" id="btnFooterLiveEdit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-600/30 hover:bg-amber-600/50 text-amber-200 text-[11px] border border-amber-400/30 transition cursor-pointer">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5 text-amber-300"></i>
+              <span>Live Edit Undangan</span>
+            </button>
             <a href="builder-khitan.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-amber-300 text-[11px] border border-amber-400/20 transition">
               <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
-              <span>Edit Undangan Khitan</span>
+              <span>Dashboard Editor</span>
             </a>
           </div>
 
@@ -960,24 +964,26 @@
 
       populateElements(config);
 
-      // Async fetch data/khitan.json as authoritative fallback if no URL payload is provided
-      if (!cParam && !dParam) {
-        const dataUrlTarget = clientParam ? `data/khitan_${encodeURIComponent(clientParam)}.json?v=${Date.now()}` : `data/khitan.json?v=${Date.now()}`;
-        fetch(dataUrlTarget)
-          .then(res => {
-            if (!res.ok && clientParam) return fetch(`data/khitan.json?v=${Date.now()}`);
-            return res;
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (data && typeof data === 'object') {
-              config = sanitizeKhitanConfig(Object.assign({}, defaultKhitanConfig, data));
-              if (directChildPhoto && !directChildPhoto.includes('unsplash.com')) config.photo = directChildPhoto.trim();
-              populateElements(config);
+      // Always fetch authoritative online data/khitan.json from server
+      const dataUrlTarget = clientParam ? `data/khitan_${encodeURIComponent(clientParam)}.json?v=${Date.now()}` : `data/khitan.json?v=${Date.now()}`;
+      fetch(dataUrlTarget)
+        .then(res => {
+          if (!res.ok && clientParam) return fetch(`data/khitan.json?v=${Date.now()}`);
+          return res;
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data && typeof data === 'object') {
+            const serverConfig = sanitizeKhitanConfig(Object.assign({}, defaultKhitanConfig, data));
+            if (dParam) {
+              const urlConfig = decodeKhitanConfigFromUrl(dParam);
+              if (urlConfig) Object.assign(serverConfig, urlConfig);
             }
-          })
-          .catch(() => {});
-      }
+            config = serverConfig;
+            populateElements(config);
+          }
+        })
+        .catch(() => {});
 
       // Audio & Buka Undangan (Dual Engine: HTML5 & SoundCloud Widget)
       const audio = document.getElementById('khitanAudio');
@@ -1308,7 +1314,8 @@
           const src = item.getAttribute('data-full') || item.querySelector('img')?.src;
           if (src && kLightbox && kLightboxImg) {
             kLightboxImg.src = src;
-            kLightbox.classList.remove('hidden');
+            kLightbox.style.display = 'flex';
+            kLightbox.classList.remove('pointer-events-none');
             setTimeout(() => kLightbox.classList.remove('opacity-0'), 20);
           }
         }
@@ -1316,13 +1323,13 @@
 
       if (closeKLightbox && kLightbox) {
         closeKLightbox.addEventListener('click', () => {
-          kLightbox.classList.add('opacity-0');
-          setTimeout(() => kLightbox.classList.add('hidden'), 300);
+          kLightbox.classList.add('opacity-0', 'pointer-events-none');
+          setTimeout(() => { kLightbox.style.display = 'none'; }, 300);
         });
         kLightbox.addEventListener('click', (e) => {
           if (e.target === kLightbox) {
-            kLightbox.classList.add('opacity-0');
-            setTimeout(() => kLightbox.classList.add('hidden'), 300);
+            kLightbox.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => { kLightbox.style.display = 'none'; }, 300);
           }
         });
       }
@@ -1575,14 +1582,15 @@
       function openPhotoModal() {
         if (!liveEditPhotoModal) return;
         if (liveEditPhotoUrlInput) liveEditPhotoUrlInput.value = config.photo || '';
-        liveEditPhotoModal.classList.remove('hidden');
+        liveEditPhotoModal.style.display = 'flex';
+        liveEditPhotoModal.classList.remove('pointer-events-none');
         setTimeout(() => liveEditPhotoModal.classList.remove('opacity-0'), 20);
       }
 
       function closePhotoModal() {
         if (!liveEditPhotoModal) return;
-        liveEditPhotoModal.classList.add('opacity-0');
-        setTimeout(() => liveEditPhotoModal.classList.add('hidden'), 300);
+        liveEditPhotoModal.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => { liveEditPhotoModal.style.display = 'none'; }, 300);
       }
 
       if (btnOpenLivePhotoModal) {
@@ -1641,14 +1649,15 @@
       function openMusicModal() {
         if (!liveEditMusicModal) return;
         if (liveEditMusicInput) liveEditMusicInput.value = config.audioUrl || '';
-        liveEditMusicModal.classList.remove('hidden');
+        liveEditMusicModal.style.display = 'flex';
+        liveEditMusicModal.classList.remove('pointer-events-none');
         setTimeout(() => liveEditMusicModal.classList.remove('opacity-0'), 20);
       }
 
       function closeMusicModal() {
         if (!liveEditMusicModal) return;
-        liveEditMusicModal.classList.add('opacity-0');
-        setTimeout(() => liveEditMusicModal.classList.add('hidden'), 300);
+        liveEditMusicModal.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => { liveEditMusicModal.style.display = 'none'; }, 300);
       }
 
       if (btnOpenLiveMusicModal) {
@@ -1676,14 +1685,15 @@
         if (!liveEditGalleryModal) return;
         if (liveEditGalleryUrlInput) liveEditGalleryUrlInput.value = '';
         if (liveEditGalleryFile) liveEditGalleryFile.value = '';
-        liveEditGalleryModal.classList.remove('hidden');
+        liveEditGalleryModal.style.display = 'flex';
+        liveEditGalleryModal.classList.remove('pointer-events-none');
         setTimeout(() => liveEditGalleryModal.classList.remove('opacity-0'), 20);
       }
 
       function closeGalleryModal() {
         if (!liveEditGalleryModal) return;
-        liveEditGalleryModal.classList.add('opacity-0');
-        setTimeout(() => liveEditGalleryModal.classList.add('hidden'), 300);
+        liveEditGalleryModal.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => { liveEditGalleryModal.style.display = 'none'; }, 300);
       }
 
       if (btnLiveAddGalleryPhoto) {
@@ -1766,7 +1776,8 @@
             e.preventDefault();
             if (liveEditMapsModal && liveEditMapsInput) {
               liveEditMapsInput.value = config.mapsUrl || 'https://maps.app.goo.gl/FNjBDJMcNzKmvb6B7';
-              liveEditMapsModal.classList.remove('hidden');
+              liveEditMapsModal.style.display = 'flex';
+              liveEditMapsModal.classList.remove('pointer-events-none');
               setTimeout(() => liveEditMapsModal.classList.remove('opacity-0'), 20);
             }
           }
@@ -1775,8 +1786,8 @@
 
       if (btnCancelEditMaps && liveEditMapsModal) {
         btnCancelEditMaps.addEventListener('click', () => {
-          liveEditMapsModal.classList.add('opacity-0');
-          setTimeout(() => liveEditMapsModal.classList.add('hidden'), 300);
+          liveEditMapsModal.classList.add('opacity-0', 'pointer-events-none');
+          setTimeout(() => { liveEditMapsModal.style.display = 'none'; }, 300);
         });
       }
 
@@ -1788,8 +1799,17 @@
             if (btnMapsLink) btnMapsLink.href = newMap;
             showToast('Link Google Maps diperbarui!');
           }
-          liveEditMapsModal.classList.add('opacity-0');
-          setTimeout(() => liveEditMapsModal.classList.add('hidden'), 300);
+          liveEditMapsModal.classList.add('opacity-0', 'pointer-events-none');
+          setTimeout(() => { liveEditMapsModal.style.display = 'none'; }, 300);
+        });
+      }
+
+      // Footer Live Edit Button
+      const btnFooterLiveEdit = document.getElementById('btnFooterLiveEdit');
+      if (btnFooterLiveEdit) {
+        btnFooterLiveEdit.addEventListener('click', () => {
+          setLiveEditMode(true);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         });
       }
 
