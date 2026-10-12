@@ -137,7 +137,7 @@
 
       <!-- Desktop Nav Links -->
       <nav class="hidden md:flex items-center gap-1 text-sm font-medium text-stone-600">
-        <button type="button" class="btn-open-category-modal px-3.5 py-2 rounded-full text-amber-900 font-semibold bg-amber-50 hover:bg-amber-100 transition flex items-center gap-1.5">
+        <button type="button" class="btn-open-category-modal px-3.5 py-2 rounded-full text-amber-900 font-semibold bg-amber-50 hover:bg-amber-100 transition flex items-center gap-1.5 cursor-pointer">
           <i data-lucide="layers" class="w-4 h-4 text-amber-700"></i>
           <span>Pilih Acara</span>
         </button>
@@ -151,15 +151,11 @@
         <a href="#faq" class="px-3.5 py-2 rounded-full hover:text-stone-900 hover:bg-stone-100/80 transition">FAQ</a>
       </nav>
 
-      <!-- CTA Buttons -->
-      <div class="hidden sm:flex items-center gap-2">
-        <a href="login.html" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-stone-300 hover:border-amber-600 bg-white hover:bg-amber-50 text-stone-700 hover:text-amber-900 text-xs font-semibold shadow-xs transition">
+      <!-- CTA Buttons (Single Login Default to User) -->
+      <div class="hidden sm:flex items-center gap-2.5">
+        <a href="login.html" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-stone-300 hover:border-amber-600 bg-white hover:bg-amber-50 text-stone-700 hover:text-amber-900 text-xs font-semibold shadow-xs transition">
           <i data-lucide="user" class="w-3.5 h-3.5 text-amber-700"></i>
-          <span>Login User</span>
-        </a>
-        <a href="admin-login.html" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-700 bg-slate-900 hover:bg-slate-800 text-amber-300 hover:text-amber-200 text-xs font-semibold shadow-xs transition">
-          <i data-lucide="shield" class="w-3.5 h-3.5 text-amber-400"></i>
-          <span>Login Admin</span>
+          <span>Login</span>
         </a>
         <button type="button" class="btn-open-category-modal inline-flex items-center gap-2 text-xs font-bold text-white bg-amber-800 hover:bg-amber-900 px-4 py-2 rounded-full shadow-lg shadow-amber-900/15 transition transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-gold-300"></i>
@@ -175,14 +171,10 @@
 
     <!-- Mobile Menu Dropdown -->
     <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-stone-200 px-6 py-5 space-y-3 shadow-lg">
-      <div class="grid grid-cols-2 gap-2 pb-2 border-b border-stone-100">
+      <div class="pb-2 border-b border-stone-100">
         <a href="login.html" class="w-full text-center py-2.5 rounded-xl border border-stone-300 bg-white hover:bg-amber-50 text-stone-800 text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition">
           <i data-lucide="user" class="w-4 h-4 text-amber-700"></i>
-          <span>Login User</span>
-        </a>
-        <a href="admin-login.html" class="w-full text-center py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-amber-300 text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition">
-          <i data-lucide="shield" class="w-4 h-4 text-amber-400"></i>
-          <span>Login Admin</span>
+          <span>Login Akun</span>
         </a>
       </div>
       <a href="#fitur" class="block text-sm font-medium text-stone-700 py-1.5">Fitur</a>
@@ -267,64 +259,88 @@
             </div>
           </div>
 
-          <!-- Right Column: Hero Visual Showcase (Smartphone Frame with Floating Cards) -->
-          <div class="lg:col-span-5 flex justify-center relative">
+          <!-- Right Column: Hero Visual Showcase (Smartphone Frame with Symmetrical Badges) -->
+          <div class="lg:col-span-5 flex flex-col items-center justify-center relative w-full max-w-md mx-auto">
             <!-- Decorative Glow -->
-            <div class="absolute -top-10 -right-10 w-72 h-72 bg-amber-200/40 rounded-full blur-3xl -z-10"></div>
-            <div class="absolute -bottom-10 -left-10 w-72 h-72 bg-rose-200/30 rounded-full blur-3xl -z-10"></div>
+            <div class="absolute -top-10 -right-10 w-72 h-72 bg-amber-200/40 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+            <div class="absolute -bottom-10 -left-10 w-72 h-72 bg-rose-200/30 rounded-full blur-3xl -z-10 pointer-events-none"></div>
 
-            <!-- Phone Frame -->
-            <div class="w-[300px] sm:w-[330px] rounded-[3rem] p-3.5 bg-stone-900 shadow-2xl border-4 border-stone-800 relative ring-1 ring-white/20">
-              <!-- Speaker Notch -->
-              <div class="w-24 h-4 bg-black rounded-full mx-auto mb-2"></div>
-              
-              <!-- Screen Preview Content -->
-              <div class="w-full aspect-[9/18] rounded-[2.3rem] overflow-hidden relative flex flex-col justify-between p-6 text-center text-white bg-cover bg-center shadow-inner"
-                   style="background-image: linear-gradient(to bottom, rgba(28,25,23,0.35), rgba(28,25,23,0.85)), url('https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=600&q=80');">
+            <div class="relative w-full flex justify-center py-6">
+              <!-- Phone Frame -->
+              <div class="w-[280px] sm:w-[320px] rounded-[3rem] p-3.5 bg-stone-900 shadow-2xl border-4 border-stone-800 relative ring-1 ring-white/20 z-10">
+                <!-- Speaker Notch -->
+                <div class="w-24 h-4 bg-black rounded-full mx-auto mb-2"></div>
                 
-                <div class="pt-4 space-y-1">
-                  <p class="text-[10px] tracking-[0.25em] text-gold-300 uppercase font-medium">The Wedding of</p>
-                  <h3 class="text-2xl font-serif">Dimas &amp; Sarah</h3>
-                </div>
-
-                <div class="space-y-2 my-auto">
-                  <div class="w-24 h-24 mx-auto rounded-full border-2 border-gold-300 p-0.5 shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=300&q=80" alt="Couple" class="w-full h-full object-cover rounded-full">
+                <!-- Screen Preview Content -->
+                <div class="w-full aspect-[9/18] rounded-[2.3rem] overflow-hidden relative flex flex-col justify-between p-6 text-center text-white bg-cover bg-center shadow-inner"
+                     style="background-image: linear-gradient(to bottom, rgba(28,25,23,0.35), rgba(28,25,23,0.85)), url('https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=600&q=80');">
+                  
+                  <div class="pt-4 space-y-1">
+                    <p class="text-[10px] tracking-[0.25em] text-gold-300 uppercase font-medium">The Wedding of</p>
+                    <h3 class="text-2xl font-serif">Dimas &amp; Sarah</h3>
                   </div>
-                  <p class="text-xs font-serif tracking-widest">28 &bull; 12 &bull; 2026</p>
-                </div>
 
-                <div class="space-y-3 pb-2">
-                  <div class="bg-black/40 backdrop-blur-sm border border-white/20 rounded-xl p-2.5 text-xs">
-                    <p class="text-[9px] text-stone-300">Kepada Yth:</p>
-                    <p class="font-bold text-gold-200">Bapak Joko &amp; Keluarga</p>
+                  <div class="space-y-2 my-auto">
+                    <div class="w-24 h-24 mx-auto rounded-full border-2 border-gold-300 p-0.5 shadow-lg">
+                      <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=300&q=80" alt="Couple" class="w-full h-full object-cover rounded-full">
+                    </div>
+                    <p class="text-xs font-serif tracking-widest">28 &bull; 12 &bull; 2026</p>
                   </div>
-                  <a href="invitation.html" target="_blank" class="block w-full py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-amber-700 text-stone-950 font-bold text-xs shadow hover:opacity-95 transition">
-                    BUKA UNDANGAN
-                  </a>
+
+                  <div class="space-y-3 pb-2">
+                    <div class="bg-black/40 backdrop-blur-sm border border-white/20 rounded-xl p-2.5 text-xs">
+                      <p class="text-[9px] text-stone-300">Kepada Yth:</p>
+                      <p class="font-bold text-gold-200">Bapak Joko &amp; Keluarga</p>
+                    </div>
+                    <a href="invitation.html" target="_blank" class="block w-full py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-amber-700 text-stone-950 font-bold text-xs shadow hover:opacity-95 transition">
+                      BUKA UNDANGAN
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Floating Badge 1 (Top Left) -->
+              <div class="hidden sm:flex absolute top-10 -left-4 md:-left-8 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-stone-200/80 items-center gap-3 z-20">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                  <i data-lucide="message-square-heart" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <p class="text-[11px] font-bold text-stone-900 leading-tight">RSVP Real-Time</p>
+                  <p class="text-[10px] text-stone-500">Konfirmasi hadir instan</p>
+                </div>
+              </div>
+
+              <!-- Floating Badge 2 (Bottom Right) -->
+              <div class="hidden sm:flex absolute bottom-12 -right-4 md:-right-8 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-stone-200/80 items-center gap-3 z-20">
+                <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                  <i data-lucide="disc-3" class="w-5 h-5 animate-spin"></i>
+                </div>
+                <div>
+                  <p class="text-[11px] font-bold text-stone-900 leading-tight">Musik Autoplay</p>
+                  <p class="text-[10px] text-stone-500">Lagu romantis pengiring</p>
                 </div>
               </div>
             </div>
 
-            <!-- Floating Badge 1 -->
-            <div class="absolute top-12 -left-6 sm:-left-8 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-stone-200/80 flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
-                <i data-lucide="message-square-heart" class="w-5 h-5"></i>
+            <!-- Mobile Badges Row (Shows under phone cleanly on small screens) -->
+            <div class="flex sm:hidden items-center justify-center gap-3 mt-4 w-full">
+              <div class="flex-1 bg-white rounded-xl p-2.5 shadow-md border border-stone-200 flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                  <i data-lucide="message-square-heart" class="w-4 h-4"></i>
+                </div>
+                <div class="text-left">
+                  <p class="text-[11px] font-bold text-stone-900 leading-none">RSVP Live</p>
+                  <p class="text-[9px] text-stone-500 mt-0.5">Konfirmasi hadir</p>
+                </div>
               </div>
-              <div>
-                <p class="text-[11px] font-bold text-stone-900">RSVP Real-Time</p>
-                <p class="text-[10px] text-stone-500">Konfirmasi hadir instan</p>
-              </div>
-            </div>
-
-            <!-- Floating Badge 2 -->
-            <div class="absolute bottom-16 -right-6 sm:-right-8 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-stone-200/80 flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
-                <i data-lucide="disc-3" class="w-5 h-5 animate-spin"></i>
-              </div>
-              <div>
-                <p class="text-[11px] font-bold text-stone-900">Musik Autoplay</p>
-                <p class="text-[10px] text-stone-500">Lagu romantis pengiring</p>
+              <div class="flex-1 bg-white rounded-xl p-2.5 shadow-md border border-stone-200 flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                  <i data-lucide="disc-3" class="w-4 h-4 animate-spin"></i>
+                </div>
+                <div class="text-left">
+                  <p class="text-[11px] font-bold text-stone-900 leading-none">Musik Latar</p>
+                  <p class="text-[9px] text-stone-500 mt-0.5">Autoplay lagu</p>
+                </div>
               </div>
             </div>
           </div>
@@ -1019,9 +1035,8 @@
           <a href="invitation.html" target="_blank" class="hover:text-amber-400 transition">Demo Pernikahan</a>
           <a href="khitan.html" target="_blank" class="hover:text-emerald-400 transition">Demo Khitanan</a>
           <a href="builder.html" class="hover:text-amber-400 transition">Editor Pernikahan</a>
-          <a href="builder-khitan.html" class="hover:text-emerald-400 transition">Editor Khitanan</a>
-          <a href="login.html" class="text-amber-400 hover:text-amber-300 font-semibold transition">Login User</a>
-          <a href="admin-login.html" class="text-emerald-400 hover:text-emerald-300 font-semibold transition">Login Admin</a>
+          <a href="login.html" class="text-amber-400 hover:text-amber-300 font-semibold transition">Login Akun</a>
+          <a href="admin-login.html" class="text-stone-500 hover:text-stone-300 transition">Admin</a>
         </div>
 
       </div>

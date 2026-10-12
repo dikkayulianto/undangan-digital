@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const preset = themePresets[selectedTheme] || themePresets.champagne;
     if (previewPhone) {
-      previewPhone.className = `w-full h-full rounded-[2.5rem] overflow-hidden flex flex-col justify-between p-6 text-center text-white relative transition-colors duration-300 shadow-2xl`;
+      previewPhone.className = `w-full aspect-[9/17] rounded-[2.2rem] overflow-hidden flex flex-col justify-between p-6 text-center text-white relative transition-all duration-300 shadow-inner`;
       previewPhone.style.backgroundImage = `${preset.coverOverlay}, url('${preset.imgUrl}')`;
       previewPhone.style.backgroundSize = 'cover';
       previewPhone.style.backgroundPosition = 'center';
