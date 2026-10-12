@@ -145,6 +145,10 @@
         <i data-lucide="cloud-upload" class="w-3.5 h-3.5"></i>
         <span id="btnLiveEditSaveText">Simpan ke Server</span>
       </button>
+      <button id="btnLiveEditLogout" type="button" class="px-2.5 py-1.5 rounded-xl border border-red-500/40 bg-red-950/40 hover:bg-red-900/60 text-red-200 text-xs font-medium transition cursor-pointer flex items-center gap-1" title="Keluar dari akun">
+        <i data-lucide="log-out" class="w-3.5 h-3.5 text-red-400"></i>
+        <span class="hidden sm:inline">Logout</span>
+      </button>
     </div>
   </div>
 
@@ -335,7 +339,7 @@
 
         <!-- Center Child Photo Frame -->
         <div class="space-y-3 my-auto py-2 shrink-0">
-          <div class="w-28 h-28 sm:w-36 sm:h-36 mx-auto rounded-full border-4 border-white p-1 shadow-2xl bg-amber-100/50">
+          <div class="w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 mx-auto rounded-full border-4 sm:border-[5px] border-white p-1 shadow-2xl bg-amber-100/50">
             <img id="coverChildPhoto" src="images/khitan/rendy-profile.jpg?v=20261009c" 
                  alt="Foto Anak" 
                  class="w-full h-full object-cover rounded-full">
@@ -398,7 +402,7 @@
         </div>
 
         <div class="max-w-sm mx-auto text-center space-y-4" data-aos="fade-up">
-          <div class="arch-frame w-48 h-64 mx-auto border-4 border-white shadow-xl relative group">
+          <div class="arch-frame w-52 h-72 sm:w-60 sm:h-80 mx-auto border-4 border-white shadow-xl relative group">
             <img id="childPhotoImg" src="images/khitan/rendy-profile.jpg" 
                  alt="Foto Anak" 
                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
@@ -651,7 +655,7 @@
               <i data-lucide="edit-3" class="w-3.5 h-3.5 text-amber-300"></i>
               <span>Live Edit Undangan</span>
             </button>
-            <a href="builder-khitan.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-amber-300 text-[11px] border border-amber-400/20 transition">
+            <a href="builder-khitan.html" id="btnFooterDashboard" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-amber-300 text-[11px] border border-amber-400/20 transition">
               <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
               <span>Dashboard Editor</span>
             </a>
@@ -1184,14 +1188,23 @@
       }
 
       if (btnBuka) {
+        function scrollGentlyPastCover() {
+          const cover = document.getElementById('coverSection');
+          const targetY = cover ? cover.offsetHeight : window.innerHeight;
+          window.scrollTo({
+            top: targetY,
+            behavior: 'smooth'
+          });
+        }
+
         btnBuka.addEventListener('click', (e) => {
           if (e) e.preventDefault();
           unlockInvitation();
-          const firstSection = document.getElementById('salamPembuka');
-          if (firstSection) firstSection.scrollIntoView({ behavior: 'smooth' });
+          scrollGentlyPastCover();
         });
         btnBuka.addEventListener('touchend', () => {
           unlockInvitation();
+          scrollGentlyPastCover();
         }, { passive: true });
       }
 
@@ -1573,9 +1586,28 @@
         }
       }
 
+      function isUserLoggedIn() {
+        const client = localStorage.getItem('inveet_logged_client');
+        const admin = localStorage.getItem('inveet_admin_session') === 'true' || sessionStorage.getItem('inveet_admin_session') === 'true';
+        return Boolean(client || admin);
+      }
+
+      function getCleanCurrentPathWithEdit() {
+        let path = window.location.pathname.split('/').pop() || 'khitan';
+        return `${path}?edit=1`;
+      }
+
       if (btnToggleLiveEdit) {
         btnToggleLiveEdit.addEventListener('click', () => {
-          setLiveEditMode(!isLiveEditActive);
+          if (isLiveEditActive) {
+            setLiveEditMode(false);
+          } else {
+            if (!isUserLoggedIn()) {
+              window.location.href = `login.html?redirect=${encodeURIComponent(getCleanCurrentPathWithEdit())}`;
+              return;
+            }
+            setLiveEditMode(true);
+          }
         });
       }
 
@@ -1817,8 +1849,23 @@
       const btnFooterLiveEdit = document.getElementById('btnFooterLiveEdit');
       if (btnFooterLiveEdit) {
         btnFooterLiveEdit.addEventListener('click', () => {
+          if (!isUserLoggedIn()) {
+            window.location.href = `login.html?redirect=${encodeURIComponent(getCleanCurrentPathWithEdit())}`;
+            return;
+          }
           setLiveEditMode(true);
           window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      // Footer Dashboard Editor Link
+      const btnFooterDashboard = document.getElementById('btnFooterDashboard');
+      if (btnFooterDashboard) {
+        btnFooterDashboard.addEventListener('click', (e) => {
+          if (!isUserLoggedIn()) {
+            e.preventDefault();
+            window.location.href = `login.html?redirect=${encodeURIComponent('builder-khitan.html')}`;
+          }
         });
       }
 
@@ -1934,9 +1981,27 @@
         });
       }
 
+      // Logout button from live edit bar
+      const btnLiveEditLogout = document.getElementById('btnLiveEditLogout');
+      if (btnLiveEditLogout) {
+        btnLiveEditLogout.addEventListener('click', () => {
+          if (confirm('Apakah Anda ingin keluar (logout) dari akun?')) {
+            localStorage.removeItem('inveet_logged_client');
+            localStorage.removeItem('inveet_admin_session');
+            sessionStorage.removeItem('inveet_admin_session');
+            setLiveEditMode(false);
+            showToast('Anda berhasil logout.');
+          }
+        });
+      }
+
       // Auto-enable live edit if ?edit=1 in URL
       if (urlParams.get('edit') === '1' || urlParams.get('edit') === 'true') {
-        setTimeout(() => setLiveEditMode(true), 400);
+        if (isUserLoggedIn()) {
+          setTimeout(() => setLiveEditMode(true), 400);
+        } else {
+          window.location.href = `login.html?redirect=${encodeURIComponent(getCleanCurrentPathWithEdit())}`;
+        }
       }
     });
   </script>

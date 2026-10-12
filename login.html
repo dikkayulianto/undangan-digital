@@ -158,24 +158,59 @@
         return initialAccounts;
       }
 
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectParam = urlParams.get('redirect');
+
+      // Auto-redirect if already logged in
+      const currentLogged = localStorage.getItem('inveet_logged_client');
+      const isAdminSession = localStorage.getItem('inveet_admin_session') === 'true' || sessionStorage.getItem('inveet_admin_session') === 'true';
+      if (currentLogged || isAdminSession) {
+        if (redirectParam && redirectParam.trim() !== '') {
+          window.location.href = decodeURIComponent(redirectParam);
+          return;
+        }
+        window.location.href = 'builder-khitan.html';
+        return;
+      }
+
       function doClientLogin(username, password) {
         const errorBox = document.getElementById('loginError');
         const errorText = document.getElementById('loginErrorText');
         errorBox.classList.add('hidden');
 
         const cleanUser = username.toLowerCase().trim();
+        const pass = password.trim();
+
+        // Admin fallback
+        if ((cleanUser === 'admin' || cleanUser === 'admin@inveet.id') && pass === 'admin123') {
+          sessionStorage.setItem('inveet_admin_session', 'true');
+          localStorage.setItem('inveet_admin_session', 'true');
+          if (redirectParam && redirectParam.trim() !== '') {
+            window.location.href = decodeURIComponent(redirectParam);
+            return;
+          }
+          window.location.href = 'builder-khitan.html';
+          return;
+        }
+
         const accounts = getAccounts();
         const found = accounts.find(a => 
           (a.username.toLowerCase() === cleanUser || 
            (a.username.toLowerCase() === 'wangkis' && cleanUser === 'rendy') ||
            (a.username.toLowerCase() === 'rendy' && cleanUser === 'wangkis')) && 
-          a.password === password.trim()
+          a.password === pass
         );
 
         if (found) {
           const resolvedUser = (found.username === 'rendy' || cleanUser === 'wangkis') ? 'wangkis' : found.username;
           found.username = resolvedUser;
           localStorage.setItem('inveet_logged_client', JSON.stringify(found));
+
+          if (redirectParam && redirectParam.trim() !== '') {
+            window.location.href = decodeURIComponent(redirectParam);
+            return;
+          }
+
           if (found.type === 'khitan') {
             window.location.href = `builder-khitan.html?client=${encodeURIComponent(resolvedUser)}`;
           } else {

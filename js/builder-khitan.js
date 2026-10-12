@@ -239,6 +239,14 @@ function saveKhitanConfig(cfg) {
 document.addEventListener('DOMContentLoaded', () => {
   if (window.lucide) lucide.createIcons();
 
+  // Auth Check: must be logged in to access dashboard editor
+  const loggedClient = localStorage.getItem('inveet_logged_client');
+  const isAdmin = localStorage.getItem('inveet_admin_session') === 'true' || sessionStorage.getItem('inveet_admin_session') === 'true';
+  if (!loggedClient && !isAdmin) {
+    window.location.href = `login.html?redirect=${encodeURIComponent('builder-khitan.html')}`;
+    return;
+  }
+
   // Tab navigation
   const tabBtns = document.querySelectorAll('.tab-btn');
   const tabPanes = document.querySelectorAll('.tab-pane');
@@ -1091,6 +1099,19 @@ document.addEventListener('DOMContentLoaded', () => {
           btnCopyModalLink.textContent = 'Tersalin!';
           setTimeout(() => btnCopyModalLink.textContent = 'Salin', 2000);
         });
+      }
+    });
+  }
+
+  // Header Logout
+  const btnHeaderLogout = document.getElementById('btnHeaderLogout');
+  if (btnHeaderLogout) {
+    btnHeaderLogout.addEventListener('click', () => {
+      if (confirm('Apakah Anda yakin ingin keluar dari editor?')) {
+        localStorage.removeItem('inveet_logged_client');
+        localStorage.removeItem('inveet_admin_session');
+        sessionStorage.removeItem('inveet_admin_session');
+        window.location.href = 'login.html';
       }
     });
   }
