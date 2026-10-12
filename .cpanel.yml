@@ -1,5 +1,6 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=~/public_html/
+    - export DEPLOYPATH=/home/fhcbnx02ql/bikinundangan.biz.id/
     - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp -f .htaccess $DEPLOYPATH
